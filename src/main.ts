@@ -34,6 +34,7 @@ import {
   Drawer,
   Spin,
 } from 'ant-design-vue'
+import { router } from './views/router'
 
 const app = createApp(App)
 
@@ -65,6 +66,8 @@ app.component('Spin', Spin)
 app.use(Icon)
 app.use(Component)
 app.use(Directive)
+
+app.use(router)
 
 app.use(createPinia())
 app.mount('#app')

@@ -7,7 +7,8 @@ const CRYPTO_KEY = 'pptist'
  * @param msg 待加密字符串
  */
 export const encrypt = (msg: string) => {
-  return CryptoJS.AES.encrypt(msg, CRYPTO_KEY).toString()
+  return msg
+  // return CryptoJS.AES.encrypt(msg, CRYPTO_KEY).toString()
 }
 
 /**
@@ -15,6 +16,7 @@ export const encrypt = (msg: string) => {
  * @param ciphertext 待解密字符串
  */
 export const decrypt = (ciphertext: string) => {
-  const bytes = CryptoJS.AES.decrypt(ciphertext, CRYPTO_KEY)
-  return bytes.toString(CryptoJS.enc.Utf8)
+  return ciphertext
+  // const bytes = CryptoJS.AES.decrypt(ciphertext, CRYPTO_KEY)
+  // return bytes.toString(CryptoJS.enc.Utf8)
 }

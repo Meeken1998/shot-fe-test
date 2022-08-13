@@ -1,12 +1,8 @@
 <template>
-  <router-view></router-view>
+  <div>hello</div>
 </template>
-
 <script lang="ts" setup>
-</script>
 
+</script>
 <style lang="scss">
-#app {
-  height: 100%;
-}
 </style>

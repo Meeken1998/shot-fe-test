@@ -2,6 +2,7 @@ import { Node, NodeType, ResolvedPos, Mark, MarkType } from 'prosemirror-model'
 import { EditorState, Selection } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
 import { selectAll } from 'prosemirror-commands'
+import { ToMutable } from '@/types/global'
 
 export const autoSelectAll = (view: EditorView) => {
   const { empty } = view.state.selection
@@ -120,7 +121,7 @@ export const getMarkAttrs = (view: EditorView) => {
   let node = doc.nodeAt(from) || doc.nodeAt(from - 1)
   if (node?.lastChild) node = node.lastChild
 
-  return node?.marks || []
+  return (node?.marks || []) as ToMutable<Mark[]>
 }
 
 export const getAttrValue = (marks: Mark[], markType: string, attr: string) => {
