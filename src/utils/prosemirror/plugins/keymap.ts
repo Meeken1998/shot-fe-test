@@ -8,7 +8,7 @@ import {
   joinUp,
   joinDown,
 } from 'prosemirror-commands'
-import { Command } from 'prosemirror-state'
+type Command = any
 
 export const buildKeymap = (schema: Schema) => {
   const keys = {}
