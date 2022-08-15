@@ -44,7 +44,7 @@ const { user } = storeToRefs(useDashboardStore())
 
 function logout() {
   sdk.logoutWithRedirect({
-    redirectUri: 'http://localhost:8080/login'
+    redirectUri: process.env.NODE_ENV !== 'development' ? 'https://aside.fun/login' : 'http://localhost:8080/login',
   }).then(() => {
     localStorage.clear()
   })
