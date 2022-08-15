@@ -1,5 +1,7 @@
 <template>
-  <router-view></router-view>
+  <ConfigProvider :autoInsertSpaceInButton="false">
+    <router-view></router-view>
+  </ConfigProvider>
 </template>
 
 <script lang="ts" setup>

@@ -16,6 +16,7 @@ import Icon from '@/plugins/icon'
 import Component from '@/plugins/component'
 import Directive from '@/plugins/directive'
 
+
 import {
   InputNumber,
   Divider,
@@ -33,8 +34,13 @@ import {
   Checkbox,
   Drawer,
   Spin,
+  Avatar,
+  ConfigProvider,
+  Upload,
+  Tabs,
+  Empty,
 } from 'ant-design-vue'
-import { router } from './views/router'
+import router from './views/router'
 
 const app = createApp(App)
 
@@ -59,9 +65,18 @@ app.component('Modal', Modal)
 app.component('Dropdown', Dropdown)
 app.component('Menu', Menu)
 app.component('MenuItem', Menu.Item)
+app.component('MenuItemGroup', Menu.ItemGroup)
 app.component('Checkbox', Checkbox)
 app.component('Drawer', Drawer)
 app.component('Spin', Spin)
+app.component('SubMenu', Menu.SubMenu)
+app.component('Avatar', Avatar)
+app.component('ConfigProvider', ConfigProvider)
+app.component('MenuDivider', Menu.Divider)
+app.component('Upload', Upload)
+app.component('Tabs', Tabs)
+app.component('TabPane', Tabs.TabPane)
+app.component('Empty', Empty)
 
 app.use(Icon)
 app.use(Component)

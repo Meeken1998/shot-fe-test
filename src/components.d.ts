@@ -28,10 +28,19 @@ declare module 'vue' {
     Modal: typeof import('ant-design-vue')['Modal']
     Dropdown: typeof import('ant-design-vue')['Dropdown']
     Menu: typeof import('ant-design-vue')['Menu']
+    SubMenu: typeof import('ant-design-vue')['Menu']['SubMenu']
     MenuItem: typeof import('ant-design-vue')['Menu']['Item']
+    MenuItemGroup: typeof import('ant-design-vue')['Menu']['ItemGroup']
     Checkbox: typeof import('ant-design-vue')['Checkbox']
     Drawer: typeof import('ant-design-vue')['Drawer']
     Spin: typeof import('ant-design-vue')['Spin']
+    Avatar: typeof import('ant-design-vue')['Avatar']
+    ConfigProvider: typeof import('ant-design-vue')['ConfigProvider']
+    MenuDivider: typeof import('ant-design-vue')['MenuDivider']
+    Upload: typeof import('ant-design-vue')['Upload']
+    Tabs: typeof import('ant-design-vue')['Tabs']
+    TabPane: typeof import('ant-design-vue')['TabPane']
+    Empty: typeof import('ant-design-vue')['Empty']
   }
 }
 

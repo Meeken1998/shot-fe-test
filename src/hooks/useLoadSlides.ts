@@ -13,7 +13,7 @@ export default () => {
       timer.value = setTimeout(() => {
         slidesLoadLimit.value = slidesLoadLimit.value + 20
         loadSlide()
-      }, 600)
+      }, 600) as any
     }
     else slidesLoadLimit.value = 9999
   }

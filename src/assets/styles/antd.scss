@@ -1,6 +1,6 @@
 // 对 ant design vue 的默认样式覆盖
-
 // popover
+
 .ant-popover {
   padding-top: 5px !important;
 }
@@ -60,4 +60,38 @@
 // tooltip
 .ant-tooltip-inner {
   font-size: 12px;
+}
+
+$border-radius-base: 8px;
+
+.ant-dropdown-menu-item {
+  margin: 6px;
+  padding: 6px 12px;
+  border-radius: $borderRadius / 2;
+}
+
+.ant-dropdown-menu {
+  padding: 0;
+}
+
+.input {
+  background-color: #ededed;
+  border-color: #ededed !important;
+
+  input {
+    background-color: #ededed !important;
+  }
+}
+
+.primary-btn {
+  min-width: 100px;
+  height: 40px;
+  border-radius: $borderRadius;
+}
+
+.primary-btn-large {
+  min-width: 120px;
+  height: 48px;
+  border-radius: $borderRadius * 1.5;
+  font-size: 14px;
 }

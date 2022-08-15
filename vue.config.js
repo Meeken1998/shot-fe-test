@@ -3,7 +3,16 @@
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 
 module.exports = {
-  publicPath: './',
+  devServer: {
+    port: 8080,
+    proxy: {
+      '/api/': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
+  },
+  publicPath: '/',
   css: {
     loaderOptions: {
       sass: {
@@ -15,10 +24,10 @@ module.exports = {
       less: {
         lessOptions: {
           modifyVars: {
-            'primary-color': '#d14424',
+            'primary-color': '#4f9346',
             'text-color': '#41464b',
             'font-size-base': '13px',
-            'border-radius-base': '2px',
+            'border-radius-base': '6px',
           },
           javascriptEnabled: true,
         },
@@ -37,7 +46,7 @@ module.exports = {
   },
   pwa: {
     name: 'PPTist',
-    themeColor: '#d14424',
+    themeColor: '#4f9346',
     iconPaths: {
       faviconSVG: null,
       favicon32: 'icons/favicon-32x32.png',
@@ -49,7 +58,7 @@ module.exports = {
     manifestOptions: {
       name: 'PPTist',
       short_name: 'PPTist',
-      theme_color: '#d14424',
+      theme_color: '#4f9346',
       icons: [{
         src: 'icons/android-chrome-192x192.png',
         sizes: '192x192',
