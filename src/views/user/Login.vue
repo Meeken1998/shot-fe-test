@@ -69,9 +69,14 @@ async function checkLoginState() {
 }
 
 async function saveUserInfo2store() {
-  const userInfo = await sdk.getUserInfo()
-  if (userInfo) {
-    user.value = userInfo
+  try {
+    const userInfo = await sdk.getUserInfo()
+    if (userInfo) {
+      user.value = userInfo
+    }
+  }
+  catch {
+    login()
   }
 }
 </script>

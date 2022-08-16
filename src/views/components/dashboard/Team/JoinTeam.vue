@@ -67,7 +67,7 @@ function handleAcceptInviteAfterLogin() {
 }
 
 async function handleJoin() {
-  if (!loginState.value) {
+  if (!loginState.value && !localStorage.getItem('token')) {
     handleAcceptInviteAfterLogin()
     return
   }

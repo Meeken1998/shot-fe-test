@@ -3,7 +3,7 @@
     <div class="invite-modal-container">
       <div class="invite-by-search">
         <div class="search-bar">
-          <Input v-model:value="searchValue" placeholder="搜索用户昵称、手机号或邮箱" class="input" allow-clear>
+          <Input v-model:value="searchValue" placeholder="搜索用户昵称、手机号或邮箱" class="input" allow-clear @press-enter="handleSearchUsers()">
           <template #prefix>
             <SearchOutlined />
           </template>
