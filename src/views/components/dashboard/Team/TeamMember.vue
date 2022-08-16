@@ -17,7 +17,7 @@
 import { getTeamMembers, TeamMemberResponse } from '@/apis/team'
 import { useDashboardStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { onMounted, defineProps, ref } from 'vue'
+import { onMounted, defineProps, ref, watch } from 'vue'
 import { getName } from '@/utils/authing'
 
 const { user } = storeToRefs(useDashboardStore())
@@ -38,6 +38,12 @@ async function getData() {
 }
 
 onMounted(() => {
+  void getData()
+})
+
+watch([
+  () => props.teamId
+], () => {
   void getData()
 })
 </script>
