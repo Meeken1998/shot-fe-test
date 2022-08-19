@@ -201,7 +201,7 @@ export const useSlidesStore = defineStore('slides', {
         docsId,
         jpg,
         token: localStorage.getItem('token'),
-        isDev: process.env.NODE_ENV !== 'development',
+        isDev: process.env.NODE_ENV === 'development',
       })
     }),
 
