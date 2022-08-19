@@ -8,8 +8,8 @@ export interface SuccessResponse<T> {
 
 type RequestFn = <T = any>(url: string, data?: any) => Promise<T>
 
-export default (token: string) => {
-  if (process.env.NODE_ENV !== 'development') {
+export default (token: string, isDev: boolean) => {
+  if (!isDev) {
     axios.defaults.baseURL = 'https://storyboard-api.aside.fun'
   }
   axios.interceptors.response.use((res) => {

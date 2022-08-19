@@ -37,8 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var axios_1 = require("axios");
-exports["default"] = (function (token) {
-    if (process.env.NODE_ENV !== 'development') {
+exports["default"] = (function (token, isDev) {
+    if (!isDev) {
         axios_1["default"].defaults.baseURL = 'https://storyboard-api.aside.fun';
     }
     axios_1["default"].interceptors.response.use(function (res) {
