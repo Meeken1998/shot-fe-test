@@ -14,3 +14,5 @@ interface Document {
   webkitExitFullscreen(): Promise<void>
   msExitFullscreen(): Promise<void>
 }
+
+declare module 'vue-worker'

@@ -5,6 +5,7 @@ type Icon = typeof icons
 type CustomComponent = typeof components
 
 declare module 'vue' {
+  export type $worker = any
   export interface GlobalComponents extends Icon, CustomComponent {
 
     // antd 组件

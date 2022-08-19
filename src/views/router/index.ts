@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PptistEditor from './PptistEditor.vue'
+import PptistEditor from '@/views/Editor/PptistEditor.vue'
+import EditorLandingPage from '@/views/Editor/EditorLandingPage.vue'
 import Dashboard from '../Dashboard/index.vue'
 import Login from '../user/Login.vue'
 import { sdk } from '@/utils/authing'
@@ -27,14 +28,21 @@ const router = createRouter({
         },
         {
           component: Team,
-          path: 'team/:id',
+          path: 'team/:teamId',
         },
       ],
     },
     {
+      component: EditorLandingPage,
+      path: '/createDocs',
+      name: 'createDocs',
+      meta: {
+        title: '新建文档',
+      },
+    },
+    {
       component: PptistEditor,
-      path: '/editor',
-      name: 'editor',
+      path: '/editor/:id',
       meta: {
         title: '文档',
       },
@@ -78,7 +86,7 @@ router.beforeEach((to, _, next) => {
           setTitle(to.meta.title as string)
         }
         next()
-      }
+      } 
       else {
         next({ name: 'login' })
       }

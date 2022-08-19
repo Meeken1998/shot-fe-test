@@ -1,26 +1,36 @@
 <template>
-  <div class="project">
-    <img :src="cover" class="cover" draggable="false" />
+  <div class="project" @click="handleOpenDocs()">
+    <img :src="previewImageUrl" class="cover" draggable="false" />
 
-    <div class="info">
-      <div class="title">{{ title }}</div>
-      <div class="extra">2022年会演讲 · 更新于{{ getDateDiff(updateTimestamp || 0) }}</div>
+    <div class="docs-info">
+      <div class="title">{{ name }}</div>
+      <div class="extra">{{ props.team ? `${props.team.name} ·` : '' }} 更新于 {{ getDateDiff(updatedTimestamp || 0) }}</div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { ProjectItem } from '@/types/project'
 import { defineProps, PropType } from 'vue'
 import { getDateDiff } from '@/utils/time'
+import { Docs } from '@/apis/docs'
+import { Team } from '@/apis/team'
+import router from '@/views/router'
 
 const props = defineProps({
   item: {
-    type: Object as PropType<ProjectItem>,
+    type: Object as PropType<Docs>,
     require: true,
   },
+  team: {
+    type: Object as PropType<Team>,
+    required: false
+  }
 })
 
-const { id, title, cover, updateTimestamp, type } = props.item || {}
+const { _id, name, previewImageUrl, updatedTimestamp } = props.item || {}
+
+function handleOpenDocs() {
+  window.open(`/editor/${_id}`, '_blank')
+}
 </script>
 <style lang="scss" scoped>
 .project {
@@ -40,9 +50,10 @@ const { id, title, cover, updateTimestamp, type } = props.item || {}
     height: 200px;
     border-radius: $borderRadius;
     overflow: hidden;
+    object-fit: cover;
   }
 
-  .info {
+  .docs-info {
     line-height: 2;
     padding: 6px;
 

@@ -1,34 +1,21 @@
 <template>
   <div class="screen-slide-list">
-    <div 
-      :class="[
-        'slide-item', 
-        `turning-mode-${slide.turningMode || 'slideY'}`,
-        {
-          'current': index === slideIndex,
-          'before': index < slideIndex,
-          'after': index > slideIndex,
-          'hide': (index === slideIndex - 1 || index === slideIndex + 1) && slide.turningMode !== currentSlide.turningMode,
-        }
-      ]"
-      v-for="(slide, index) in slides" 
-      :key="slide.id"
-    >
-      <div 
-        class="slide-content" 
-        :style="{
-          width: slideWidth + 'px',
-          height: slideHeight + 'px',
-        }"
-        v-if="Math.abs(slideIndex - index) < 2 || slide.animations?.length"
-      >
-        <ScreenSlide 
-          :slide="slide" 
-          :scale="scale"
-          :animationIndex="animationIndex"
-          :turnSlideToId="turnSlideToId"
-          :manualExitFullscreen="manualExitFullscreen"
-        />
+    <div :class="[
+      'slide-item',
+      `turning-mode-${slide.turningMode || 'slideY'}`,
+      {
+        'current': index === slideIndex,
+        'before': index < slideIndex,
+        'after': index > slideIndex,
+        'hide': (index === slideIndex - 1 || index === slideIndex + 1) && slide.turningMode !== currentSlide.turningMode,
+      }
+    ]" v-for="(slide, index) in slides" :key="slide.id">
+      <div class="slide-content" :style="{
+        width: slideWidth + 'px',
+        height: slideHeight + 'px',
+      }" v-if="Math.abs(slideIndex - index) < 2 || slide.animations?.length">
+        <ScreenSlide :slide="slide" :scale="scale" :animationIndex="animationIndex" :turnSlideToId="turnSlideToId"
+          :manualExitFullscreen="manualExitFullscreen" />
       </div>
     </div>
   </div>
@@ -79,6 +66,7 @@ provide(injectKeySlideScale, scale)
   width: 100%;
   height: 100%;
 }
+
 .slide-item {
   position: absolute;
   top: 0;
@@ -98,40 +86,51 @@ provide(injectKeySlideScale, scale)
     &.before {
       transform: translateY(-100%);
     }
+
     &.after {
       transform: translateY(100%);
     }
   }
+
   &.turning-mode-fade {
     transition: opacity .75s;
+
     &.before {
       pointer-events: none;
       opacity: 0;
     }
+
     &.after {
       pointer-events: none;
       opacity: 0;
     }
   }
+
   &.turning-mode-slideX {
     transition: transform .35s;
+
     &.before {
       transform: translateX(-100%);
     }
+
     &.after {
       transform: translateX(100%);
     }
   }
+
   &.turning-mode-slideY {
     transition: transform .35s;
+
     &.before {
       transform: translateY(-100%);
     }
+
     &.after {
       transform: translateY(100%);
     }
   }
 }
+
 .slide-content {
   background-color: #fff;
   position: absolute;

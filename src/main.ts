@@ -42,7 +42,7 @@ import {
 } from 'ant-design-vue'
 import router from './views/router'
 
-const app = createApp(App)
+export const app = createApp(App)
 
 app.component('InputNumber', InputNumber)
 app.component('Divider', Divider)
@@ -78,11 +78,11 @@ app.component('Tabs', Tabs)
 app.component('TabPane', Tabs.TabPane)
 app.component('Empty', Empty)
 
+
 app.use(Icon)
 app.use(Component)
 app.use(Directive)
 
 app.use(router)
-
 app.use(createPinia())
 app.mount('#app')

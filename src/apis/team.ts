@@ -1,6 +1,6 @@
 import useRequest from '@/hooks/useRequest'
 import { UserInfo } from '@authing/browser/dist/types/global'
-import { DocsMetaData } from './docs'
+import { Docs } from './docs'
 
 const { post, get } = useRequest()
 
@@ -19,7 +19,7 @@ export type CreateTeamPayload = {
 
 export type TeamDetail = {
   team: Team
-  docsMetaDatas: DocsMetaData[]
+  docs: Docs[]
 }
 
 export type TeamMemberResponse = {

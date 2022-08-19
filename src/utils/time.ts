@@ -8,8 +8,7 @@ export function getDateDiff(timestamp: number) {
   const hour = minute * 60
   const day = hour * 24
   const month = day * 30
-  const now = new Date().getTime()
-  const diffValue = now - timestamp
+  const diffValue = new Date().getTime() - new Date(timestamp).getTime()
   if (diffValue < 0) {
     return
   }

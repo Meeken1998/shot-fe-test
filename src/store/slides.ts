@@ -1,11 +1,16 @@
 import { defineStore } from 'pinia'
 import tinycolor from 'tinycolor2'
-import { omit } from 'lodash'
+import { clone, debounce, omit } from 'lodash'
 import { Slide, SlideTheme, PPTElement, PPTAnimation } from '@/types/slides'
 import { slides } from '@/mocks/slides'
 import { theme } from '@/mocks/theme'
 import { layouts } from '@/mocks/layout'
+import { toPng } from 'html-to-image'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import WebWorker from '@/workers/sync.worker.js'
 
+const worker: Worker = new WebWorker()
 interface RemoveElementPropData {
   id: string
   propName: string | string[]
@@ -26,6 +31,7 @@ export interface SlidesState {
   slides: Slide[]
   slideIndex: number
   viewportRatio: number
+  docsId: string
 }
 
 export const useSlidesStore = defineStore('slides', {
@@ -34,20 +40,21 @@ export const useSlidesStore = defineStore('slides', {
     slides: slides, // 幻灯片页面数据
     slideIndex: 0, // 当前页面索引
     viewportRatio: 0.5625, // 可是区域比例，默认16:9
+    docsId: '', // 云文档 id
   }),
 
   getters: {
     currentSlide(state) {
       return state.slides[state.slideIndex]
     },
-  
+
     currentSlideAnimations(state) {
       const currentSlide = state.slides[state.slideIndex]
       if (!currentSlide?.animations) return []
 
       const els = currentSlide.elements
-      const elIds = els.map(el => el.id)
-      return currentSlide.animations.filter(animation => elIds.includes(animation.elId))
+      const elIds = els.map((el) => el.id)
+      return currentSlide.animations.filter((animation) => elIds.includes(animation.elId))
     },
 
     // 格式化的当前页动画
@@ -58,8 +65,8 @@ export const useSlidesStore = defineStore('slides', {
       if (!currentSlide?.animations) return []
 
       const els = currentSlide.elements
-      const elIds = els.map(el => el.id)
-      const animations = currentSlide.animations.filter(animation => elIds.includes(animation.elId))
+      const elIds = els.map((el) => el.id)
+      const animations = currentSlide.animations.filter((animation) => elIds.includes(animation.elId))
 
       const formatedAnimations: FormatedAnimation[] = []
       for (const animation of animations) {
@@ -68,7 +75,7 @@ export const useSlidesStore = defineStore('slides', {
         }
         else if (animation.trigger === 'meantime') {
           const last = formatedAnimations[formatedAnimations.length - 1]
-          last.animations = last.animations.filter(item => item.elId !== animation.elId)
+          last.animations = last.animations.filter((item) => item.elId !== animation.elId)
           last.animations.push(animation)
           formatedAnimations[formatedAnimations.length - 1] = last
         }
@@ -81,110 +88,132 @@ export const useSlidesStore = defineStore('slides', {
       }
       return formatedAnimations
     },
-  
+
     layouts(state) {
-      const {
-        themeColor,
-        fontColor,
-        fontName,
-        backgroundColor,
-      } = state.theme
-  
+      const { themeColor, fontColor, fontName, backgroundColor } = state.theme
+
       const subColor = tinycolor(fontColor).isDark() ? 'rgba(230, 230, 230, 0.5)' : 'rgba(180, 180, 180, 0.5)'
-  
+
       const layoutsString = JSON.stringify(layouts)
         .replaceAll('{{themeColor}}', themeColor)
         .replaceAll('{{fontColor}}', fontColor)
         .replaceAll('{{fontName}}', fontName)
         .replaceAll('{{backgroundColor}}', backgroundColor)
         .replaceAll('{{subColor}}', subColor)
-      
+
       return JSON.parse(layoutsString)
     },
   },
 
   actions: {
+    setDocsId(id: string) {
+      this.docsId = id
+    },
+
     setTheme(themeProps: Partial<SlideTheme>) {
       this.theme = { ...this.theme, ...themeProps }
     },
-  
+
     setViewportRatio(viewportRatio: number) {
       this.viewportRatio = viewportRatio
     },
-  
+
     setSlides(slides: Slide[]) {
       this.slides = slides
+      this._sync(this.docsId, this.slides.slice())
     },
-  
+
     addSlide(slide: Slide | Slide[]) {
       const slides = Array.isArray(slide) ? slide : [slide]
       const addIndex = this.slideIndex + 1
       this.slides.splice(addIndex, 0, ...slides)
       this.slideIndex = addIndex
+      this._sync(this.docsId, this.slides.slice())
     },
-  
+
     updateSlide(props: Partial<Slide>) {
       const slideIndex = this.slideIndex
       this.slides[slideIndex] = { ...this.slides[slideIndex], ...props }
+      this._sync(this.docsId, this.slides.slice())
     },
-  
+
     deleteSlide(slideId: string | string[]) {
       const slidesId = Array.isArray(slideId) ? slideId : [slideId]
-  
+
       const deleteSlidesIndex = []
       for (let i = 0; i < slidesId.length; i++) {
-        const index = this.slides.findIndex(item => item.id === slidesId[i])
+        const index = this.slides.findIndex((item) => item.id === slidesId[i])
         deleteSlidesIndex.push(index)
       }
       let newIndex = Math.min(...deleteSlidesIndex)
-  
+
       const maxIndex = this.slides.length - slidesId.length - 1
       if (newIndex > maxIndex) newIndex = maxIndex
-  
+
       this.slideIndex = newIndex
-      this.slides = this.slides.filter(item => !slidesId.includes(item.id))
+      this.slides = this.slides.filter((item) => !slidesId.includes(item.id))
+      this._sync(this.docsId, this.slides.slice())
     },
-  
+
     updateSlideIndex(index: number) {
       this.slideIndex = index
     },
-  
+
     addElement(element: PPTElement | PPTElement[]) {
       const elements = Array.isArray(element) ? element : [element]
       const currentSlideEls = this.slides[this.slideIndex].elements
       const newEls = [...currentSlideEls, ...elements]
       this.slides[this.slideIndex].elements = newEls
+      this._sync(this.docsId, this.slides.slice())
     },
 
     deleteElement(elementId: string | string[]) {
       const elementIdList = Array.isArray(elementId) ? elementId : [elementId]
       const currentSlideEls = this.slides[this.slideIndex].elements
-      const newEls = currentSlideEls.filter(item => !elementIdList.includes(item.id))
+      const newEls = currentSlideEls.filter((item) => !elementIdList.includes(item.id))
       this.slides[this.slideIndex].elements = newEls
+      this._sync(this.docsId, this.slides.slice())
     },
-  
+
     updateElement(data: UpdateElementData) {
       const { id, props } = data
       const elIdList = typeof id === 'string' ? [id] : id
-  
+
       const slideIndex = this.slideIndex
       const slide = this.slides[slideIndex]
-      const elements = slide.elements.map(el => {
+      const elements = slide.elements.map((el) => {
         return elIdList.includes(el.id) ? { ...el, ...props } : el
       })
-      this.slides[slideIndex].elements = (elements as PPTElement[])
+      this.slides[slideIndex].elements = elements as PPTElement[]
+      this._sync(this.docsId, this.slides.slice())
     },
-  
+
+    _sync: debounce(async function(docsId: string, slides: Slide[]) {
+      const dom = document.querySelector('.thumbnail-item .thumbnail') as HTMLElement
+      const jpg = dom ? await toPng(dom, {
+        quality: 1,
+        canvasWidth: 640,
+        canvasHeight: 360,
+      }) : ''
+      worker.postMessage({
+        type: 'sync',
+        json: JSON.stringify(slides),
+        docsId,
+        jpg,
+        token: localStorage.getItem('token')
+      })
+    }),
+
     removeElementProps(data: RemoveElementPropData) {
       const { id, propName } = data
       const propsNames = typeof propName === 'string' ? [propName] : propName
-  
+
       const slideIndex = this.slideIndex
       const slide = this.slides[slideIndex]
-      const elements = slide.elements.map(el => {
+      const elements = slide.elements.map((el) => {
         return el.id === id ? omit(el, propsNames) : el
       })
-      this.slides[slideIndex].elements = (elements as PPTElement[])
+      this.slides[slideIndex].elements = elements as PPTElement[]
     },
   },
 })

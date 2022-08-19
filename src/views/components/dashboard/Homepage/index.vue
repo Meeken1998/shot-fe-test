@@ -4,7 +4,7 @@
       <div class="title">首页</div>
       <div class="buttons">
         <Button class="primary-btn">导入文件</Button>
-        <router-link :to="{ name: 'editor' }" target="_blank">
+        <router-link :to="{ path: `/createDocs` }" target="_blank">
           <Button type="primary" class="primary-btn">新建</Button>
         </router-link>
       </div>
@@ -14,7 +14,7 @@
       <div class="title-bar">
         <h1 :style="{ marginBottom: '16px' }">最近访问</h1>
 
-        <ProjectWrapper :items="[item]" />
+        <ProjectWrapper :items="[]" />
       </div>
     </div>
 

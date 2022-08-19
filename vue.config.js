@@ -42,8 +42,22 @@ module.exports = {
         cache: false,
         fix: false,
       }),
+
     ],
   },
+  chainWebpack(config) {
+    // set worker-loader
+    config.module
+      .rule('worker')
+      .test(/\.worker\.js$/)
+      .use('worker-loader')
+      .loader('worker-loader')
+      .end()
+
+    // 解决：worker 热更新问题
+    config.module.rule('js').exclude.add(/\.worker\.js$/)
+  },
+  parallel: false,
   pwa: {
     name: 'PPTist',
     themeColor: '#4f9346',
@@ -59,47 +73,52 @@ module.exports = {
       name: 'PPTist',
       short_name: 'PPTist',
       theme_color: '#4f9346',
-      icons: [{
-        src: 'icons/android-chrome-192x192.png',
-        sizes: '192x192',
-        type: 'image/png'
-      }, {
-        src: 'icons/android-chrome-512x512.png',
-        sizes: '512x512',
-        type: 'image/png'
-      }, {
-        src: 'icons/android-chrome-maskable-192x192.png',
-        sizes: '192x192',
-        type: 'image/png',
-        purpose: 'maskable'
-      }, {
-        src: 'icons/android-chrome-maskable-512x512.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'maskable'
-      }],
+      icons: [
+        {
+          src: 'icons/android-chrome-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'icons/android-chrome-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'icons/android-chrome-maskable-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+        {
+          src: 'icons/android-chrome-maskable-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+      ],
       start_url: '.',
       display: 'standalone',
       background_color: '#000000',
     },
     workboxOptions: {
-      runtimeCaching: [{
-        urlPattern: /.*/,
-        handler: 'networkFirst',
-        options: {
-          cacheName: 'PPTist',
-          expiration: {
-            maxAgeSeconds: 60 * 60 * 10,
+      runtimeCaching: [
+        {
+          urlPattern: /.*/,
+          handler: 'networkFirst',
+          options: {
+            cacheName: 'PPTist',
+            expiration: {
+              maxAgeSeconds: 60 * 60 * 10,
+            },
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
           },
-          cacheableResponse: {
-            statuses: [0, 200]
-          }
-        }
-      }],
-      include: [
-        /\.ttf$/,
+        },
       ],
+      include: [/\.ttf$/],
       skipWaiting: true,
-    }
+    },
   },
 }

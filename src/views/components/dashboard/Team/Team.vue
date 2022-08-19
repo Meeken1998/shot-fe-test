@@ -9,7 +9,7 @@
         </div>
 
         <div class="right">
-          <router-link :to="{ name: 'editor' }" target="_blank">
+          <router-link :to="{ path: `/createDocs`, query: { teamId: teamIdRef } }" target="_blank">
             <Button class="primary-btn">新建文档</Button>
           </router-link>
           <Button class="primary-btn" @click="inviteModalVisible = true">邀请成员</Button>
@@ -19,7 +19,8 @@
 
     <Tabs v-model:activeKey="tabKey" class="tabs">
       <TabPane key="brief" tab="文档">
-        <Empty v-if="!teamDetail?.docsMetaDatas?.length" :style="{ marginTop: '200px' }" />
+        <Empty v-if="!teamDetail?.docs?.length" :style="{ marginTop: '200px' }" />
+        <ProjectWrapper :items="teamDetail?.docs || []" :team="teamDetail?.team" />
       </TabPane>
       <TabPane key="member" tab="成员">
         <TeamMember :team-id="teamDetail?.team.id!" />
@@ -41,15 +42,18 @@ import { getActiveMenuItem } from '@/store/dashboard'
 import TeamMember from './TeamMember.vue'
 import InviteModal from './InviteModal.vue'
 import { setTitle } from '@/utils/title'
+import ProjectWrapper from '../../project/ProjectWrapper.vue'
 
 const { activeMenuItem, sidebarKey, menuItems } = storeToRefs(useDashboardStore())
 const teamDetail = ref<TeamDetail>()
 const inviteModalVisible = ref(false)
 const tabKey = ref<'brief' | 'member' | 'settings'>('brief')
 const route = useRoute()
+const teamIdRef = ref('')
 
 async function getData() {
-  const { id: teamId } = route.params as Record<string, string>
+  const { teamId: teamId } = route.params as Record<string, string>
+  teamIdRef.value = teamId
   // 刷新左侧菜单
   sidebarKey.value = teamId
   activeMenuItem.value = getActiveMenuItem(teamId, menuItems.value) || null
@@ -58,9 +62,12 @@ async function getData() {
 }
 
 watch([
-  () => route.params?.id
+  () => route.params?.teamId
 ], () => {
-  if (route.params?.id) void getData()
+  if (route.params?.teamId) {
+    teamIdRef.value = route.params?.teamId as string
+    void getData()
+  }
 })
 
 onMounted(() => {
