@@ -3,8 +3,10 @@
     <div class="group-info">
       <div class="title">首页</div>
       <div class="buttons">
-        <Button class="primary-btn">导入文件</Button>
-        <router-link :to="{ path: `/createDocs` }" target="_blank">
+        <UploadWrapper :team-id="defaultTeamId!">
+          <Button class="primary-btn">导入文件</Button>
+        </UploadWrapper>
+        <router-link :to="{ path: `/createDocs`, query: { teamId: defaultTeamId } }" target="_blank">
           <Button type="primary" class="primary-btn">新建</Button>
         </router-link>
       </div>
@@ -21,17 +23,15 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { useDashboardStore } from '@/store'
 import ProjectWrapper from '@/views/components/project/ProjectWrapper.vue'
-import { ProjectItem } from '@/types/project'
-import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref, watch } from 'vue'
+import UploadWrapper from '../../widget/UploadWrapper.vue'
 
-const item: ProjectItem = {
-  title: '哈哈哈',
-  id: '111',
-  cover: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.1ppt.com%2Fuploads%2Fallimg%2F2101%2F1_210117170406_1.jpg&refer=http%3A%2F%2Fimg.1ppt.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1662995600&t=785c41813f7598c6ace873d03624a921',
-  updateTimestamp: 1660403604521,
-  type: 1
-}
+const defaultTeamId = computed(() => menuItems.value['teamMenuItems']?.[0]?.key)
+
+const { menuItems } = storeToRefs(useDashboardStore())
 
 async function getData() {
   //

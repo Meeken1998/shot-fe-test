@@ -1,6 +1,6 @@
 <template>
   <div class="project" @click="handleOpenDocs()">
-    <img :src="previewImageUrl" class="cover" draggable="false" />
+    <img :src="previewImageUrl || defaultJpg" class="cover" draggable="false" />
 
     <div class="docs-info">
       <div class="title">{{ name }}</div>
@@ -13,7 +13,8 @@ import { defineProps, PropType } from 'vue'
 import { getDateDiff } from '@/utils/time'
 import { Docs } from '@/apis/docs'
 import { Team } from '@/apis/team'
-import router from '@/views/router'
+
+const defaultJpg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAACmCAYAAADpnHI/AAACDElEQVR4nO3TMQqEUBAFwZ29/41/oLmIGChCUxW+SSbpWWttM/M7Otuu9rt34H3/rx8AnidsCBI2BAkbgoQNQcKGIGFDkLAhSNgQJGwIEjYECRuChA1BwoYgYUOQsCFI2BAkbAgSNgQJG4KEDUHChiBhQ5CwIUjYECRsCBI2BAkbgoQNQcKGIGFDkLAhSNgQJGwIEjYECRuChA1BwoYgYUOQsCFI2BAkbAgSNgQJG4KEDUHChiBhQ5CwIUjYECRsCBI2BAkbgoQNQcKGIGFDkLAhSNgQJGwIEjYECRuChA1BwoYgYUOQsCFI2BAkbAgSNgQJG4KEDUHChiBhQ5CwIUjYECRsCBI2BAkbgoQNQcKGIGFDkLAhSNgQJGwIEjYECRuChA1BwoYgYUOQsCFI2BAkbAgSNgQJG4KEDUHChiBhQ5CwIUjYECRsCBI2BAkbgoQNQcKGIGFDkLAhSNgQJGwIEjYECRuChA1BwoYgYUOQsCFI2BAkbAgSNgQJG4KEDUHChiBhQ5CwIUjYECRsCBI2BAkbgoQNQcKGIGFDkLAhSNgQJGwIEjYECRuChA1BwoYgYUOQsCFI2BAkbAgSNgQJG4KEDUHChiBhQ5CwIUjYECRsCBI2BAkbgoQNQcKGIGFDkLAhSNgQJGwIEjYECRuChA1BwoYgYUOQsCFI2BAkbAgSNgQJG4KEDUE7J6YFSL2yVpMAAAAASUVORK5CYII='
 
 const props = defineProps({
   item: {

@@ -28,3 +28,11 @@ export function updateSlide(docsId: string, json: string, previewImageUrl?: stri
 export function getDocs(docsId: string) {
   return get<Docs>(`/api/docs/${docsId}`, {})
 }
+
+export function uploadDocs(teamId: string, file: File) {
+  const formdata = new FormData()
+  formdata.append('file', file)
+  return post<Docs>(`/api/docs/upload/${teamId}`, formdata, {
+    'Content-Type': 'multipart/form-data',
+  })
+}

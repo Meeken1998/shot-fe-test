@@ -7,7 +7,7 @@ export interface SuccessResponse<T> {
   data: T
 }
 
-type RequestFn = <T = any>(url: string, data?: any) => Promise<T>
+type RequestFn = <T = any>(url: string, data?: any, headers?: Record<string, string>) => Promise<T>
 
 export default () => {
   if (process.env.NODE_ENV !== 'development') {
@@ -23,7 +23,7 @@ export default () => {
     }
     return res
   })
-  async function request<T>(method: Method, url: string, data: any): Promise<T> {
+  async function request<T>(method: Method, url: string, data: any, headers?: Record<string, string>): Promise<T> {
     const token = localStorage.getItem('token')
     const res = await axios({
       method,
@@ -31,13 +31,14 @@ export default () => {
       data,
       headers: {
         authentication: `Bearer ${token}`,
+        ...headers,
       },
     })
     return res as unknown as T
   }
 
-  const post: RequestFn = (url, data) => request('POST', url, data)
-  const get: RequestFn = (url, data) => request('GET', url, data)
+  const post: RequestFn = (url, data, headers) => request('POST', url, data, headers)
+  const get: RequestFn = (url, data, headers) => request('GET', url, data, headers)
 
   return { client: axios, post, get }
 }
