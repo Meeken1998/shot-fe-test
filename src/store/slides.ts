@@ -239,9 +239,6 @@ export const useSlidesStore = defineStore('slides', {
         ws.send(JSON.stringify({ event: 'auth', data: { docId: this.docsId, token: localStorage.getItem('token'), } }))
         coopWs = ws
       }
-      ws.onmessage = (msg) => {
-        console.log(msg.data)
-      }
     },
 
     closeWebsocket() {
