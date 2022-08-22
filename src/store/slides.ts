@@ -11,6 +11,7 @@ import WebWorker from '@/workers/sync.worker.js'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import SnapshotWorker from '@/workers/snapshot.worker.js'
+import { toPng } from 'html-to-image'
 
 const worker: Worker = new WebWorker()
 const snapshotWorker: Worker = new SnapshotWorker()
@@ -192,15 +193,13 @@ export const useSlidesStore = defineStore('slides', {
       this.slides[slideIndex].elements = elements as PPTElement[]
     },
 
-    _sync: throttle((docsId: string, slides: Slide[]) => {
-      const jpg = ''
-      /**
-       * dom ? await toPng(dom, {
+    _sync: throttle(async (docsId: string, slides: Slide[]) => {
+      const dom = document.querySelector('.thumbnail-item .thumbnail') as HTMLElement
+      const jpg = dom ? await toPng(dom, {
         quality: 1,
         canvasWidth: 640,
         canvasHeight: 360,
       }) : ''
-       */
       worker.postMessage({
         type: 'sync',
         json: JSON.stringify(slides),
