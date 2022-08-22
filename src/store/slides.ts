@@ -37,6 +37,8 @@ export interface SlidesState {
   docsId: string
 }
 
+let coopWs: WebSocket | undefined
+
 export const useSlidesStore = defineStore('slides', {
   state: (): SlidesState => ({
     theme: theme, // 主题样式
@@ -207,6 +209,8 @@ export const useSlidesStore = defineStore('slides', {
         token: localStorage.getItem('token'),
         isDev: process.env.NODE_ENV === 'development',
       })
+
+      coopWs?.send(JSON.stringify({ event: 'boardcast-update', data: slides }))
     }, 3000),
 
     _snapshoot() {
@@ -227,6 +231,21 @@ export const useSlidesStore = defineStore('slides', {
         return el.id === id ? omit(el, propsNames) : el
       })
       this.slides[slideIndex].elements = elements as PPTElement[]
+    },
+
+    connectWebsocket() {
+      const ws = new WebSocket('ws://localhost:3000')
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ event: 'auth', data: { docId: this.docsId, token: localStorage.getItem('token'), } }))
+        coopWs = ws
+      }
+      ws.onmessage = (msg) => {
+        console.log(msg.data)
+      }
+    },
+
+    closeWebsocket() {
+      coopWs?.close()
     },
   },
 })

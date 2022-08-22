@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import useGlobalHotkey from '@/hooks/useGlobalHotkey'
@@ -60,6 +60,11 @@ onMounted(() => {
   const id = route.params.id as string
   docsId.value = id
   void handleGetSlides(id)
+  slidesStore.connectWebsocket()
+})
+
+onUnmounted(() => {
+  slidesStore.closeWebsocket()
 })
 
 watch(() => handleElementId.value, (val, last) => {
