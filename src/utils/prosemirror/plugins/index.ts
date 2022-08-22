@@ -12,7 +12,7 @@ export const buildPlugins = (schema: Schema) => {
   return [
     buildInputRules(schema),
     keymap(buildKeymap(schema)),
-    keymap(baseKeymap),
+    keymap(baseKeymap as any),
     dropCursor(),
     gapCursor(),
     history(),

@@ -1,4 +1,4 @@
-import { NodeType, Schema } from 'prosemirror-model'
+import { Schema } from 'prosemirror-model'
 import {
   inputRules,
   wrappingInputRule,
@@ -8,27 +8,24 @@ import {
   ellipsis,
 } from 'prosemirror-inputrules'
 
-const blockQuoteRule = (nodeType: NodeType) => wrappingInputRule(/^\s*>\s$/, nodeType)
+type NodeType = any
 
-const orderedListRule = (nodeType: NodeType) => (
+const blockQuoteRule = (nodeType: any) => wrappingInputRule(/^\s*>\s$/, nodeType)
+
+const orderedListRule = (nodeType: NodeType) =>
   wrappingInputRule(
-    /^(\d+)\.\s$/, 
-    nodeType, 
-    match => ({order: +match[1]}),
-    (match, node) => node.childCount + node.attrs.order === +match[1],
+    /^(\d+)\.\s$/,
+    nodeType as any,
+    (match: any) => ({ order: +match[1] }),
+    (match, node) => node.childCount + node.attrs.order === +match[1]
   )
-)
 
 const bulletListRule = (nodeType: NodeType) => wrappingInputRule(/^\s*([-+*])\s$/, nodeType)
 
 const codeBlockRule = (nodeType: NodeType) => textblockTypeInputRule(/^```$/, nodeType)
 
 export const buildInputRules = (schema: Schema) => {
-  const rules = [
-    ...smartQuotes,
-    ellipsis,
-    emDash,
-  ]
+  const rules = [...smartQuotes, ellipsis, emDash]
   rules.push(blockQuoteRule(schema.nodes.blockquote))
   rules.push(orderedListRule(schema.nodes.ordered_list))
   rules.push(bulletListRule(schema.nodes.bullet_list))

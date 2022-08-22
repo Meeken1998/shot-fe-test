@@ -21,7 +21,7 @@ export const initProsemirrorEditor = (dom: Element, content: string, props = {})
   return new EditorView(dom, {
     state: EditorState.create({
       doc: createDocument(content),
-      plugins: buildPlugins(schema),
+      plugins: buildPlugins(schema) as any,
     }),
     ...props,
   })
