@@ -1,8 +1,7 @@
 <template>
   <div class="sidebar">
     <div class="logo-bar">
-      <div class="logo" />
-      <h1>StoryBoard</h1>
+      <img class="logo" src="https://static.aside.fun/upload/shot-logo.svg" :draggable="false" />
     </div>
 
     <div class="menus">
@@ -189,7 +188,7 @@ onMounted(() => {
 
   .logo-bar {
     width: 100%;
-    padding: 36px 32px 24px 32px;
+    padding: 24px 32px;
     font-size: 18px;
     font-weight: bolder;
     display: flex;
@@ -197,10 +196,7 @@ onMounted(() => {
     gap: 8px;
 
     .logo {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background-color: $themeColor;
+      height: 59px;
     }
   }
 }
