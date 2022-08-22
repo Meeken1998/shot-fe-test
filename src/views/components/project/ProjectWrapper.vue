@@ -25,7 +25,7 @@ const props = defineProps({
 <style lang="scss" scoped>
 .project-wrapper {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 260px);
   overflow: auto;
   display: grid;
   gap: 16px;
