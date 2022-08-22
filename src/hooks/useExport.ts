@@ -776,7 +776,6 @@ export default () => {
       }
     }
     pptx.writeFile({ fileName: `pptist.pptx` }).then(() => exporting.value = false).catch((err) => {
-      console.error(err)
       exporting.value = false
       message.error('导出失败')
     })

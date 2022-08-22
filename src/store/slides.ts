@@ -211,12 +211,6 @@ export const useSlidesStore = defineStore('slides', {
 
     _snapshoot() {
       const dom = document.querySelector('.thumbnail-item .thumbnail') as HTMLElement
-      snapshotWorker.addEventListener('message', (e) => {
-        const { type, jpg } = e.data as Record<string, string>
-        if (type === 'snapshot_resp') {
-          console.log(jpg)
-        }
-      })
       snapshotWorker.postMessage({
         type: 'snapshot',
         dom,
