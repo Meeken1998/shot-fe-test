@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import useGlobalHotkey from '@/hooks/useGlobalHotkey'
@@ -37,8 +37,8 @@ import { getDocs } from '@/apis/docs'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
-const { dialogForExport } = storeToRefs(mainStore)
-const { docsId, slides } = storeToRefs(slidesStore)
+const { dialogForExport, handleElementId } = storeToRefs(mainStore)
+const { docsId } = storeToRefs(slidesStore)
 
 const loaded = ref(false)
 const route = useRoute()
@@ -60,6 +60,15 @@ onMounted(() => {
   const id = route.params.id as string
   docsId.value = id
   void handleGetSlides(id)
+})
+
+watch(() => handleElementId.value, (val, last) => {
+  if (last && !val) {
+    nextTick(() => {
+      slidesStore._sync(docsId.value, slidesStore.slides.slice())
+      // slidesStore._snapshoot()
+    })
+  }
 })
 </script>
 

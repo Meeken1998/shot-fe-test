@@ -1,16 +1,19 @@
 import { defineStore } from 'pinia'
 import tinycolor from 'tinycolor2'
-import { clone, debounce, omit } from 'lodash'
+import { omit, throttle } from 'lodash'
 import { Slide, SlideTheme, PPTElement, PPTAnimation } from '@/types/slides'
 import { slides } from '@/mocks/slides'
 import { theme } from '@/mocks/theme'
 import { layouts } from '@/mocks/layout'
-import { toPng } from 'html-to-image'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import WebWorker from '@/workers/sync.worker.js'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import SnapshotWorker from '@/workers/snapshot.worker.js'
 
 const worker: Worker = new WebWorker()
+const snapshotWorker: Worker = new SnapshotWorker()
 interface RemoveElementPropData {
   id: string
   propName: string | string[]
@@ -185,16 +188,17 @@ export const useSlidesStore = defineStore('slides', {
         return elIdList.includes(el.id) ? { ...el, ...props } : el
       })
       this.slides[slideIndex].elements = elements as PPTElement[]
-      this._sync(this.docsId, this.slides.slice())
     },
 
-    _sync: debounce(async function(docsId: string, slides: Slide[]) {
-      const dom = document.querySelector('.thumbnail-item .thumbnail') as HTMLElement
-      const jpg = dom ? await toPng(dom, {
+    _sync: throttle((docsId: string, slides: Slide[]) => {
+      const jpg = ''
+      /**
+       * dom ? await toPng(dom, {
         quality: 1,
         canvasWidth: 640,
         canvasHeight: 360,
       }) : ''
+       */
       worker.postMessage({
         type: 'sync',
         json: JSON.stringify(slides),
@@ -203,7 +207,21 @@ export const useSlidesStore = defineStore('slides', {
         token: localStorage.getItem('token'),
         isDev: process.env.NODE_ENV === 'development',
       })
-    }),
+    }, 3000),
+
+    _snapshoot() {
+      const dom = document.querySelector('.thumbnail-item .thumbnail') as HTMLElement
+      snapshotWorker.addEventListener('message', (e) => {
+        const { type, jpg } = e.data as Record<string, string>
+        if (type === 'snapshot_resp') {
+          console.log(jpg)
+        }
+      })
+      snapshotWorker.postMessage({
+        type: 'snapshot',
+        dom,
+      })
+    },
 
     removeElementProps(data: RemoveElementPropData) {
       const { id, propName } = data

@@ -1,7 +1,7 @@
 <template>
   <div class="project-wrapper">
     <div v-for="item in (props.items || [])" :key="item._id">
-      <Project :item="item" :team="props.team"  />
+      <Project :item="item" :team="props.team" />
     </div>
   </div>
 </template>
@@ -25,6 +25,8 @@ const props = defineProps({
 <style lang="scss" scoped>
 .project-wrapper {
   width: 100%;
+  height: 100vh;
+  overflow: auto;
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));

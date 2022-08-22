@@ -14,6 +14,7 @@ import { decrypt, encrypt } from '@/utils/crypto'
 import { svg2Base64 } from '@/utils/svg2Base64'
 import { message } from 'ant-design-vue'
 import useAddSlidesOrElements from '@/hooks/useAddSlidesOrElements'
+import axios from 'axios'
 
 interface ExportImageConfig {
   quality: number
@@ -94,6 +95,22 @@ export default () => {
       alpha,
       color,
     }
+  }
+
+  // 格式化图片，如果是网图则下载，最终返回 base64 格式
+  const formatImage = async (url: string): Promise<string> => {
+    const URL_REGEXP = /(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/
+    if (URL_REGEXP.test(url)) {
+      const res = await axios({
+        url,
+        method: 'GET',
+        responseType: 'blob'
+      })
+      const blob = new Blob([res.data])
+      const buffer = await blob.arrayBuffer()
+      return Buffer.from(buffer).toString('base64')
+    }
+    return Promise.resolve(url)
   }
 
   type FormatColor = ReturnType<typeof formatColor>
@@ -371,7 +388,7 @@ export default () => {
   }
 
   // 导出PPTX文件
-  const exportPPTX = (_slides: Slide[], masterOverwrite: boolean) => {
+  const exportPPTX = async (_slides: Slide[], masterOverwrite: boolean) => {
     exporting.value = true
     const pptx = new pptxgen()
 
@@ -393,7 +410,8 @@ export default () => {
       if (slide.background) {
         const background = slide.background
         if (background.type === 'image' && background.image) {
-          pptxSlide.background = { data: background.image }
+          const data = await formatImage(background.image)
+          pptxSlide.background = { data }
         }
         else if (background.type === 'solid' && background.color) {
           const c = formatColor(background.color)
@@ -448,7 +466,7 @@ export default () => {
 
         else if (el.type === 'image') {
           const options: pptxgen.ImageProps = {
-            path: el.src,
+            data: await formatImage(el.src),
             x: el.left / 100,
             y: el.top / 100,
             w: el.width / 100,
@@ -757,7 +775,8 @@ export default () => {
         }
       }
     }
-    pptx.writeFile({ fileName: `pptist.pptx` }).then(() => exporting.value = false).catch(() => {
+    pptx.writeFile({ fileName: `pptist.pptx` }).then(() => exporting.value = false).catch((err) => {
+      console.error(err)
       exporting.value = false
       message.error('导出失败')
     })
