@@ -63,9 +63,11 @@ module.exports = {
     themeColor: '#469D8F',
     iconPaths: {
       faviconSVG: null,
-      favicon64: 'icons/favicon.png',
+      favicon32: 'https://static.aside.fun/upload/favicon-32x32.png',
+      favicon16: 'https://static.aside.fun/upload/favicon-16x16.png',
+      appleTouchIcon: 'https://static.aside.fun/upload/apple-touch-icon-152x152.png',
       maskIcon: null,
-      msTileImage: null,
+      msTileImage: null
     },
     manifestOptions: {
       name: 'PPTist',
