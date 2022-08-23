@@ -12,6 +12,7 @@ import EditorLandingPage from '@/views/Editor/EditorLandingPage.vue'
 import PptistEditor from '@/views/Editor/PptistEditor.vue'
 import JoinTeam from '@/views/components/dashboard/Team/JoinTeam.vue'
 
+
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes: [
