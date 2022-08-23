@@ -11,7 +11,6 @@ import WebWorker from '@/workers/sync.worker.js'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import SnapshotWorker from '@/workers/snapshot.worker.js'
-import { useMainStore } from './main'
 import { getUserInfoById } from '@/apis/user'
 import { toPng } from 'html-to-image'
 import { WS_SERVICE_ENDPOINT } from '@/hooks/useRequest'
