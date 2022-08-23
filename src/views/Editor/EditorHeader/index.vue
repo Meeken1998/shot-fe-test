@@ -43,7 +43,7 @@
         <div class="menu-item"><IconHelpcenter /> <span class="text">帮助</span></div>
         <template #overlay>
           <Menu>
-            <MenuItem @click="goIssues()">意见反馈</MenuItem>
+            <!-- <MenuItem @click="goIssues()">意见反馈</MenuItem> -->
             <MenuItem @click="hotkeyDrawerVisible = true">快捷键</MenuItem>
           </Menu>
         </template>
@@ -64,9 +64,6 @@
           <IconPpt size="19" fill="#666" style="margin-top: 1px;" />
         </div>
       </Tooltip>
-      <a href="https://github.com/pipipi-pikachu/PPTist" target="_blank">
-        <div class="menu-item"><IconGithub size="18" fill="#666" /></div>
-      </a>
     </div>
 
     <Drawer
