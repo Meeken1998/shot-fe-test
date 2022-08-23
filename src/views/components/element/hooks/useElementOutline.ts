@@ -5,7 +5,7 @@ import { PPTElementOutline } from '@/types/slides'
 export default (outline: Ref<PPTElementOutline | undefined>) => {
   const outlineWidth = computed(() => outline.value?.width ?? 0)
   const outlineStyle = computed(() => outline.value?.style || 'solid')
-  const outlineColor = computed(() => outline.value?.color || '#4f9346')
+  const outlineColor = computed(() => outline.value?.color || '#469D8F')
 
   return {
     outlineWidth,

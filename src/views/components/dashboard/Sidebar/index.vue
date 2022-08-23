@@ -1,9 +1,5 @@
 <template>
   <div class="sidebar">
-    <div class="logo-bar">
-      <img class="logo" src="https://static.aside.fun/upload/shot-logo.svg" :draggable="false" />
-    </div>
-
     <div class="menus">
       <div v-for="(val, key) in menuItems" :key="key" class="menu-container">
         <Tooltip v-for="item in val" :key="item.key" :title="item.title" placement="right">
@@ -30,7 +26,7 @@
 import { ref, onMounted } from 'vue'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { HomeFilled, DeleteFilled, PlusOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined } from '@ant-design/icons-vue'
 import { storeToRefs } from 'pinia'
 import { useDashboardStore } from '@/store'
 import CreateTeamModal from '../modal/CreateTeamModal.vue'
@@ -41,28 +37,12 @@ import router from '@/views/router'
 
 const createTeamModalVisible = ref(false)
 
-const { sidebarKey, menuItems, activeMenuItem } = storeToRefs(useDashboardStore())
-
-const baseMenuItems: MenuItem[] = [
-  {
-    title: '首页',
-    icon: HomeFilled,
-    key: 'home',
-    type: 'menu',
-  },
-  {
-    title: '回收站',
-    icon: DeleteFilled,
-    key: 'recycle',
-    type: 'menu',
-  },
-]
+const { sidebarKey, menuItems, activeMenuItem, activeHeaderBarMenuKey } = storeToRefs(useDashboardStore())
 
 const teamMenuItems = ref<MenuItem[]>([])
 
 function genMenuItems() {
   menuItems.value = {
-    baseMenuItems,
     teamMenuItems: teamMenuItems.value,
     tools: [{
       title: '新建团队',
@@ -72,13 +52,19 @@ function genMenuItems() {
       type: 'button'
     }]
   }
+
+  sidebarKey.value = teamMenuItems.value[0].key
+  activeMenuItem.value = teamMenuItems.value[0]
+  router.replace({
+    path: `/team/${teamMenuItems.value[0].key}`
+  })
 }
 
 function handleMenuKeyChange(key: string) {
   const menu = getActiveMenuItem(key, menuItems.value) || null
   if (menu?.type === 'team') {
     router.push({
-      path: `/team/${menu.key}`
+      path: `/${activeHeaderBarMenuKey.value}/${menu.key}`
     })
   }
   if (menu?.type === 'menu') {
@@ -121,7 +107,6 @@ async function initSidebarData() {
 onMounted(() => {
   void initSidebarData()
   sidebarKey.value = 'home'
-  activeMenuItem.value = baseMenuItems[0]
 })
 
 </script>
@@ -130,7 +115,10 @@ onMounted(() => {
 .sidebar {
   background-color: $maskColor;
   width: 240px;
-  height: 100vh;
+  height: calc(100vh - 92px - 1px);
+  padding: 16px;
+  padding-top: 24px;
+  padding-bottom: 0;
 
   .divider {
     width: calc(100% - 24px);
@@ -162,8 +150,8 @@ onMounted(() => {
       width: calc(100% - 24px);
       margin: 0 12px;
       border-radius: $borderRadius;
-      font-weight: bold;
       transition: background-color 0.3s;
+      font-size: 14px;
 
       .title {
         white-space: nowrap;
@@ -173,30 +161,18 @@ onMounted(() => {
       }
 
       &:hover {
-        background-color: #ebebeb;
+        background-color: $themeColor;
+        color: #fff;
       }
 
       &.active {
-        background-color: #e2e2e2;
+        background-color: $themeColor;
+        color: #fff;
       }
 
       .icon {
         width: 16px;
       }
-    }
-  }
-
-  .logo-bar {
-    width: 100%;
-    padding: 24px 32px;
-    font-size: 18px;
-    font-weight: bolder;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .logo {
-      height: 59px;
     }
   }
 }

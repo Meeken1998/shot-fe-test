@@ -4,7 +4,8 @@
 
     <div class="docs-info">
       <div class="title">{{ name }}</div>
-      <div class="extra">{{ props.team ? `${props.team.name} ·` : '' }} 更新于 {{ getDateDiff(updatedTimestamp || 0) }}</div>
+      <div class="extra">{{ props.team ? `${props.team.name} ·` : '' }} 更新于 {{ getDateDiff(updatedTimestamp || 0) }}
+      </div>
     </div>
   </div>
 </template>
@@ -41,9 +42,12 @@ function handleOpenDocs() {
   padding: $borderRadius;
   user-select: none;
   transition: background-color 0.3s;
+  border: 2px solid #ffffff00;
+  transition: border 0.3s;
 
   &:hover {
-    background-color: #ebebeb;
+    background-color: #f7fcf7;
+    border: 2px solid $themeColor;
   }
 
   .cover {

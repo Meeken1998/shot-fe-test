@@ -1,16 +1,16 @@
 <template>
+  <DashboardHeaderBar />
   <div class="dashboard">
     <Sidebar />
     <div class="right-side">
-      <DashboardHeaderBar />
       <router-view></router-view>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import Sidebar from '@/views/components/dashboard/Sidebar/index.vue'
-import { onBeforeMount } from 'vue'
 import DashboardHeaderBar from '../components/dashboard/DashboardHeaderBar.vue'
+import { onBeforeMount } from 'vue'
 
 onBeforeMount(() => {
   if (window.history.state?.token) {
@@ -29,9 +29,8 @@ onBeforeMount(() => {
 
   .right-side {
     flex: 1;
-    min-height: 100vh;
+    min-height: calc(100vh - 92px - 1px);
     overflow-y: auto;
-    padding: 36px;
   }
 }
 </style>

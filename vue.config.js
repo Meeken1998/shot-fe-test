@@ -24,9 +24,9 @@ module.exports = {
       less: {
         lessOptions: {
           modifyVars: {
-            'primary-color': '#4f9346',
+            'primary-color': '#469D8F',
             'text-color': '#41464b',
-            'font-size-base': '13px',
+            'font-size-base': '14px',
             'border-radius-base': '6px',
           },
           javascriptEnabled: true,
@@ -60,7 +60,7 @@ module.exports = {
   parallel: false,
   pwa: {
     name: 'PPTist',
-    themeColor: '#4f9346',
+    themeColor: '#469D8F',
     iconPaths: {
       faviconSVG: null,
       favicon64: 'icons/favicon.png',
@@ -70,7 +70,7 @@ module.exports = {
     manifestOptions: {
       name: 'PPTist',
       short_name: 'PPTist',
-      theme_color: '#4f9346',
+      theme_color: '#469D8F',
       icons: [
         {
           src: 'icons/favicon.png',
