@@ -16,7 +16,7 @@
       >
 				<path
           :d="lineData.path" 
-          stroke="#4f9346" 
+          stroke="#469D8F" 
           fill="none" 
           stroke-width="2" 
         ></path>

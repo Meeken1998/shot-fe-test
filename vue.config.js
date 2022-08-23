@@ -24,9 +24,9 @@ module.exports = {
       less: {
         lessOptions: {
           modifyVars: {
-            'primary-color': '#4f9346',
+            'primary-color': '#469D8F',
             'text-color': '#41464b',
-            'font-size-base': '13px',
+            'font-size-base': '14px',
             'border-radius-base': '6px',
           },
           javascriptEnabled: true,
@@ -60,41 +60,22 @@ module.exports = {
   parallel: false,
   pwa: {
     name: 'PPTist',
-    themeColor: '#4f9346',
+    themeColor: '#469D8F',
     iconPaths: {
       faviconSVG: null,
-      favicon32: 'icons/favicon-32x32.png',
-      favicon16: 'icons/favicon-16x16.png',
-      appleTouchIcon: 'icons/apple-touch-icon-152x152.png',
+      favicon64: 'icons/favicon.png',
       maskIcon: null,
       msTileImage: null,
     },
     manifestOptions: {
       name: 'PPTist',
       short_name: 'PPTist',
-      theme_color: '#4f9346',
+      theme_color: '#469D8F',
       icons: [
         {
-          src: 'icons/android-chrome-192x192.png',
-          sizes: '192x192',
+          src: 'icons/favicon.png',
+          sizes: '64x64',
           type: 'image/png',
-        },
-        {
-          src: 'icons/android-chrome-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-        },
-        {
-          src: 'icons/android-chrome-maskable-192x192.png',
-          sizes: '192x192',
-          type: 'image/png',
-          purpose: 'maskable',
-        },
-        {
-          src: 'icons/android-chrome-maskable-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'maskable',
         },
       ],
       start_url: '.',

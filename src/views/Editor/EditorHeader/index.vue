@@ -5,7 +5,7 @@
         <div class="menu-item"><IconFolderClose /> <span class="text">文件</span></div>
         <template #overlay>
           <Menu>
-            <FileInput accept=".pptist"  @change="files => importSpecificFile(files)">
+            <FileInput accept=".pptist"  @change="(files: any) => importSpecificFile(files)">
               <MenuItem>导入 pptist 文件</MenuItem>
             </FileInput>
             <MenuItem @click="setDialogForExport('pptist')">导出 pptist 文件</MenuItem>

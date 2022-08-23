@@ -1,124 +1,53 @@
 <template>
-  <div class="team-page">
-    <div class="info">
-      <Avatar :size="84" :src="teamDetail?.team.logo" :draggable="false" class="icon" />
-      <div class="content">
-        <div class="left">
-          <div class="title">{{ teamDetail?.team.name }}</div>
-          <div class="desc">{{ teamDetail?.team.description }}</div>
-        </div>
+  <div class="team-page page-container">
+    <GuideBar v-if="teamInfo" :team-info="teamInfo" />
 
-        <div class="right">
-          <router-link :to="{ path: `/createDocs`, query: { teamId: teamIdRef } }" target="_blank">
-            <Button class="primary-btn">新建文档</Button>
-          </router-link>
-          <Button class="primary-btn" @click="inviteModalVisible = true">邀请成员</Button>
-        </div>
-      </div>
+    <div class="docs-container">
+      <Empty v-if="!docs?.length" :style="{ marginTop: '200px' }" />
+      <ProjectWrapper :items="docs || []" :team="teamInfo" />
     </div>
-
-    <Tabs v-model:activeKey="tabKey" class="tabs">
-      <TabPane key="brief" tab="文档">
-        <Empty v-if="!teamDetail?.docs?.length" :style="{ marginTop: '200px' }" />
-        <ProjectWrapper :items="teamDetail?.docs || []" :team="teamDetail?.team" />
-      </TabPane>
-      <TabPane key="member" tab="成员">
-        <TeamMember :team-id="teamDetail?.team.id!" />
-      </TabPane>
-      <TabPane key="settings" tab="设置"></TabPane>
-    </Tabs>
   </div>
-
-  <InviteModal :visible="inviteModalVisible" @close="inviteModalVisible = false" :team-id="teamDetail?.team?.id!"
-    :team-name="teamDetail?.team?.name!" />
 </template>
 <script lang="ts" setup>
 import { useDashboardStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref, watch } from 'vue'
-import { getTeamDetail, TeamDetail } from '@/apis/team'
+import { getTeamDetail, getTeamDocs, Team } from '@/apis/team'
 import { useRoute } from 'vue-router'
 import { getActiveMenuItem } from '@/store/dashboard'
-import TeamMember from './TeamMember.vue'
-import InviteModal from './InviteModal.vue'
 import { setTitle } from '@/utils/title'
 import ProjectWrapper from '../../project/ProjectWrapper.vue'
+import GuideBar from '../GuideBar/GuideBar.vue'
+import { Docs } from '@/apis/docs'
 
-const { activeMenuItem, sidebarKey, menuItems } = storeToRefs(useDashboardStore())
-const teamDetail = ref<TeamDetail>()
-const inviteModalVisible = ref(false)
-const tabKey = ref<'brief' | 'member' | 'settings'>('brief')
+const dashboardStore = useDashboardStore()
+const { activeMenuItem, sidebarKey, menuItems } = storeToRefs(dashboardStore)
+const docs = ref<Docs[]>()
 const route = useRoute()
-const teamIdRef = ref('')
+const teamInfo = ref<Team>()
 
 async function getData() {
-  const { teamId: teamId } = route.params as Record<string, string>
-  teamIdRef.value = teamId
+  const { teamId } = route.params as Record<string, string>
   // 刷新左侧菜单
   sidebarKey.value = teamId
   activeMenuItem.value = getActiveMenuItem(teamId, menuItems.value) || null
-  teamDetail.value = await getTeamDetail(teamId)
-  setTitle(teamDetail.value.team.name)
+  docs.value = await getTeamDocs(teamId)
+  const team = await getTeamDetail(teamId)
+  teamInfo.value = team
+  dashboardStore.setCurrentTeam(team)
+  setTitle(team.name)
 }
 
-watch([
-  () => route.params?.teamId
-], () => {
-  if (route.params?.teamId) {
-    teamIdRef.value = route.params?.teamId as string
-    void getData()
-  }
-})
+watch(() => route.params?.teamId, getData)
 
 onMounted(() => {
   void getData()
+  dashboardStore.setActiveHeaderBarMenuKey('team')
 })
 </script>
 <style lang="scss">
 .team-page {
   width: 100%;
-  padding: 0 36px;
-
-  .info {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 36px;
-    gap: 24px;
-
-    .icon {
-      flex-shrink: 0;
-    }
-
-    .content {
-      line-height: 1.8;
-      flex: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .left {
-        flex: 1;
-
-        .title {
-          font-size: 24px;
-          font-weight: bold;
-        }
-
-        .desc {
-          font-size: 14px;
-          color: #666;
-        }
-      }
-
-      .right {
-        flex-shrink: 0;
-        display: flex;
-        gap: 16px;
-      }
-    }
-  }
 
   .tabs {
     margin-top: 24px;
@@ -126,6 +55,11 @@ onMounted(() => {
     .ant-tabs-tab {
       padding: 8px 0 !important;
     }
+  }
+
+  .docs-container {
+    margin-top: 24px;
+    width: 100%;
   }
 }
 </style>

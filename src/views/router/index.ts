@@ -10,6 +10,7 @@ import { setTitle } from '@/utils/title'
 import HomePage from '@/views/components/dashboard/Homepage/index.vue'
 import Team from '@/views/components/dashboard/Team/Team.vue'
 import JoinTeam from '@/views/components/dashboard/Team/JoinTeam.vue'
+import TeamMember from '@/views/components/dashboard/Member/TeamMember.vue'
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -19,7 +20,7 @@ const router = createRouter({
       component: Dashboard,
       path: '/',
       meta: {
-        title: '首页',
+        title: '',
       },
       children: [
         {
@@ -29,6 +30,10 @@ const router = createRouter({
         {
           component: Team,
           path: 'team/:teamId',
+        },
+        {
+          component: TeamMember,
+          path: 'member/:teamId',
         },
       ],
     },
@@ -86,7 +91,7 @@ router.beforeEach((to, _, next) => {
           setTitle(to.meta.title as string)
         }
         next()
-      } 
+      }
       else {
         next({ name: 'login' })
       }

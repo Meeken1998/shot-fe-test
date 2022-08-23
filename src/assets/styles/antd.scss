@@ -23,9 +23,8 @@
   margin-top: -4px;
 }
 .ant-dropdown-menu-item {
-
   &:hover {
-    background-color: rgba($color: $themeColor, $alpha: .2);
+    background-color: rgba($color: $themeColor, $alpha: 0.2);
   }
 }
 
@@ -54,7 +53,7 @@
   user-select: none;
 }
 .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
-  background-color: rgba($color: $themeColor, $alpha: .2);
+  background-color: rgba($color: $themeColor, $alpha: 0.2);
 }
 
 // tooltip
@@ -75,11 +74,11 @@ $border-radius-base: 8px;
 }
 
 .input {
-  background-color: #ededed;
-  border-color: #ededed !important;
+  background-color: #f6f8fc;
+  border-color: #f6f8fc !important;
 
   input {
-    background-color: #ededed !important;
+    background-color: #f6f8fc !important;
   }
 }
 
@@ -95,3 +94,5 @@ $border-radius-base: 8px;
   border-radius: $borderRadius * 1.5;
   font-size: 14px;
 }
+
+$font-size-base: 14px; // 主字号

@@ -54,7 +54,11 @@ export function getTeams() {
 }
 
 export function getTeamDetail(teamId: string) {
-  return get<TeamDetail>(`/api/teams/${teamId}/detail`)
+  return get<Team>(`/api/teams/${teamId}/detail`)
+}
+
+export function getTeamDocs(teamId: string) {
+  return get<Docs[]>(`/api/teams/${teamId}/docs`)
 }
 
 export function getTeamInviteInfo(inviteId: string) {

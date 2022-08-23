@@ -1,4 +1,4 @@
-$themeColor: #4f9346;
+$themeColor: #469D8F;
 $textColor: #41464b;
 $borderColor: #eee;
 $lightGray: #f9f9f9;
@@ -13,5 +13,9 @@ $borderRadius: 6px;
 
 // dashboard
 
-$maskColor: #f5f5f5;
+$maskColor: #fff;
 $border-radius-base: 4px;
+
+#app {
+  font-size: 14px;
+}
