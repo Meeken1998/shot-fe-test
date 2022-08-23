@@ -3,6 +3,7 @@ import { sdk } from '@/utils/authing'
 import { useDashboardStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { setTitle } from '@/utils/title'
+import Login from '../user/Login.vue'
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -51,7 +52,7 @@ const router = createRouter({
     {
       name: 'login',
       path: '/login',
-      component: import('../user/Login.vue'),
+      component: Login,
       meta: {
         title: '登录中...',
       },
