@@ -45,6 +45,7 @@ export interface SlidesState {
   docsId: string
   coopUsers: string[]
   coopUserInfo: Record<string, ICoopUserInfo>
+  cloudSlidesLoaded: boolean
 }
 
 interface IBroadcastDocUpdateMessage {
@@ -83,6 +84,7 @@ export const useSlidesStore = defineStore('slides', {
     docsId: '', // 云文档 id
     coopUsers: [localStorage.getItem('token')!],
     coopUserInfo: {},
+    cloudSlidesLoaded: false
   }),
 
   getters: {
@@ -162,7 +164,6 @@ export const useSlidesStore = defineStore('slides', {
 
     setSlides(slides: Slide[]) {
       this.slides = slides
-      this._sync(this.docsId, this.slides.slice())
     },
 
     addSlide(slide: Slide | Slide[], broadcastSlideIndex?: number, fromBroadcast = false) {
@@ -247,6 +248,9 @@ export const useSlidesStore = defineStore('slides', {
         quality: 1,
         canvasWidth: 640,
         canvasHeight: 360,
+        style: {
+          outline: 'unset'
+        }
       }) : ''
       worker.postMessage({
         type: 'sync',
@@ -319,6 +323,12 @@ export const useSlidesStore = defineStore('slides', {
           }
         }
       }
+    },
+
+    cloudSlidesLoadedCallback() {
+      if (this.cloudSlidesLoaded) return
+      this.cloudSlidesLoaded = true
+      this._sync(this.docsId, this.slides.slice())
     },
 
     closeWebsocket() {

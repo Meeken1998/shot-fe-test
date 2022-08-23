@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType, provide } from 'vue'
+import { computed, PropType, provide, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSlidesStore } from '@/store'
 import { Slide } from '@/types/slides'
@@ -58,13 +58,16 @@ const props = defineProps({
   },
 })
 
-const { viewportRatio } = storeToRefs(useSlidesStore())
+const slidesStore = useSlidesStore()
+const { viewportRatio } = storeToRefs(slidesStore)
 
 const background = computed(() => props.slide.background)
 const { backgroundStyle } = useSlideBackgroundStyle(background)
 
 const scale = computed(() => props.size / VIEWPORT_SIZE)
 provide(injectKeySlideScale, scale)
+
+onMounted(() => slidesStore.cloudSlidesLoadedCallback())
 </script>
 
 <style lang="scss" scoped>
