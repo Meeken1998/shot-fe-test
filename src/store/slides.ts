@@ -256,9 +256,6 @@ export const useSlidesStore = defineStore('slides', {
         token: localStorage.getItem('token'),
         isDev: process.env.NODE_ENV === 'development',
       })
-
-      // coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: slides }))
-      console.log('sync')
     }, 3000),
 
     _snapshoot() {
