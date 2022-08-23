@@ -2,10 +2,12 @@
   <div class="editor-header">
     <div class="left">
       <Dropdown :trigger="['click']">
-        <div class="menu-item"><IconFolderClose /> <span class="text">文件</span></div>
+        <div class="menu-item">
+          <IconFolderClose /> <span class="text">文件</span>
+        </div>
         <template #overlay>
           <Menu>
-            <FileInput accept=".pptist"  @change="(files: any) => importSpecificFile(files)">
+            <FileInput accept=".pptist" @change="(files: any) => importSpecificFile(files)">
               <MenuItem>导入 pptist 文件</MenuItem>
             </FileInput>
             <MenuItem @click="setDialogForExport('pptist')">导出 pptist 文件</MenuItem>
@@ -17,7 +19,9 @@
         </template>
       </Dropdown>
       <Dropdown :trigger="['click']">
-        <div class="menu-item"><IconEdit /> <span class="text">编辑</span></div>
+        <div class="menu-item">
+          <IconEdit /> <span class="text">编辑</span>
+        </div>
         <template #overlay>
           <Menu>
             <MenuItem @click="undo()">撤销</MenuItem>
@@ -31,7 +35,9 @@
         </template>
       </Dropdown>
       <Dropdown :trigger="['click']">
-        <div class="menu-item"><IconPpt /> <span class="text">演示</span></div>
+        <div class="menu-item">
+          <IconPpt /> <span class="text">演示</span>
+        </div>
         <template #overlay>
           <Menu>
             <MenuItem @click="enterScreeningFromStart()">从头开始</MenuItem>
@@ -40,7 +46,9 @@
         </template>
       </Dropdown>
       <Dropdown :trigger="['click']">
-        <div class="menu-item"><IconHelpcenter /> <span class="text">帮助</span></div>
+        <div class="menu-item">
+          <IconHelpcenter /> <span class="text">帮助</span>
+        </div>
         <template #overlay>
           <Menu>
             <!-- <MenuItem @click="goIssues()">意见反馈</MenuItem> -->
@@ -51,8 +59,8 @@
     </div>
 
     <div class="right">
-      <div style="display: flex">
-        <Avatar v-for="(user, id) in coopUserInfo" :key="id" :src="user.avatar"></Avatar>
+      <div class="co-users">
+        <Avatar v-for="(user, id) in coopUserInfo" :key="id" :src="user.avatar" :size="24"></Avatar>
       </div>
       <Tooltip :mouseLeaveDelay="0" title="导出">
         <div class="menu-item" @click="setDialogForExport('pptx')">
@@ -66,13 +74,8 @@
       </Tooltip>
     </div>
 
-    <Drawer
-      width="320"
-      placement="right"
-      :closable="false"
-      :visible="hotkeyDrawerVisible"
-      @close="hotkeyDrawerVisible = false"
-    >
+    <Drawer width="320" placement="right" :closable="false" :visible="hotkeyDrawerVisible"
+      @close="hotkeyDrawerVisible = false">
       <HotkeyDoc />
     </Drawer>
   </div>
@@ -127,11 +130,14 @@ const goIssues = () => {
   justify-content: space-between;
   padding: 0 10px;
 }
-.left, .right {
+
+.left,
+.right {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .menu-item {
   height: 100%;
   display: flex;
@@ -148,5 +154,11 @@ const goIssues = () => {
 
 .left .menu-item:hover {
   background-color: #f9f9f9;
+}
+
+.co-users {
+  display: flex;
+  flex: 1;
+  gap: 16px;
 }
 </style>
