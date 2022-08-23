@@ -1,11 +1,13 @@
 <template>
-  <DashboardHeaderBar />
-  <div class="dashboard">
-    <Sidebar />
-    <div class="right-side">
-      <router-view></router-view>
+  <SkeletonTheme color="#eef5ee" highlight="#f7fcf7" :duration="2">
+    <DashboardHeaderBar />
+    <div class="dashboard">
+      <Sidebar />
+      <div class="right-side">
+        <router-view></router-view>
+      </div>
     </div>
-  </div>
+  </SkeletonTheme>
 </template>
 <script lang="ts" setup>
 import Sidebar from '@/views/components/dashboard/Sidebar/index.vue'
