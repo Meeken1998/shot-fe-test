@@ -135,9 +135,9 @@ onMounted(() => {
 
     .filter {
       margin-left: 12px;
-      font-size: 12px;
-      color: #aaa;
-      margin-top: 4px;
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
       user-select: none;
       cursor: pointer;
 
