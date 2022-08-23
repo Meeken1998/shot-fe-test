@@ -1,6 +1,6 @@
 <template>
   <div class="unpublished-page page-container">
-    <img class="tips-img" src="/imgs/unpublished.png" :draggable="false" @load="loading = false" />
+    <img class="tips-img" src="https://static.aside.fun/upload/unpublished.png" :draggable="false" @load="loading = false" />
     <div class="tips">即将上线，敬请期待！</div>
   </div>
 </template>
