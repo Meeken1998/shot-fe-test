@@ -4,6 +4,13 @@ import { useDashboardStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { setTitle } from '@/utils/title'
 import Login from '../user/Login.vue'
+import Team from '@/views/components/dashboard/Team/Team.vue'
+import HomePage from '@/views/components/dashboard/Homepage/index.vue'
+import UnpublishedTips from '@/views/components/widget/UnpublishedTips.vue'
+import TeamMember from '@/views/components/dashboard/Member/TeamMember.vue'
+import EditorLandingPage from '@/views/Editor/EditorLandingPage.vue'
+import PptistEditor from '@/views/Editor/PptistEditor.vue'
+import JoinTeam from '@/views/components/dashboard/Team/JoinTeam.vue'
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -17,25 +24,25 @@ const router = createRouter({
       },
       children: [
         {
-          component: import('@/views/components/dashboard/Homepage/index.vue'),
+          component: HomePage,
           path: 'home',
         },
         {
-          component: import('@/views/components/dashboard/Team/Team.vue'),
+          component: Team,
           path: 'team/:teamId',
         },
         {
-          component: import('@/views/components/dashboard/Member/TeamMember.vue'),
+          component: TeamMember,
           path: 'member/:teamId',
         },
         ...['data', 'recycle', 'setting', 'group', 'user'].map((s) => ({
-          component: import('@/views/components/widget/UnpublishedTips.vue'),
+          component: UnpublishedTips,
           path: `${s}/:teamId`,
         })),
       ],
     },
     {
-      component: import('@/views/Editor/EditorLandingPage.vue'),
+      component: EditorLandingPage,
       path: '/createDocs',
       name: 'createDocs',
       meta: {
@@ -43,7 +50,7 @@ const router = createRouter({
       },
     },
     {
-      component: import('@/views/Editor/PptistEditor.vue'),
+      component: PptistEditor,
       path: '/editor/:id',
       meta: {
         title: '文档',
@@ -60,7 +67,7 @@ const router = createRouter({
     {
       name: 'join-team',
       path: '/join-team/:inviteId',
-      component: import('@/views/components/dashboard/Team/JoinTeam.vue'),
+      component: JoinTeam,
       meta: {
         title: '加入团队',
       },
