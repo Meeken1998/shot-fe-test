@@ -14,7 +14,7 @@ import SnapshotWorker from '@/workers/snapshot.worker.js'
 import { useMainStore } from './main'
 import { getUserInfoById } from '@/apis/user'
 import { toPng } from 'html-to-image'
-import { WS_SERVICE_ENDPOINT } from "@/hooks/useRequest"
+import { WS_SERVICE_ENDPOINT } from '@/hooks/useRequest'
 
 const worker: Worker = new WebWorker()
 const snapshotWorker: Worker = new SnapshotWorker()
