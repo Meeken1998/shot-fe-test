@@ -51,6 +51,9 @@
     </div>
 
     <div class="right">
+      <div style="display: flex">
+        <Avatar v-for="(user, id) in coopUserInfo" :key="id" :src="user.avatar"></Avatar>
+      </div>
       <Tooltip :mouseLeaveDelay="0" title="导出">
         <div class="menu-item" @click="setDialogForExport('pptx')">
           <IconShare size="18" fill="#666" />
@@ -79,18 +82,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useMainStore } from '@/store'
+import { useMainStore, useSlidesStore } from '@/store'
 import useScreening from '@/hooks/useScreening'
 import useSlideHandler from '@/hooks/useSlideHandler'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 import useExport from '@/hooks/useExport'
 
 import HotkeyDoc from './HotkeyDoc.vue'
+import { getUserInfoById } from '@/apis/user'
+import { User } from 'authing-js-sdk'
 
 const mainStore = useMainStore()
+const slidesStore = useSlidesStore()
 const { gridLineSize, showRuler } = storeToRefs(mainStore)
+const { coopUserInfo } = storeToRefs(slidesStore)
 
 const { enterScreening, enterScreeningFromStart } = useScreening()
 const { createSlide, deleteSlide, resetSlides } = useSlideHandler()
