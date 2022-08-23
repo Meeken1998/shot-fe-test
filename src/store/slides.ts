@@ -14,6 +14,7 @@ import SnapshotWorker from '@/workers/snapshot.worker.js'
 import { useMainStore } from './main'
 import { getUserInfoById } from '@/apis/user'
 import { toPng } from 'html-to-image'
+import { WS_SERVICE_ENDPOINT } from "@/hooks/useRequest"
 
 const worker: Worker = new WebWorker()
 const snapshotWorker: Worker = new SnapshotWorker()
@@ -300,7 +301,7 @@ export const useSlidesStore = defineStore('slides', {
     },
 
     connectWebsocket() {
-      const ws = new WebSocket('ws://localhost:3000')
+      const ws = new WebSocket(WS_SERVICE_ENDPOINT)
       ws.onopen = () => {
         ws.send(JSON.stringify({ event: 'auth', data: { docId: this.docsId, token: localStorage.getItem('token'), } }))
         coopWs = ws

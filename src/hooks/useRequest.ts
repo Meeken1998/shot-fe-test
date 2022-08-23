@@ -9,6 +9,9 @@ export interface SuccessResponse<T> {
 
 type RequestFn = <T = any>(url: string, data?: any, headers?: Record<string, string>) => Promise<T>
 
+export const HTTP_SERVICE_ENDPOINT = process.env.NODE_ENV !== 'development' ? 'https://storyboard-api.aside.fun' : 'http://localhost:3000'
+export const WS_SERVICE_ENDPOINT = process.env.NODE_ENV !== 'development' ? 'ws://storyboard-api.aside.fun' : 'ws://localhost:3000'
+
 export default () => {
   if (process.env.NODE_ENV !== 'development') {
     axios.defaults.baseURL = 'https://storyboard-api.aside.fun'
