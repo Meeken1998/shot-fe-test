@@ -11,6 +11,8 @@ import WebWorker from '@/workers/sync.worker.js'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import SnapshotWorker from '@/workers/snapshot.worker.js'
+import { useMainStore } from './main'
+import { getUserInfoById } from '@/apis/user'
 
 const worker: Worker = new WebWorker()
 const snapshotWorker: Worker = new SnapshotWorker()
@@ -29,13 +31,45 @@ interface FormatedAnimation {
   autoNext: boolean
 }
 
+interface ICoopUserInfo {
+  currentSlide?: number;
+  avatar?: string;
+}
+
 export interface SlidesState {
   theme: SlideTheme
   slides: Slide[]
   slideIndex: number
   viewportRatio: number
   docsId: string
+  coopUsers: string[]
+  coopUserInfo: Record<string, ICoopUserInfo>
 }
+
+interface IBroadcastDocUpdateMessage {
+  event: 'broadcast-update'
+  data: Record<string, any> & { type: string, slideIndex?: number, data: any }
+}
+
+interface IBroadcastUserMessage {
+  event: 'broadcast-user'
+  data: {
+    users: string[]
+  }
+}
+
+interface IBroadcastUserTrivialMessage {
+  event: 'broadcast-user-trivial'
+  fromUser: string
+  data: IUserTrivialMessageSlideSelectionData
+}
+
+interface IUserTrivialMessageSlideSelectionData {
+  type: 'slide-selection'
+  slideIndex: number
+}
+
+type BroadcastMessageType = IBroadcastUserMessage | IBroadcastDocUpdateMessage | IBroadcastUserTrivialMessage;
 
 let coopWs: WebSocket | undefined
 
@@ -46,6 +80,8 @@ export const useSlidesStore = defineStore('slides', {
     slideIndex: 0, // 当前页面索引
     viewportRatio: 0.5625, // 可是区域比例，默认16:9
     docsId: '', // 云文档 id
+    coopUsers: [localStorage.getItem('token')!],
+    coopUserInfo: {},
   }),
 
   getters: {
@@ -128,21 +164,26 @@ export const useSlidesStore = defineStore('slides', {
       this._sync(this.docsId, this.slides.slice())
     },
 
-    addSlide(slide: Slide | Slide[]) {
+    addSlide(slide: Slide | Slide[], broadcastSlideIndex?: number, fromBroadcast = false) {
       const slides = Array.isArray(slide) ? slide : [slide]
-      const addIndex = this.slideIndex + 1
+      const slideIndex = broadcastSlideIndex ?? this.slideIndex
+      const addIndex = slideIndex + 1
       this.slides.splice(addIndex, 0, ...slides)
-      this.slideIndex = addIndex
       this._sync(this.docsId, this.slides.slice())
+      if (!fromBroadcast) {
+        this.slideIndex = addIndex
+        coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'addSlide', slideIndex: addIndex - 1, data: slide } }))
+      }
     },
 
-    updateSlide(props: Partial<Slide>) {
-      const slideIndex = this.slideIndex
+    updateSlide(props: Partial<Slide>, broadcastSlideIndex?: number, fromBroadcast = false) {
+      const slideIndex = broadcastSlideIndex ?? this.slideIndex
       this.slides[slideIndex] = { ...this.slides[slideIndex], ...props }
       this._sync(this.docsId, this.slides.slice())
+      if (!fromBroadcast) coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'updateSlide', slideIndex: this.slideIndex, data: props } }))
     },
 
-    deleteSlide(slideId: string | string[]) {
+    deleteSlide(slideId: string | string[], _?: unknown, fromBroadcast = false) {
       const slidesId = Array.isArray(slideId) ? slideId : [slideId]
 
       const deleteSlidesIndex = []
@@ -158,38 +199,45 @@ export const useSlidesStore = defineStore('slides', {
       this.slideIndex = newIndex
       this.slides = this.slides.filter((item) => !slidesId.includes(item.id))
       this._sync(this.docsId, this.slides.slice())
+      if (!fromBroadcast) coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'deleteSlide', slideIndex: this.slideIndex, data: slideId } }))
     },
 
     updateSlideIndex(index: number) {
       this.slideIndex = index
+      coopWs?.send(JSON.stringify({ event: 'broadcast-user-trivial', data: { type: 'slide-selection', slideIndex: index } }))
     },
 
-    addElement(element: PPTElement | PPTElement[]) {
+    addElement(element: PPTElement | PPTElement[], broadcastSlideIndex?: number, fromBroadcast = false) {
       const elements = Array.isArray(element) ? element : [element]
-      const currentSlideEls = this.slides[this.slideIndex].elements
+      const slideIndex = broadcastSlideIndex ?? this.slideIndex
+      const currentSlideEls = this.slides[slideIndex].elements
       const newEls = [...currentSlideEls, ...elements]
-      this.slides[this.slideIndex].elements = newEls
+      this.slides[slideIndex].elements = newEls
       this._sync(this.docsId, this.slides.slice())
+      if (!fromBroadcast) coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'addElement', slideIndex: this.slideIndex, data: element } }))
     },
 
-    deleteElement(elementId: string | string[]) {
+    deleteElement(elementId: string | string[], broadcastSlideIndex?: number, fromBroadcast = false) {
       const elementIdList = Array.isArray(elementId) ? elementId : [elementId]
-      const currentSlideEls = this.slides[this.slideIndex].elements
+      const slideIndex = broadcastSlideIndex ?? this.slideIndex
+      const currentSlideEls = this.slides[slideIndex].elements
       const newEls = currentSlideEls.filter((item) => !elementIdList.includes(item.id))
-      this.slides[this.slideIndex].elements = newEls
+      this.slides[slideIndex].elements = newEls
       this._sync(this.docsId, this.slides.slice())
+      if (!fromBroadcast) coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'deleteElement', slideIndex: this.slideIndex, data: elementId } }))
     },
 
-    updateElement(data: UpdateElementData) {
+    updateElement(data: UpdateElementData, broadcastSlideIndex?: number, fromBroadcast = false) {
       const { id, props } = data
       const elIdList = typeof id === 'string' ? [id] : id
 
-      const slideIndex = this.slideIndex
+      const slideIndex = broadcastSlideIndex ?? this.slideIndex
       const slide = this.slides[slideIndex]
       const elements = slide.elements.map((el) => {
         return elIdList.includes(el.id) ? { ...el, ...props } : el
       })
       this.slides[slideIndex].elements = elements as PPTElement[]
+      if (!fromBroadcast) coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'updateElement', slideIndex: this.slideIndex, data } }))
     },
 
     _sync: throttle((docsId: string, slides: Slide[]) => {
@@ -210,7 +258,8 @@ export const useSlidesStore = defineStore('slides', {
         isDev: process.env.NODE_ENV === 'development',
       })
 
-      coopWs?.send(JSON.stringify({ event: 'boardcast-update', data: slides }))
+      // coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: slides }))
+      console.log('sync')
     }, 3000),
 
     _snapshoot() {
@@ -221,16 +270,37 @@ export const useSlidesStore = defineStore('slides', {
       })
     },
 
-    removeElementProps(data: RemoveElementPropData) {
+    removeElementProps(data: RemoveElementPropData, broadcastSlideIndex?: number, fromBroadcast = false) {
       const { id, propName } = data
       const propsNames = typeof propName === 'string' ? [propName] : propName
 
-      const slideIndex = this.slideIndex
+      const slideIndex = broadcastSlideIndex ?? this.slideIndex
       const slide = this.slides[slideIndex]
       const elements = slide.elements.map((el) => {
         return el.id === id ? omit(el, propsNames) : el
       })
       this.slides[slideIndex].elements = elements as PPTElement[]
+    },
+
+    updateCoopUsers(userIds: string[]) {
+      this.coopUsers = userIds
+      userIds.forEach((userId) => {
+        if (this.coopUserInfo[userId]?.avatar) return
+        
+        getUserInfoById(userId).then((user) => {
+          this.updateCoopUserAvatar(userId, user.photo ?? '')
+        })
+      })
+    },
+
+    updateCoopUserInfo(userId: string, data: Partial<ICoopUserInfo>) {
+      this.coopUserInfo[userId] ??= {}
+      this.coopUserInfo[userId] = { ...this.coopUserInfo[userId], ...data }
+    },
+
+    updateCoopUserAvatar(userId: string, avatar: string) {
+      this.coopUserInfo[userId] ??= {}
+      this.coopUserInfo[userId].avatar = avatar
     },
 
     connectWebsocket() {
@@ -240,7 +310,18 @@ export const useSlidesStore = defineStore('slides', {
         coopWs = ws
       }
       ws.onmessage = (msg) => {
-        console.log(msg.data)
+        const parsed = JSON.parse(msg.data) as BroadcastMessageType
+        if (parsed.event === 'broadcast-update') {
+          this[parsed.data.type](parsed.data.data, parsed.data.slideIndex, true)
+        }
+        else if (parsed.event === 'broadcast-user') {
+          this.updateCoopUsers(parsed.data.users)
+        }
+        else if (parsed.event === 'broadcast-user-trivial') {
+          if (parsed.data.type === 'slide-selection') {
+            this.updateCoopUserInfo(parsed.fromUser, { currentSlide: parsed.data.slideIndex })
+          }
+        }
       }
     },
 

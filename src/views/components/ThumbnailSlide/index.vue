@@ -4,6 +4,7 @@
       width: size + 'px',
       height: size * viewportRatio + 'px',
     }"
+    style="position: relative"
   >
     <div 
       class="elements"
@@ -23,6 +24,7 @@
       />
     </div>
     <div class="placeholder" v-else>加载中 ...</div>
+    <Avatar v-if="avatar !== undefined" style="position: absolute; bottom: 0; left: 0;" size="small" :src="avatar"></Avatar>
   </div>
 </template>
 
@@ -49,6 +51,10 @@ const props = defineProps({
   visible: {
     type: Boolean,
     default: true,
+  },
+  avatar: {
+    type: String,
+    required: false,
   },
 })
 

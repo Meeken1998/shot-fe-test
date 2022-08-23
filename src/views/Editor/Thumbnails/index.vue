@@ -36,7 +36,7 @@
           v-contextmenu="contextmenusThumbnailItem"
         >
           <div class="label" :class="{ 'offset-left': index >= 99 }">{{ fillDigit(index + 1, 2) }}</div>
-          <ThumbnailSlide class="thumbnail" :slide="element" :size="120" :visible="index < slidesLoadLimit" />
+          <ThumbnailSlide class="thumbnail" :slide="element" :size="120" :visible="index < slidesLoadLimit" :avatar="slideEditorAvatar[index]" />
         </div>
       </template>
     </Draggable>
@@ -67,6 +67,21 @@ const { slides, slideIndex } = storeToRefs(slidesStore)
 const { ctrlKeyState, shiftKeyState } = storeToRefs(keyboardStore)
 
 const { slidesLoadLimit } = useLoadSlides()
+const slideEditorAvatar = ref<Record<number, string | undefined>>({})
+
+slidesStore.$onAction(({ name, after }) => {
+  if (name === 'updateCoopUserInfo') {
+    after(() => {
+      const avatars: Record<number, string | undefined> = {}
+      Object.values(slidesStore.coopUserInfo).forEach((user) => {
+        if (user.currentSlide !== undefined) {
+          avatars[user.currentSlide] = user.avatar
+        }
+      })
+      slideEditorAvatar.value = avatars
+    })
+  }
+})
 
 const selectedSlidesIndex = computed(() => [..._selectedSlidesIndex.value, slideIndex.value])
 
