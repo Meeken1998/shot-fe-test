@@ -59,6 +59,8 @@ import { createTeam, CreateTeamPayload, getTeams } from '@/apis/team'
 import { message } from 'ant-design-vue'
 import { getActiveMenuItem, MenuItem } from '@/store/dashboard'
 import router from '@/views/router'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 
 const createTeamModalVisible = ref(false)
 
@@ -79,11 +81,19 @@ function genMenuItems() {
     }]
   }
 
-  sidebarKey.value = teamMenuItems.value[0].key
-  activeMenuItem.value = teamMenuItems.value[0]
-  router.replace({
-    path: `/team/${teamMenuItems.value[0].key}`
-  })
+  const { teamId } = route.params as Record<string, string>
+
+  if (teamId) {
+    sidebarKey.value = teamId
+    activeMenuItem.value = getActiveMenuItem(teamId, menuItems.value) || null
+  }
+  else {
+    sidebarKey.value = teamMenuItems.value[0].key
+    activeMenuItem.value = teamMenuItems.value[0]
+    router.replace({
+      path: `/team/${teamMenuItems.value[0].key}`
+    })
+  }
 }
 
 function handleMenuKeyChange(key: string) {
