@@ -1,44 +1,40 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PptistEditor from '@/views/Editor/PptistEditor.vue'
-import EditorLandingPage from '@/views/Editor/EditorLandingPage.vue'
-import Dashboard from '../Dashboard/index.vue'
-import Login from '../user/Login.vue'
 import { sdk } from '@/utils/authing'
 import { useDashboardStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { setTitle } from '@/utils/title'
-import HomePage from '@/views/components/dashboard/Homepage/index.vue'
-import Team from '@/views/components/dashboard/Team/Team.vue'
-import JoinTeam from '@/views/components/dashboard/Team/JoinTeam.vue'
-import TeamMember from '@/views/components/dashboard/Member/TeamMember.vue'
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes: [
     {
       name: 'home',
-      component: Dashboard,
+      component: import('../Dashboard/index.vue'),
       path: '/',
       meta: {
         title: '',
       },
       children: [
         {
-          component: HomePage,
+          component: import('@/views/components/dashboard/Homepage/index.vue'),
           path: 'home',
         },
         {
-          component: Team,
+          component: import('@/views/components/dashboard/Team/Team.vue'),
           path: 'team/:teamId',
         },
         {
-          component: TeamMember,
+          component: import('@/views/components/dashboard/Member/TeamMember.vue'),
           path: 'member/:teamId',
         },
+        ...['data', 'recycle', 'setting', 'group', 'user'].map((s) => ({
+          component: import('@/views/components/widget/UnpublishedTips.vue'),
+          path: `${s}/:teamId`,
+        })),
       ],
     },
     {
-      component: EditorLandingPage,
+      component: import('@/views/Editor/EditorLandingPage.vue'),
       path: '/createDocs',
       name: 'createDocs',
       meta: {
@@ -46,7 +42,7 @@ const router = createRouter({
       },
     },
     {
-      component: PptistEditor,
+      component: import('@/views/Editor/PptistEditor.vue'),
       path: '/editor/:id',
       meta: {
         title: '文档',
@@ -55,7 +51,7 @@ const router = createRouter({
     {
       name: 'login',
       path: '/login',
-      component: Login,
+      component: import('../user/Login.vue'),
       meta: {
         title: '登录中...',
       },
@@ -63,7 +59,7 @@ const router = createRouter({
     {
       name: 'join-team',
       path: '/join-team/:inviteId',
-      component: JoinTeam,
+      component: import('@/views/components/dashboard/Team/JoinTeam.vue'),
       meta: {
         title: '加入团队',
       },

@@ -7,13 +7,13 @@
     </div>
     <div class="right-side">
       <div class="headerbar-menu-container">
-        <div :class="getHeaderBarMenuItemClass(item.key)" v-for="item in headerBarMenuItems" :key="item.key"
+        <a :class="getHeaderBarMenuItemClass(item.key)" v-for="item in headerBarMenuItems" :key="item.key"
           @click="handleSwitchHeaderBarItem(item.key)">
           <span class="icon">
             <component v-if="item.icon" :is="item.icon" />
           </span>
           <span>{{ item.name }}</span>
-        </div>
+        </a>
       </div>
       <Input placeholder="搜索功能或者幻灯片内容 (⌘ + K)" class="cover-radius input search-input" v-model:value="searchVal"
         @change="emit('search', searchVal)">
@@ -140,6 +140,11 @@ function logout() {
     gap: 8px;
     font-size: 14px;
     font-size: 14px;
+    color: #333;
+
+    &:hover {
+      color: rgba($themeColor, 0.8);
+    }
 
     &.active {
       color: $themeColor;

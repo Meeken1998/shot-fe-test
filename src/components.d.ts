@@ -7,7 +7,6 @@ type CustomComponent = typeof components
 declare module 'vue' {
   export type $worker = any
   export interface GlobalComponents extends Icon, CustomComponent {
-
     // antd 组件
     InputNumber: typeof import('ant-design-vue')['InputNumber']
     Divider: typeof import('ant-design-vue')['Divider']
@@ -42,6 +41,8 @@ declare module 'vue' {
     Tabs: typeof import('ant-design-vue')['Tabs']
     TabPane: typeof import('ant-design-vue')['TabPane']
     Empty: typeof import('ant-design-vue')['Empty']
+    Skeleton: typeof import('vue-loading-skeleton')['Skeleton']
+    SkeletonTheme: typeof import('vue-loading-skeleton')['SkeletonTheme']
   }
 }
 

@@ -12,6 +12,22 @@
       </div>
     </div>
   </div>
+
+  <div v-else class="team-info">
+    <Skeleton circle width="84px" height="84px" />
+    <div class="content">
+      <div class="left">
+        <div>
+          <Skeleton class="title" height="20px" width="180px" />
+        </div>
+        <div>
+          <Skeleton class="desc" height="20px" width="360px" />
+        </div>
+      </div>
+
+      <div />
+    </div>
+  </div>
 </template>
 <script lang="ts" setup>
 import { getTeamDetail, Team } from '@/apis/team'

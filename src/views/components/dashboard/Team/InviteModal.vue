@@ -124,7 +124,7 @@ async function handleMakeInviteLink(targetUserId?: string) {
 
     .title {
       font-weight: bold;
-      font-size: 13px;
+      font-size: 16px;
     }
 
     .subtitle {

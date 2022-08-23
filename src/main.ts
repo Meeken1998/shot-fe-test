@@ -6,6 +6,7 @@ import './registerServiceWorker'
 import '@icon-park/vue-next/styles/index.css'
 import 'prosemirror-view/style/prosemirror.css'
 import 'animate.css'
+import 'vue-loading-skeleton/dist/style.css'
 
 import '@/assets/styles/prosemirror.scss'
 import '@/assets/styles/global.scss'
@@ -15,7 +16,7 @@ import '@/assets/styles/font.scss'
 import Icon from '@/plugins/icon'
 import Component from '@/plugins/component'
 import Directive from '@/plugins/directive'
-
+import { SkeletonTheme, Skeleton } from 'vue-loading-skeleton'
 
 import {
   InputNumber,
@@ -77,7 +78,8 @@ app.component('Upload', Upload)
 app.component('Tabs', Tabs)
 app.component('TabPane', Tabs.TabPane)
 app.component('Empty', Empty)
-
+app.component('Skeleton', Skeleton)
+app.component('SkeletonTheme', SkeletonTheme)
 
 app.use(Icon)
 app.use(Component)

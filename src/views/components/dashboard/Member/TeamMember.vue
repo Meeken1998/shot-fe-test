@@ -6,7 +6,7 @@
       </router-link>
       <Button class="primary-btn" @click="inviteModalVisible = true">邀请成员</Button>
     </TeamInfo>
-    <div class="team-member">
+    <div v-if="!loading" class="team-member">
       <div class="user" v-for="(item) in memberList" :key="item.id">
         <div class="userinfo">
           <Avatar :size="36" :src="item.user.photo" :draggable="false" />
@@ -17,6 +17,20 @@
         </div>
 
         <div class="role">成员</div>
+      </div>
+    </div>
+
+    <div v-else class="team-member">
+      <div v-for="(_, key) in Array(2).fill(null)" :key="key" class="user">
+        <div class="userinfo">
+          <Skeleton circle width="36px" height="36px" />
+          <div class="content">
+            <span class="name">
+              <Skeleton width="180px" height="20px" />
+            </span>
+          </div>
+        </div>
+        <div />
       </div>
     </div>
     <InviteModal :visible="inviteModalVisible" @close="inviteModalVisible = false" :team-id="teamInfo?.id!"
@@ -36,17 +50,20 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const inviteModalVisible = ref(false)
 const teamInfo = ref<Team>()
+const loading = ref(true)
 
 const dashboardStore = useDashboardStore()
-const { user, currentTeam, activeHeaderBarMenuKey } = storeToRefs(dashboardStore)
+const { user, activeHeaderBarMenuKey } = storeToRefs(dashboardStore)
 
 const memberList = ref<TeamMemberResponse['list']>([])
 
 async function getData() {
   activeHeaderBarMenuKey.value = 'member'
+  loading.value = true
   const { teamId } = route.params as Record<string, string>
   const { list } = await getTeamMembers(teamId)
   memberList.value = list
+  loading.value = false
 }
 
 function handleGetTeamInfo(team: Team) {

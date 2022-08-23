@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar">
-    <div class="menus">
+    <div v-if="!loading" class="menus">
       <div v-for="(val, key) in menuItems" :key="key" class="menu-container">
         <Tooltip v-for="item in val" :key="item.key" :title="item.title" placement="right">
           <div :class="getMenuItemClass(item.key)"
@@ -13,6 +13,31 @@
           </div>
         </Tooltip>
         <div class="divider" v-if="key !== 'tools' && val.length" />
+      </div>
+    </div>
+
+    <div v-else class="menu">
+      <div v-for="(_, key) in Array(3).fill(null)" :key="key" class="fake-data">
+        <div class="avatar" />
+        <Skeleton :width="`${key * 20 + 60}px`" height="20px" />
+      </div>
+      <br />
+      <div v-for="(_, key) in Array(1).fill(null)" :key="key" class="fake-data">
+        <Skeleton class="avatar" circle />
+        <Skeleton width="140px" height="20px" />
+      </div>
+      <div v-for="(_, key) in Array(2).fill(null)" :key="key" class="fake-data">
+        <div class="avatar" />
+        <Skeleton width="140px" height="20px" />
+      </div>
+      <br />
+      <div v-for="(_, key) in Array(1).fill(null)" :key="key" class="fake-data">
+        <Skeleton class="avatar" circle />
+        <Skeleton width="140px" height="20px" />
+      </div>
+      <div v-for="(_, key) in Array(2).fill(null)" :key="key" class="fake-data">
+        <div class="avatar" />
+        <Skeleton width="140px" height="20px" />
       </div>
     </div>
   </div>
@@ -40,6 +65,7 @@ const createTeamModalVisible = ref(false)
 const { sidebarKey, menuItems, activeMenuItem, activeHeaderBarMenuKey } = storeToRefs(useDashboardStore())
 
 const teamMenuItems = ref<MenuItem[]>([])
+const loading = ref(true)
 
 function genMenuItems() {
   menuItems.value = {
@@ -90,6 +116,7 @@ async function handleCreateTeam(payload: CreateTeamPayload) {
 }
 
 async function fetchUserTeams() {
+  loading.value = true
   const teams = await getTeams()
   teamMenuItems.value = teams.map(t => ({
     title: t.name,
@@ -98,6 +125,7 @@ async function fetchUserTeams() {
     type: 'team'
   }))
   genMenuItems()
+  loading.value = false
 }
 
 async function initSidebarData() {
@@ -119,6 +147,20 @@ onMounted(() => {
   padding: 16px;
   padding-top: 24px;
   padding-bottom: 0;
+
+  .fake-data {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 24px;
+
+    .avatar {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+  }
 
   .divider {
     width: calc(100% - 24px);
