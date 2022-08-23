@@ -11,14 +11,14 @@ import TeamMember from '@/views/components/dashboard/Member/TeamMember.vue'
 import EditorLandingPage from '@/views/Editor/EditorLandingPage.vue'
 import PptistEditor from '@/views/Editor/PptistEditor.vue'
 import JoinTeam from '@/views/components/dashboard/Team/JoinTeam.vue'
-
+import Home from '../Dashboard/index.vue'
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes: [
     {
       name: 'home',
-      component: import('../Dashboard/index.vue'),
+      component: Home,
       path: '/',
       meta: {
         title: '',
