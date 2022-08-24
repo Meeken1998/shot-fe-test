@@ -34,7 +34,6 @@ import Remark from './Remark/index.vue'
 import ExportDialog from './ExportDialog/index.vue'
 import { useRoute } from 'vue-router'
 import { getDocs } from '@/apis/docs'
-import { WS_SERVICE_ENDPOINT } from '@/hooks/useRequest'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
@@ -61,7 +60,6 @@ onMounted(() => {
   const id = route.params.id as string
   docsId.value = id
   void handleGetSlides(id)
-  document.title = WS_SERVICE_ENDPOINT
   slidesStore.connectWebsocket()
 })
 
