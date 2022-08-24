@@ -3,7 +3,8 @@
     <div class="invite-modal-container">
       <div class="invite-by-search">
         <div class="search-bar">
-          <Input v-model:value="searchValue" placeholder="搜索用户昵称、手机号或邮箱" class="input" allow-clear @press-enter="handleSearchUsers()">
+          <Input v-model:value="searchValue" placeholder="搜索用户昵称、手机号或邮箱" class="input" allow-clear
+            @press-enter="handleSearchUsers()">
           <template #prefix>
             <SearchOutlined />
           </template>
@@ -22,7 +23,7 @@
 
             <div class="role">
               <div v-if="user?.sub === item.id" class="me">我</div>
-              <a v-else @click="handleMakeInviteLink(item.id)">邀请</a>
+              <a v-else @click="handleMakeInviteLink(item.id)">邀请 TA</a>
             </div>
           </div>
         </div>
@@ -32,9 +33,9 @@
         <div>
           <div class="title">
             <LinkOutlined class="link" />
-            使用链接邀请
+            一次性链接邀请
           </div>
-          <div class="subtitle">成员同意后将加入团队</div>
+          <div class="subtitle">收到链接的用户同意后将加入团队</div>
         </div>
 
         <Button type="primary" class="primary-btn" @click="handleMakeInviteLink()">复制链接</Button>

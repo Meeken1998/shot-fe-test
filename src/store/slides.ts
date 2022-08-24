@@ -12,7 +12,7 @@ import WebWorker from '@/workers/sync.worker.js'
 // @ts-ignore
 import SnapshotWorker from '@/workers/snapshot.worker.js'
 import { getUserInfoById } from '@/apis/user'
-import { toPng } from 'html-to-image'
+import { toJpeg } from 'html-to-image'
 import { WS_SERVICE_ENDPOINT } from '@/hooks/useRequest'
 
 const worker: Worker = new WebWorker()
@@ -244,8 +244,8 @@ export const useSlidesStore = defineStore('slides', {
 
     _sync: throttle(async (docsId: string, slides: Slide[]) => {
       const dom = document.querySelector('.thumbnail-item .thumbnail') as HTMLElement
-      const jpg = dom ? await toPng(dom, {
-        quality: 1,
+      const jpg = dom ? await toJpeg(dom, {
+        quality: 0.75,
         canvasWidth: 640,
         canvasHeight: 360,
         style: {

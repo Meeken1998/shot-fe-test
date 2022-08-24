@@ -34,7 +34,7 @@
               </div>
               </MenuItem>
               <MenuDivider />
-              <MenuItem>设置</MenuItem>
+              <MenuItem>编辑资料</MenuItem>
               <MenuItem @click="logout()">退出登录</MenuItem>
             </Menu>
           </template>

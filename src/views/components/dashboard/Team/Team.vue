@@ -22,7 +22,7 @@
           <UploadWrapper :team-id="teamInfo.id">
             <Button class="primary-btn load-btn">
               <template #icon>
-                <img :draggable="false" class="ppt-icon" src="/imgs/ppt-icon.png" />
+                <img :draggable="false" class="ppt-icon" src="https://static.aside.fun/upload/ppt-icon.png" />
               </template>
               从文件导入
             </Button>

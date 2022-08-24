@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <img src="/imgs/guide-team.png" class="cover" :draggable="false" />
+    <img src="https://static.aside.fun/upload/guide-team.png" class="cover" :draggable="false" />
   </div>
 
   <Skeleton v-else width="100%" height="148px" />
