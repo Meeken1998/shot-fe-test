@@ -1,45 +1,8 @@
 <template>
   <div class="homepage">
-    <div class="group-info">
-      <div class="title">首页</div>
-      <div class="buttons">
-        <UploadWrapper :team-id="defaultTeamId!">
-          <Button class="primary-btn">导入文件</Button>
-        </UploadWrapper>
-        <router-link :to="{ path: `/createDocs`, query: { teamId: defaultTeamId } }" target="_blank">
-          <Button type="primary" class="primary-btn">新建</Button>
-        </router-link>
-      </div>
-    </div>
-
-    <div class="group">
-      <div class="title-bar">
-        <h1 :style="{ marginBottom: '16px' }">最近访问</h1>
-
-        <ProjectWrapper :items="[]" />
-      </div>
-    </div>
-
   </div>
 </template>
 <script lang="ts" setup>
-import { useDashboardStore } from '@/store'
-import ProjectWrapper from '@/views/components/project/ProjectWrapper.vue'
-import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref, watch } from 'vue'
-import UploadWrapper from '../../widget/UploadWrapper.vue'
-
-const defaultTeamId = computed(() => menuItems.value['teamMenuItems']?.[0]?.key)
-
-const { menuItems } = storeToRefs(useDashboardStore())
-
-async function getData() {
-  //
-}
-
-onMounted(() => {
-  void getData()
-})
 
 </script>
 <style lang="scss">

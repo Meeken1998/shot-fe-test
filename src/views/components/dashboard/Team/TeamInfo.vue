@@ -37,7 +37,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const teamInfo = ref<Team>()
 
-watch(() => route.params?.teamId, getData)
+watch(() => route.params?.teamId, () => void getData())
 
 const emit = defineEmits<{
   (event: 'info', team: Team): void
@@ -45,6 +45,7 @@ const emit = defineEmits<{
 
 async function getData() {
   const { teamId } = route.params as Record<string, string>
+  if (!teamId) return
   const team = await getTeamDetail(teamId)
   teamInfo.value = team
   emit('info', team)

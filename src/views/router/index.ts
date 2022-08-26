@@ -12,6 +12,7 @@ import EditorLandingPage from '@/views/Editor/EditorLandingPage.vue'
 import PptistEditor from '@/views/Editor/PptistEditor.vue'
 import JoinTeam from '@/views/components/dashboard/Team/JoinTeam.vue'
 import Home from '../Dashboard/index.vue'
+import ProfilePage from '@/views/components/dashboard/Setting/ProfilePage.vue'
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -41,6 +42,13 @@ const router = createRouter({
           path: `${s}/:teamId`,
         })),
       ],
+    },
+    {
+      component: ProfilePage,
+      path: '/profile',
+      meta: {
+        title: '个人设置',
+      }
     },
     {
       component: EditorLandingPage,

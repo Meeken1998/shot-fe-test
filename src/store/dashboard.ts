@@ -15,6 +15,7 @@ export type HeaderBarMenuItem = {
   name: string
   key: string
   icon?: Component
+  shortened: string
 }
 
 export type MenuItem = {
@@ -41,36 +42,43 @@ export interface DashboardState {
 const headerBarMenuItems: HeaderBarMenuItem[] = [
   {
     name: '团队内容',
+    shortened: '团队',
     key: 'team',
     icon: ProjectFilled,
   },
   {
     name: '内容数据分析',
+    shortened: '数据',
     key: 'data',
     icon: PieChartFilled,
   },
   {
     name: '成员管理',
+    shortened: '成员',
     key: 'member',
     icon: ContactsFilled,
   },
   {
     name: '用户管理',
+    shortened: '用户',
     key: 'user',
     icon: ContactsFilled,
   },
   {
     name: '内容组管理',
+    shortened: '内容组',
     key: 'group',
     icon: TagsFilled,
   },
   {
     name: '设置',
+    shortened: '设置',
     key: 'setting',
     icon: SettingFilled,
   },
   {
     name: '回收站',
+    shortened: '回收站',
     key: 'recycle',
     icon: DeleteFilled,
   },

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import tinycolor from 'tinycolor2'
 import { omit, throttle } from 'lodash'
-import { Slide, SlideTheme, PPTElement, PPTAnimation } from '@/types/slides'
+import { Slide, SlideTheme, PPTElement, PPTAnimation, SlidesDisplayMode } from '@/types/slides'
 import { slides } from '@/mocks/slides'
 import { theme } from '@/mocks/theme'
 import { layouts } from '@/mocks/layout'
@@ -46,6 +46,7 @@ export interface SlidesState {
   coopUsers: string[]
   coopUserInfo: Record<string, ICoopUserInfo>
   cloudSlidesLoaded: boolean
+  mode: SlidesDisplayMode
 }
 
 interface IBroadcastDocUpdateMessage {
@@ -84,7 +85,8 @@ export const useSlidesStore = defineStore('slides', {
     docsId: '', // 云文档 id
     coopUsers: [localStorage.getItem('token')!],
     coopUserInfo: {},
-    cloudSlidesLoaded: false
+    cloudSlidesLoaded: false,
+    mode: SlidesDisplayMode.PPT,
   }),
 
   getters: {
@@ -249,7 +251,8 @@ export const useSlidesStore = defineStore('slides', {
         canvasWidth: 640,
         canvasHeight: 360,
         style: {
-          outline: 'unset'
+          outline: 'unset',
+          borderRadius: 'unset',
         }
       }) : ''
       worker.postMessage({

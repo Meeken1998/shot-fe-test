@@ -58,9 +58,10 @@ const { user, activeHeaderBarMenuKey } = storeToRefs(dashboardStore)
 const memberList = ref<TeamMemberResponse['list']>([])
 
 async function getData() {
+  const { teamId } = route.params as Record<string, string>
+  if (!teamId) return
   activeHeaderBarMenuKey.value = 'member'
   loading.value = true
-  const { teamId } = route.params as Record<string, string>
   const { list } = await getTeamMembers(teamId)
   memberList.value = list
   loading.value = false

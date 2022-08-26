@@ -69,6 +69,13 @@ const { sidebarKey, menuItems, activeMenuItem, activeHeaderBarMenuKey } = storeT
 const teamMenuItems = ref<MenuItem[]>([])
 const loading = ref(true)
 
+const props = defineProps({
+  isOutOfTeam: {
+    type: Boolean,
+    required: false
+  }
+})
+
 function genMenuItems() {
   menuItems.value = {
     teamMenuItems: teamMenuItems.value,
@@ -90,9 +97,11 @@ function genMenuItems() {
   else {
     sidebarKey.value = teamMenuItems.value[0].key
     activeMenuItem.value = teamMenuItems.value[0]
-    router.replace({
-      path: `/team/${teamMenuItems.value[0].key}`
-    })
+    if (!route.meta?.title) {
+      router.replace({
+        path: `/team/${teamMenuItems.value[0].key}`
+      })
+    }
   }
 }
 
@@ -113,7 +122,7 @@ function handleMenuKeyChange(key: string) {
 }
 
 function getMenuItemClass(key: string) {
-  return key === sidebarKey.value ? 'menu-item active' : 'menu-item'
+  return key === sidebarKey.value && !props.isOutOfTeam ? 'menu-item active' : 'menu-item'
 }
 
 async function handleCreateTeam(payload: CreateTeamPayload) {

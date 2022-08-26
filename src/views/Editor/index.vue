@@ -25,7 +25,7 @@ import { useMainStore, useSlidesStore } from '@/store'
 import useGlobalHotkey from '@/hooks/useGlobalHotkey'
 import usePasteEvent from '@/hooks/usePasteEvent'
 
-import EditorHeader from './EditorHeader/index.vue'
+import EditorHeader from './EditorHeader/EditorHeaderV2.vue'
 import Canvas from './Canvas/index.vue'
 import CanvasTool from './CanvasTool/index.vue'
 import Thumbnails from './Thumbnails/index.vue'
@@ -82,9 +82,9 @@ watch(() => handleElementId.value, (val, last) => {
   height: 100%;
 }
 
-.layout-header {
-  height: 40px;
-}
+// .layout-header {
+//   height: 40px;
+// }
 
 .layout-content {
   height: calc(100% - 40px);
@@ -92,7 +92,7 @@ watch(() => handleElementId.value, (val, last) => {
 }
 
 .layout-content-left {
-  width: 160px;
+  width: 240px;
   height: 100%;
   flex-shrink: 0;
 }

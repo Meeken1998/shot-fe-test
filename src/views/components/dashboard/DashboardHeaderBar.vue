@@ -6,17 +6,20 @@
       </div>
     </div>
     <div class="right-side">
-      <div class="headerbar-menu-container">
+      <div v-if="props.showMenu" class="headerbar-menu-container">
         <a :class="getHeaderBarMenuItemClass(item.key)" v-for="item in headerBarMenuItems" :key="item.key"
           @click="handleSwitchHeaderBarItem(item.key)">
           <span class="icon">
             <component v-if="item.icon" :is="item.icon" />
           </span>
-          <span>{{ item.name }}</span>
+          <span>{{ isLargeScreen ? item.name : item.shortened }}</span>
         </a>
       </div>
-      <Input placeholder="搜索功能或者幻灯片内容 (⌘ + K)" class="cover-radius input search-input" v-model:value="searchVal"
-        @change="emit('search', searchVal)">
+      <div v-else class="headerbar-menu-container">
+        <slot></slot>
+      </div>
+      <Input v-if="props.showMenu" placeholder="搜索功能或者幻灯片内容 (⌘ + K)" class="cover-radius input search-input"
+        v-model:value="searchVal" @change="emit('search', searchVal)">
       <template #prefix>
         <SearchOutlined />
       </template>
@@ -34,7 +37,9 @@
               </div>
               </MenuItem>
               <MenuDivider />
-              <MenuItem>编辑资料</MenuItem>
+              <router-link :to="{ path: '/profile' }">
+                <MenuItem>个人设置</MenuItem>
+              </router-link>
               <MenuItem @click="logout()">退出登录</MenuItem>
             </Menu>
           </template>
@@ -44,10 +49,10 @@
   </header>
 </template>
 <script lang="ts" setup>
-import { useDashboardStore } from '@/store'
+import { useDashboardStore, useScreenStore } from '@/store'
 import { sdk } from '@/utils/authing'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { ref, defineProps, onMounted, computed } from 'vue'
 import { SearchOutlined } from '@ant-design/icons-vue'
 import router from '@/views/router'
 import { useRoute } from 'vue-router'
@@ -60,7 +65,18 @@ const emit = defineEmits<{
 }>()
 
 const dashboardStore = useDashboardStore()
+const screenStore = useScreenStore()
 const { user, headerBarMenuItems, activeHeaderBarMenuKey } = storeToRefs(dashboardStore)
+const { clientWidth } = storeToRefs(screenStore)
+
+const isLargeScreen = computed(() => clientWidth.value >= 1440)
+const props = defineProps({
+  showMenu: {
+    type: Boolean,
+    required: false,
+    default: true,
+  }
+})
 
 function getHeaderBarMenuItemClass(key: string) {
   return key !== activeHeaderBarMenuKey.value ? 'headerbar-menu-item' : 'headerbar-menu-item active'
@@ -138,7 +154,7 @@ function logout() {
     flex-direction: row;
     align-items: center;
     gap: 8px;
-    font-size: 14px;
+    font-weight: bold;
     font-size: 14px;
     color: #333;
 

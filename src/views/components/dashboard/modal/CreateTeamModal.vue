@@ -99,7 +99,6 @@ function handleCreateTeam() {
   }
 
   .subtitle {
-    font-size: 14px;
     color: #666;
   }
 

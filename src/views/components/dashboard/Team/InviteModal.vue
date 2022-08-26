@@ -125,11 +125,12 @@ async function handleMakeInviteLink(targetUserId?: string) {
 
     .title {
       font-weight: bold;
-      font-size: 16px;
+      font-size: 14px;
     }
 
     .subtitle {
       color: #666;
+      font-size: 13px;
     }
   }
 }

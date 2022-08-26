@@ -73,8 +73,9 @@ const teamInfo = ref<Team>()
 const loading = ref(true)
 
 async function getData() {
-  loading.value = true
   const { teamId } = route.params as Record<string, string>
+  if (!teamId) return
+  loading.value = true
   // 刷新左侧菜单
   sidebarKey.value = teamId
   activeMenuItem.value = getActiveMenuItem(teamId, menuItems.value) || null
@@ -136,14 +137,14 @@ onMounted(() => {
     .filter {
       margin-left: 12px;
       font-size: 13px;
-      color: #666;
+      color: rgba(61, 61, 61, 1);
       margin-top: 8px;
       user-select: none;
       cursor: pointer;
 
       .icon {
         margin-left: 4px;
-        color: #aaa;
+        color: rgba(61, 61, 61, 0.4);
         font-size: 10px;
       }
     }

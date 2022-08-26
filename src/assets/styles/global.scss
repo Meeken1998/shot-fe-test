@@ -158,3 +158,8 @@ a {
   height: calc(100vh - 92px - 1px);
   overflow-y: auto;
 }
+
+.flex-row {
+  display: flex;
+  align-items: center;
+}

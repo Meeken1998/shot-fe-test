@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import useScreening from '@/hooks/useScreening'
@@ -91,8 +91,6 @@ import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 import useExport from '@/hooks/useExport'
 
 import HotkeyDoc from './HotkeyDoc.vue'
-import { getUserInfoById } from '@/apis/user'
-import { User } from 'authing-js-sdk'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()

@@ -95,4 +95,22 @@ $border-radius-base: 8px;
   font-size: 14px;
 }
 
-$font-size-base: 14px; // 主字号
+// switch
+.ant-switch {
+  border-radius: $border-radius-base !important;
+  background-color: #ebebeb !important;
+
+  .ant-switch-handle::before {
+    transform: scale(0.85);
+    border-radius: calc($border-radius-base * 0.75) !important;
+    box-shadow: unset;
+  }
+
+  &:focus {
+    box-shadow: unset;
+  }
+
+  .ant-click-animating-node {
+    display: none;
+  }
+}

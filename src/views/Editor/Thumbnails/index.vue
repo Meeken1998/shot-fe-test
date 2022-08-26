@@ -35,8 +35,8 @@
           @mousedown="$event => handleClickSlideThumbnail($event, index)"
           v-contextmenu="contextmenusThumbnailItem"
         >
-          <div class="label" :class="{ 'offset-left': index >= 99 }">{{ fillDigit(index + 1, 2) }}</div>
-          <ThumbnailSlide class="thumbnail" :slide="element" :size="120" :visible="index < slidesLoadLimit" :avatar="slideEditorAvatar[index]" />
+          <div class="label" :class="{ 'offset-left': index >= 99 }">{{ index + 1 }}</div>
+          <ThumbnailSlide class="thumbnail" :slide="element" :size="190" :visible="index < slidesLoadLimit" :avatar="slideEditorAvatar[index]" />
         </div>
       </template>
     </Draggable>
@@ -297,21 +297,23 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
   }
 }
 .thumbnail-list {
-  padding: 5px 0;
+  padding: 0;
   flex: 1;
   overflow: auto;
 }
 .thumbnail-item {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 5px 0;
+  padding: 16px 24px 16px 12px;
 
   .thumbnail {
     outline: 1px solid rgba($color: $themeColor, $alpha: .15);
+    border-radius: 4px;
   }
 
   &.active {
+    background-color: #f7fcf7;
     .label {
       color: $themeColor;
     }
@@ -330,6 +332,7 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
   color: #999;
   width: 20px;
   cursor: grab;
+  align-self: flex-end;
 
   &.offset-left {
     position: relative;

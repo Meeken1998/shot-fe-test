@@ -13,7 +13,7 @@
       <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="插入文字">
         <IconFontSize class="handler-item" :class="{ 'active': creatingElement?.type === 'text' }" @click="drawText()" />
       </Tooltip>
-      <FileInput @change="files => insertImageElement(files)">
+      <FileInput @change="(files: any) => insertImageElement(files)">
         <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="插入图片">
           <IconPicture class="handler-item" />
         </Tooltip>
