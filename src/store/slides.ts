@@ -306,6 +306,9 @@ export const useSlidesStore = defineStore('slides', {
     },
 
     updateCoopUserDotColor(userId: string) {
+      if (this.coopUserInfo[userId]?.dotColor) {
+        return
+      }
       this.coopUserInfo[userId] ?? {}
       let color: string = genRandomColor()
       while (Object.values(this.coopUserInfo).some(u => u?.dotColor === color)) {
