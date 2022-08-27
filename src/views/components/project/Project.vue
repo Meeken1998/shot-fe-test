@@ -1,6 +1,8 @@
 <template>
   <div class="project" @click="handleOpenDocs()">
-    <img :src="previewImageUrl || defaultJpg" class="cover" draggable="false" />
+    <div class="cover-container">
+      <img :src="previewImageUrl || defaultJpg" class="cover" draggable="false" />
+    </div>
 
     <div class="docs-info">
       <div class="title">{{ name }}</div>
@@ -51,11 +53,16 @@ function handleOpenDocs() {
   }
 
   .cover {
-    width: 100%;
+    width: calc(100% + 2px);
     height: 200px;
     border-radius: $borderRadius;
-    overflow: hidden;
     object-fit: cover;
+  }
+
+  .cover-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
   }
 
   .docs-info {

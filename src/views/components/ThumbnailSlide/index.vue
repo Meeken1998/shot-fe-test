@@ -13,7 +13,10 @@
         :elementIndex="index + 1" />
     </div>
     <div class="placeholder" v-else>加载中 ...</div>
-    <Avatar v-if="avatar !== undefined" style="position: absolute; bottom: 0; left: 0;" size="small" :src="avatar" />
+  </div>
+  <div v-if="coopUser" class="co-user">
+    <Avatar :src="coopUser.avatar" :size="32" :draggable="false"></Avatar>
+    <div class="dot" :style="{ backgroundColor: coopUser.dotColor }" />
   </div>
 
 </template>
@@ -28,6 +31,7 @@ import { VIEWPORT_SIZE } from '@/configs/canvas'
 import useSlideBackgroundStyle from '@/hooks/useSlideBackgroundStyle'
 
 import ThumbnailElement from './ThumbnailElement.vue'
+import { ICoopUserInfo } from '@/store/slides'
 
 const props = defineProps({
   slide: {
@@ -42,8 +46,8 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  avatar: {
-    type: String,
+  coopUser: {
+    type: Object as PropType<ICoopUserInfo>,
     required: false,
   },
 })
@@ -83,5 +87,26 @@ onMounted(() => slidesStore.cloudSlidesLoadedCallback())
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.co-user {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-shrink: 0;
+  position: absolute;
+  align-self: flex-end;
+  transform: scale(0.8) translateX(24px);
+
+  .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    position: absolute;
+    background-color: green;
+    border: 3px solid #fff;
+    transform: translate(4px, 4px);
+  }
 }
 </style>

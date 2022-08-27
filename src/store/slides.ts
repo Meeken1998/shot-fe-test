@@ -12,7 +12,7 @@ import WebWorker from '@/workers/sync.worker.js'
 // @ts-ignore
 import SnapshotWorker from '@/workers/snapshot.worker.js'
 import { getUserInfoById } from '@/apis/user'
-import { toJpeg } from 'html-to-image'
+import { toPng } from 'html-to-image'
 import { WS_SERVICE_ENDPOINT } from '@/hooks/useRequest'
 import { genRandomColor } from '@/utils/color'
 
@@ -33,7 +33,7 @@ interface FormatedAnimation {
   autoNext: boolean
 }
 
-interface ICoopUserInfo {
+export interface ICoopUserInfo {
   currentSlide?: number;
   avatar?: string;
   dotColor?: string;
@@ -247,15 +247,16 @@ export const useSlidesStore = defineStore('slides', {
     },
 
     _sync: throttle(async (docsId: string, slides: Slide[]) => {
-      const dom = document.querySelector('.thumbnail-item .thumbnail .elements') as HTMLElement
-      const jpg = dom ? await toJpeg(dom, {
+      const dom = document.querySelector('.thumbnail-item .thumbnail-slide') as HTMLElement
+      const jpg = dom ? await toPng(dom, {
         quality: 0.75,
-        canvasWidth: 640,
-        canvasHeight: 360,
         style: {
           outline: 'unset',
           borderRadius: 'unset',
-        }
+        },
+        canvasWidth: 736,
+        canvasHeight: 428,
+        backgroundColor: 'rgba(255, 255, 255, 0)'
       }) : ''
       worker.postMessage({
         type: 'sync',

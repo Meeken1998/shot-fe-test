@@ -1,47 +1,35 @@
 <template>
-  <div 
-    class="thumbnails"
-    @mousedown="() => setThumbnailsFocus(true)"
-    v-click-outside="() => setThumbnailsFocus(false)"
-    v-contextmenu="contextmenusThumbnails"
-  >
+  <div class="thumbnails" @mousedown="() => setThumbnailsFocus(true)" v-click-outside="() => setThumbnailsFocus(false)"
+    v-contextmenu="contextmenusThumbnails">
     <div class="add-slide">
-      <div class="btn" @click="createSlide()"><IconPlus class="icon" />添加幻灯片</div>
+      <div class="btn" @click="createSlide()">
+        <IconPlus class="icon" />添加幻灯片
+      </div>
       <Popover trigger="click" placement="bottomLeft" v-model:visible="presetLayoutPopoverVisible">
         <template #content>
           <LayoutPool @select="slide => { createSlideByTemplate(slide); presetLayoutPopoverVisible = false }" />
         </template>
-        <div class="select-btn"><IconDown /></div>
+        <div class="select-btn">
+          <IconDown />
+        </div>
       </Popover>
     </div>
 
-    <Draggable 
-      class="thumbnail-list"
-      :modelValue="slides"
-      :animation="300"
-      :scroll="true"
-      :scrollSensitivity="50"
-      :setData="null"
-      @end="handleDragEnd"
-      itemKey="id"
-    >
+    <Draggable class="thumbnail-list" :modelValue="slides" :animation="300" :scroll="true" :scrollSensitivity="50"
+      :setData="null" @end="handleDragEnd" itemKey="id">
       <template #item="{ element, index }">
-        <div
-          class="thumbnail-item"
-          :class="{
-            'active': slideIndex === index,
-            'selected': selectedSlidesIndex.includes(index),
-          }"
-          @mousedown="$event => handleClickSlideThumbnail($event, index)"
-          v-contextmenu="contextmenusThumbnailItem"
-        >
+        <div class="thumbnail-item" :class="{
+          'active': slideIndex === index,
+          'selected': selectedSlidesIndex.includes(index),
+        }" @mousedown="$event => handleClickSlideThumbnail($event, index)" v-contextmenu="contextmenusThumbnailItem">
           <div class="label" :class="{ 'offset-left': index >= 99 }">{{ index + 1 }}</div>
-          <ThumbnailSlide class="thumbnail" :slide="element" :size="190" :visible="index < slidesLoadLimit" :avatar="slideEditorAvatar[index]" />
+          <ThumbnailSlide class="thumbnail" :slide="element" :size="190" :visible="index < slidesLoadLimit"
+            :coopUser="slideEditor[index]" />
         </div>
       </template>
     </Draggable>
 
-    <div class="page-number">幻灯片 {{slideIndex + 1}} / {{slides.length}}</div>
+    <div class="page-number">幻灯片 {{ slideIndex + 1 }} / {{ slides.length }}</div>
   </div>
 </template>
 
@@ -49,7 +37,7 @@
 import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore, useKeyboardStore } from '@/store'
-import { fillDigit } from '@/utils/common'
+import { ICoopUserInfo } from '@/store/slides'
 import { ContextmenuItem } from '@/components/Contextmenu/types'
 import useSlideHandler from '@/hooks/useSlideHandler'
 import useScreening from '@/hooks/useScreening'
@@ -67,18 +55,18 @@ const { slides, slideIndex } = storeToRefs(slidesStore)
 const { ctrlKeyState, shiftKeyState } = storeToRefs(keyboardStore)
 
 const { slidesLoadLimit } = useLoadSlides()
-const slideEditorAvatar = ref<Record<number, string | undefined>>({})
+const slideEditor = ref<Record<number, ICoopUserInfo>>({})
 
 slidesStore.$onAction(({ name, after }) => {
   if (name === 'updateCoopUserInfo') {
     after(() => {
-      const avatars: Record<number, string | undefined> = {}
+      const coUsers: Record<number, ICoopUserInfo> = {}
       Object.values(slidesStore.coopUserInfo).forEach((user) => {
         if (user.currentSlide !== undefined) {
-          avatars[user.currentSlide] = user.avatar
+          coUsers[user.currentSlide] = user
         }
       })
-      slideEditorAvatar.value = avatars
+      slideEditor.value = coUsers
     })
   }
 })
@@ -261,6 +249,7 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
   flex-direction: column;
   user-select: none;
 }
+
 .add-slide {
   height: 40px;
   font-size: 12px;
@@ -279,6 +268,7 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
       background-color: $lightGray;
     }
   }
+
   .select-btn {
     width: 30px;
     display: flex;
@@ -296,11 +286,13 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
     font-size: 14px;
   }
 }
+
 .thumbnail-list {
   padding: 0;
   flex: 1;
   overflow: auto;
 }
+
 .thumbnail-item {
   display: flex;
   justify-content: space-between;
@@ -314,19 +306,23 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
 
   &.active {
     background-color: #f7fcf7;
+
     .label {
       color: $themeColor;
     }
+
     .thumbnail {
       outline-color: $themeColor;
     }
   }
+
   &.selected {
     .thumbnail {
       outline-color: $themeColor;
     }
   }
 }
+
 .label {
   font-size: 12px;
   color: #999;
@@ -343,6 +339,7 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
     cursor: grabbing;
   }
 }
+
 .page-number {
   height: 40px;
   font-size: 12px;

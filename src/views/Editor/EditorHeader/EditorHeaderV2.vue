@@ -35,6 +35,7 @@
     <ToolBarV2 />
 
     <div class="right-side">
+      <ScaleSelector class="scale-bar-container" />
       <CoUsers class="co-users-container" />
       <img src="https://static.aside.fun/upload/metrics.svg" class="right-icon" :draggable="false" />
       <img src="https://static.aside.fun/upload/member.svg" class="right-icon" :draggable="false" />
@@ -51,6 +52,7 @@ import { storeToRefs } from 'pinia'
 import { SlidesDisplayMode } from '@/types/slides'
 import ToolBarV2 from '../CanvasTool/ToolBarV2.vue'
 import CoUsers from './CoUsers.vue'
+import ScaleSelector from './ScaleSelector.vue'
 
 const slidesStore = useSlidesStore()
 const { mode } = storeToRefs(slidesStore)

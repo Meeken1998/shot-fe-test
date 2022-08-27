@@ -109,7 +109,6 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { slideEditorTools } from '@/types/toolbar'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 import { useMainStore } from '@/store'
 import { getImageDataURL } from '@/utils/image'
