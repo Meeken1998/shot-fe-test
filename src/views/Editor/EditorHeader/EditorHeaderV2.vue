@@ -185,7 +185,6 @@ function handleTitleBlur() {
     font-weight: bold;
     color: $grayColor;
     user-select: none;
-    border-right: 1px solid $borderColor;
     width: 250px;
     height: 54px;
 
