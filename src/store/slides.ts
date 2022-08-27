@@ -14,6 +14,7 @@ import SnapshotWorker from '@/workers/snapshot.worker.js'
 import { getUserInfoById } from '@/apis/user'
 import { toJpeg } from 'html-to-image'
 import { WS_SERVICE_ENDPOINT } from '@/hooks/useRequest'
+import { genRandomColor } from '@/utils/color'
 
 const worker: Worker = new WebWorker()
 const snapshotWorker: Worker = new SnapshotWorker()
@@ -35,6 +36,7 @@ interface FormatedAnimation {
 interface ICoopUserInfo {
   currentSlide?: number;
   avatar?: string;
+  dotColor?: string;
 }
 
 export interface SlidesState {
@@ -245,7 +247,7 @@ export const useSlidesStore = defineStore('slides', {
     },
 
     _sync: throttle(async (docsId: string, slides: Slide[]) => {
-      const dom = document.querySelector('.thumbnail-item .thumbnail') as HTMLElement
+      const dom = document.querySelector('.thumbnail-item .thumbnail .elements') as HTMLElement
       const jpg = dom ? await toJpeg(dom, {
         quality: 0.75,
         canvasWidth: 640,
@@ -292,6 +294,7 @@ export const useSlidesStore = defineStore('slides', {
         
         getUserInfoById(userId).then((user) => {
           this.updateCoopUserAvatar(userId, user.photo ?? '')
+          this.updateCoopUserDotColor(userId)
         })
       })
     },
@@ -299,6 +302,15 @@ export const useSlidesStore = defineStore('slides', {
     updateCoopUserInfo(userId: string, data: Partial<ICoopUserInfo>) {
       this.coopUserInfo[userId] ??= {}
       this.coopUserInfo[userId] = { ...this.coopUserInfo[userId], ...data }
+    },
+
+    updateCoopUserDotColor(userId: string) {
+      this.coopUserInfo[userId] ?? {}
+      let color: string = genRandomColor()
+      while (Object.values(this.coopUserInfo).some(u => u?.dotColor === color)) {
+        color = genRandomColor()
+      }
+      this.coopUserInfo[userId].dotColor = color
     },
 
     updateCoopUserAvatar(userId: string, avatar: string) {

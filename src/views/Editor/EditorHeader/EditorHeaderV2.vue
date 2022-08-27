@@ -34,8 +34,13 @@
 
     <ToolBarV2 />
 
-    <div class="right-side"></div>
-
+    <div class="right-side">
+      <CoUsers class="co-users-container" />
+      <img src="https://static.aside.fun/upload/metrics.svg" class="right-icon" :draggable="false" />
+      <img src="https://static.aside.fun/upload/member.svg" class="right-icon" :draggable="false" />
+      <img src="https://static.aside.fun/upload/share.svg" class="right-icon" :draggable="false" />
+      <img src="https://static.aside.fun/upload/play.svg" class="right-icon" :draggable="false" />
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -45,6 +50,7 @@ import { LeftOutlined } from '@ant-design/icons-vue'
 import { storeToRefs } from 'pinia'
 import { SlidesDisplayMode } from '@/types/slides'
 import ToolBarV2 from '../CanvasTool/ToolBarV2.vue'
+import CoUsers from './CoUsers.vue'
 
 const slidesStore = useSlidesStore()
 const { mode } = storeToRefs(slidesStore)
@@ -85,6 +91,32 @@ function handleTitleBlur() {
   .right-side {
     flex: 1;
     height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+
+    .co-users-container {
+      margin-right: 24px;
+    }
+
+    .right-icon {
+      width: 38px;
+      height: 38px;
+      user-select: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      transition: all .3s;
+
+      &:hover {
+        background-color: #f9f9f9;
+      }
+
+      &:last-child {
+        margin-left: calc(24px + 16px);
+      }
+    }
   }
 
   .logo-bar {

@@ -8,34 +8,21 @@
         <div class="preview">
           <div class="placeholder" v-if="!latex">公式预览</div>
           <div class="preview-content" v-else>
-            <FormulaContent
-              :width="518"
-              :height="138"
-              :latex="latex"
-            />
+            <FormulaContent :width="518" :height="138" :latex="latex" />
           </div>
         </div>
       </div>
       <div class="right">
         <div class="tabs">
-          <div 
-            class="tab" 
-            :class="{ 'active': tab.value === toolbarState }"
-            v-for="tab in tabs" 
-            :key="tab.value"
-            @click="toolbarState = tab.value"
-          >{{tab.label}}</div>
+          <div class="tab" :class="{ 'active': tab.value === toolbarState }" v-for="tab in tabs" :key="tab.value"
+            @click="toolbarState = tab.value">{{ tab.label }}</div>
         </div>
         <div class="content">
           <div class="symbol" v-if="toolbarState === 'symbol'">
             <div class="symbol-tabs">
-              <div 
-                class="symbol-tab" 
-                :class="{ 'active': selectedSymbolKey === group.type }" 
-                v-for="group in symbolList" 
-                :key="group.type"
-                @click="selectedSymbolKey = group.type"
-              >{{group.label}}</div>
+              <div class="symbol-tab" :class="{ 'active': selectedSymbolKey === group.type }"
+                v-for="group in symbolList" :key="group.type" @click="selectedSymbolKey = group.type">{{ group.label }}
+              </div>
             </div>
             <div class="symbol-pool">
               <div class="symbol-item" v-for="item in symbolPool" :key="item.latex" @click="insertSymbol(item.latex)">
@@ -45,13 +32,9 @@
           </div>
           <div class="formula" v-else>
             <div class="formula-item" v-for="item in formulaList" :key="item.label">
-              <div class="formula-title">{{item.label}}</div>
-              <div class="formula-item-content" @click="latex =item.latex">
-                <FormulaContent
-                  :width="236"
-                  :height="60"
-                  :latex="item.latex"
-                />
+              <div class="formula-title">{{ item.label }}</div>
+              <div class="formula-item-content" @click="latex = item.latex">
+                <FormulaContent :width="236" :height="60" :latex="item.latex" />
               </div>
             </div>
           </div>
@@ -59,8 +42,8 @@
       </div>
     </div>
     <div class="footer">
-      <Button class="btn" @click="emit('close')">取消</Button>
-      <Button class="btn" type="primary" @click="update()">确定</Button>
+      <Button class="btn primary-btn-mini" @click="emit('close')">取消</Button>
+      <Button class="btn primary-btn-mini" type="primary" @click="update()">确定</Button>
     </div>
   </div>
 </template>
@@ -122,12 +105,12 @@ onMounted(() => {
 })
 
 const update = () => {
-  if (!latex.value) return message.error('公式不能为空')
+  if (!latex.value) return message.warning('公式不能为空')
 
   const eq = new hfmath(latex.value)
   const pathd = eq.pathd({})
   const box = eq.box({})
-  
+
   emit('update', {
     latex: latex.value,
     path: pathd,
@@ -147,23 +130,26 @@ const insertSymbol = (latex: string) => {
 .latex-editor {
   height: 560px;
 }
+
 .container {
   height: calc(100% - 50px);
   display: flex;
   padding-top: 25px;
 }
+
 .left {
   width: 540px;
   height: 100%;
   display: flex;
   flex-direction: column;
 }
+
 .input-area {
   flex: 1;
 
   textarea {
     height: 100% !important;
-    border-color: $borderColor !important;
+    border-color: $borderColor  !important;
     padding: 10px !important;
 
     &:focus {
@@ -171,6 +157,7 @@ const insertSymbol = (latex: string) => {
     }
   }
 }
+
 .preview {
   height: 160px;
   display: flex;
@@ -180,10 +167,13 @@ const insertSymbol = (latex: string) => {
   margin-top: 20px;
   border: 1px solid $borderColor;
   user-select: none;
+  border-radius: $borderRadius;
 }
+
 .placeholder {
   color: #888;
 }
+
 .preview-content {
   width: 100%;
   height: 100%;
@@ -192,6 +182,7 @@ const insertSymbol = (latex: string) => {
   justify-content: center;
   align-items: center;
 }
+
 .right {
   height: 100%;
   margin-left: 20px;
@@ -201,7 +192,10 @@ const insertSymbol = (latex: string) => {
   display: flex;
   flex-direction: column;
   user-select: none;
+  border-radius: $borderRadius;
+  overflow: hidden;
 }
+
 .tabs {
   height: 40px;
   font-size: 12px;
@@ -209,6 +203,7 @@ const insertSymbol = (latex: string) => {
   display: flex;
   user-select: none;
 }
+
 .tab {
   flex: 1;
   display: flex;
@@ -223,28 +218,32 @@ const insertSymbol = (latex: string) => {
     border-bottom-color: #fff;
   }
 
-  & + .tab {
+  &+.tab {
     border-left: 1px solid $borderColor;
   }
 }
+
 .content {
   height: calc(100% - 40px);
   font-size: 13px;
 }
+
 .formula {
   height: 100%;
   padding: 12px;
 
   @include overflow-overlay();
 }
+
 .formula-item {
-  & + .formula-item {
+  &+.formula-item {
     margin-top: 10px;
   }
 
   .formula-title {
     margin-bottom: 5px;
   }
+
   .formula-item-content {
     width: 246px;
     height: 60px;
@@ -255,6 +254,7 @@ const insertSymbol = (latex: string) => {
     cursor: pointer;
   }
 }
+
 .symbol-tabs {
   display: flex;
   justify-content: space-around;
@@ -262,6 +262,7 @@ const insertSymbol = (latex: string) => {
   border-bottom: 1px solid $borderColor;
   margin: 12px 12px 5px;
 }
+
 .symbol-tab {
   padding: 6px 10px;
   border-bottom: 2px solid transparent;
@@ -271,11 +272,13 @@ const insertSymbol = (latex: string) => {
     border-bottom: 2px solid $themeColor;
   }
 }
+
 .symbol {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
+
 .symbol-pool {
   display: flex;
   flex-wrap: wrap;
@@ -284,6 +287,7 @@ const insertSymbol = (latex: string) => {
 
   @include overflow-overlay();
 }
+
 .symbol-item {
   display: flex;
   justify-content: center;
@@ -294,6 +298,7 @@ const insertSymbol = (latex: string) => {
     cursor: pointer;
   }
 }
+
 .footer {
   height: 50px;
   display: flex;

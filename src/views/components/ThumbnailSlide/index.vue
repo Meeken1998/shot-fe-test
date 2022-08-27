@@ -1,31 +1,21 @@
 <template>
-  <div class="thumbnail-slide"
-    :style="{
-      width: size + 'px',
-      height: size * viewportRatio + 'px',
-    }"
-    style="position: relative"
-  >
-    <div 
-      class="elements"
-      :style="{
-        width: VIEWPORT_SIZE + 'px',
-        height: VIEWPORT_SIZE * viewportRatio + 'px',
-        transform: `scale(${scale})`,
-      }"
-      v-if="visible"
-    >
+  <div class="thumbnail-slide" :style="{
+    width: size + 'px',
+    height: size * viewportRatio + 'px',
+  }" style="position: relative">
+    <div class="elements" :style="{
+      width: VIEWPORT_SIZE + 'px',
+      height: VIEWPORT_SIZE * viewportRatio + 'px',
+      transform: `scale(${scale})`,
+    }" v-if="visible">
       <div class="background" :style="backgroundStyle"></div>
-      <ThumbnailElement
-        v-for="(element, index) in slide.elements"
-        :key="element.id"
-        :elementInfo="element"
-        :elementIndex="index + 1"
-      />
+      <ThumbnailElement v-for="(element, index) in slide.elements" :key="element.id" :elementInfo="element"
+        :elementIndex="index + 1" />
     </div>
     <div class="placeholder" v-else>加载中 ...</div>
-    <Avatar v-if="avatar !== undefined" style="position: absolute; bottom: 0; left: 0;" size="small" :src="avatar"></Avatar>
+    <Avatar v-if="avatar !== undefined" style="position: absolute; bottom: 0; left: 0;" size="small" :src="avatar" />
   </div>
+
 </template>
 
 <script lang="ts" setup>
@@ -75,15 +65,18 @@ onMounted(() => slidesStore.cloudSlidesLoadedCallback())
   background-color: #fff;
   overflow: hidden;
 }
+
 .elements {
   transform-origin: 0 0;
 }
+
 .background {
   width: 100%;
   height: 100%;
   background-position: center;
   position: absolute;
 }
+
 .placeholder {
   width: 100%;
   height: 100%;

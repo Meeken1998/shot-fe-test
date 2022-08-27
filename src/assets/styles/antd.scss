@@ -88,6 +88,12 @@ $border-radius-base: 8px;
   border-radius: $borderRadius;
 }
 
+.primary-btn-mini {
+  min-width: 80px;
+  height: 36px;
+  font-size: 13px;
+}
+
 .primary-btn-large {
   min-width: 120px;
   height: 48px;
