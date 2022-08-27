@@ -104,7 +104,11 @@ $border-radius-base: 8px;
 // switch
 .ant-switch {
   border-radius: $border-radius-base !important;
-  background-color: #ebebeb !important;
+  background-color: #ebebeb;
+
+  &.ant-switch-checked {
+    background-color: $themeColor;
+  }
 
   .ant-switch-handle::before {
     transform: scale(0.85);
