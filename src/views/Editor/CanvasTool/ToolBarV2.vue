@@ -16,7 +16,7 @@
 
     <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="插入文字">
       <div class="tool-btn" @click="drawText()">
-        <img src="https://static.aside.fun/upload/remake.svg" class="icon" :draggable="false" />
+        <img src="https://static.aside.fun/upload/text.svg" class="icon" :draggable="false" />
         <span>文字</span>
       </div>
     </Tooltip>
