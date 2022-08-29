@@ -3,21 +3,28 @@
     <div class="flex-row" :style="{ flex: '1' }">
       <div class="logo-bar">
         <img class="logo" src="https://static.aside.fun/upload/logo-no-text.svg" :draggable="false" />
-        <div class="team-info">
+        <div class="team-info" v-if="docsMeta.name && docsMeta?.team?.id">
           <div @click="handleTitleBlur">
-            <div v-if="!isTitleInputVisible" class="title">{{ title }}</div>
-            <input ref="inputRef" v-else class="title edit-title" v-model="title" v-on:keyup="(e) => {
+            <div v-if="!isTitleInputVisible" class="title">{{ docsMeta.name }}</div>
+            <input ref="inputRef" v-else class="title edit-title" v-model="docsMeta.name" v-on:keyup="(e) => {
               if (e.keyCode === 13) {
                 handleTitleChange()
               }
             }" @focusout="handleTitleChange" />
           </div>
           <div class="flex-row">
-            <div class="second-link flex-row">
-              <LeftOutlined :style="{ fontSize: '12px' }" />
-              <span>猴子无限</span>
-            </div>
+            <Tooltip :title="`返回到「${docsMeta?.team?.name}」团队首页`" :mouseEnterDelay="1">
+              <div class="second-link flex-row" @click="handleBack2Team()">
+                <LeftOutlined :style="{ fontSize: '12px' }" />
+                <span>{{ docsMeta?.team?.name }}</span>
+              </div>
+            </Tooltip>
           </div>
+        </div>
+
+        <div v-else class="team-info skeleton-wrapper">
+          <Skeleton width="120px" height="20px" class="title skeleton" />
+          <Skeleton width="100px" height="20px" class="second-link" />
         </div>
       </div>
 
@@ -53,21 +60,34 @@ import { SlidesDisplayMode } from '@/types/slides'
 import ToolBarV2 from '../CanvasTool/ToolBarV2.vue'
 import CoUsers from './CoUsers.vue'
 import ScaleSelector from './ScaleSelector.vue'
+import { updateDocsMeta } from '@/apis/docs'
+import { message } from 'ant-design-vue'
+import { debounce } from 'lodash'
+import router from '@/views/router'
 
 const slidesStore = useSlidesStore()
-const { mode } = storeToRefs(slidesStore)
+const { mode, docsMeta, docs } = storeToRefs(slidesStore)
 const { clientWidth } = storeToRefs(useScreenStore())
 
 const isTitleInputVisible = ref(false)
-const title = ref('核桃编程客户案例20220222')
 const inputRef = ref<HTMLInputElement>()
 
-function handleTitleChange() {
-  if (!title.value.trim()) {
-    title.value = '未命名文档'
+const handleUpdateDocsMeta = debounce(async () => {
+  const res = await updateDocsMeta(docs.value?._id || '', docsMeta.value.name)
+  if (!res) {
+    void message.warning('修改文档名称失败')
   }
+})
+
+
+function handleTitleChange() {
+  if (!docsMeta.value.name.trim()) {
+    docsMeta.value.name = '未命名文档'
+  }
+  void handleUpdateDocsMeta()
   isTitleInputVisible.value = false
 }
+
 
 function handleTitleBlur() {
   if (!isTitleInputVisible.value) {
@@ -76,6 +96,12 @@ function handleTitleBlur() {
       inputRef.value?.select()
     })
   }
+}
+
+function handleBack2Team() {
+  router.push({
+    path: `/team/${docs.value?.teamId}`
+  })
 }
 
 </script>
@@ -130,6 +156,7 @@ function handleTitleBlur() {
     border-right: 1px solid $borderColor;
 
     .logo {
+      width: 32px;
       height: 48px;
     }
 
@@ -148,6 +175,10 @@ function handleTitleBlur() {
         border: 1px solid transparent;
         border-radius: 2px;
         padding: 0 4px;
+
+        &.skeleton {
+          transform: translateX(-4px);
+        }
 
         &:hover {
           border-color: $borderColor;

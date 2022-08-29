@@ -36,3 +36,9 @@ export function uploadDocs(teamId: string, file: File) {
     'Content-Type': 'multipart/form-data',
   })
 }
+
+export function updateDocsMeta(docsId: string, name: string) {
+  return post<boolean>(`/api/docs/${docsId}/meta`, {
+    name,
+  })
+}

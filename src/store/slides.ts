@@ -15,6 +15,8 @@ import { getUserInfoById } from '@/apis/user'
 import { toPng } from 'html-to-image'
 import { WS_SERVICE_ENDPOINT } from '@/hooks/useRequest'
 import { genRandomColor } from '@/utils/color'
+import { Docs } from '@/apis/docs'
+import { Team } from '@/apis/team'
 
 const worker: Worker = new WebWorker()
 const snapshotWorker: Worker = new SnapshotWorker()
@@ -49,6 +51,11 @@ export interface SlidesState {
   coopUserInfo: Record<string, ICoopUserInfo>
   cloudSlidesLoaded: boolean
   mode: SlidesDisplayMode
+  docs: Docs | null
+  docsMeta: {
+    team: Partial<Team>,
+    name: string,
+  }
 }
 
 interface IBroadcastDocUpdateMessage {
@@ -89,6 +96,11 @@ export const useSlidesStore = defineStore('slides', {
     coopUserInfo: {},
     cloudSlidesLoaded: false,
     mode: SlidesDisplayMode.PPT,
+    docs: null,
+    docsMeta: {
+      team: {},
+      name: ''
+    }
   }),
 
   getters: {
@@ -168,6 +180,14 @@ export const useSlidesStore = defineStore('slides', {
 
     setSlides(slides: Slide[]) {
       this.slides = slides
+    },
+
+    setDocs(docs: Docs) {
+      this.docs = docs
+    },
+
+    setDocsMeta(meta: SlidesState['docsMeta']) {
+      this.docsMeta = meta
     },
 
     addSlide(slide: Slide | Slide[], broadcastSlideIndex?: number, fromBroadcast = false) {

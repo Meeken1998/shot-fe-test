@@ -34,6 +34,7 @@ import Remark from './Remark/index.vue'
 import ExportDialog from './ExportDialog/index.vue'
 import { useRoute } from 'vue-router'
 import { getDocs } from '@/apis/docs'
+import { getTeamDetail } from '@/apis/team'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
@@ -50,16 +51,22 @@ const remarkHeight = ref(40)
 useGlobalHotkey()
 usePasteEvent()
 
-async function handleGetSlides(docsId: string) {
+async function handleGetData(docsId: string) {
   const docs = await getDocs(docsId)
   slidesStore.setSlides(JSON.parse(docs.json))
+  slidesStore.setDocs(docs)
   loaded.value = true
+  const teamInfo = await getTeamDetail(docs.teamId)
+  slidesStore.setDocsMeta({
+    team: teamInfo,
+    name: docs.name
+  })
 }
 
 onMounted(() => {
   const id = route.params.id as string
   docsId.value = id
-  void handleGetSlides(id)
+  void handleGetData(id)
   slidesStore.connectWebsocket()
 })
 
