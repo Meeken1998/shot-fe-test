@@ -57,3 +57,10 @@ export const SYMBOL_LIST = [
     ],
   },
 ]
+
+const _symbolMapper: Record<string, string[]> = {}
+SYMBOL_LIST.forEach(s => {
+  _symbolMapper[s.key] = s.children
+})
+
+export const SYMBOL_MAPPER = _symbolMapper

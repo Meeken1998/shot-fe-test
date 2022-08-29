@@ -3,16 +3,16 @@
     v-contextmenu="contextmenusThumbnails">
     <div class="add-slide">
       <div class="btn" @click="createSlide()">
-        <IconPlus class="icon" />添加幻灯片
+        <IconPlus class="icon" />
       </div>
-      <Popover trigger="click" placement="bottomLeft" v-model:visible="presetLayoutPopoverVisible">
+      <!-- <Popover trigger="click" placement="bottomLeft" v-model:visible="presetLayoutPopoverVisible">
         <template #content>
           <LayoutPool @select="slide => { createSlideByTemplate(slide); presetLayoutPopoverVisible = false }" />
         </template>
         <div class="select-btn">
           <IconDown />
         </div>
-      </Popover>
+      </Popover> -->
     </div>
 
     <Draggable class="thumbnail-list" :modelValue="slides" :animation="300" :scroll="true" :scrollSensitivity="50"
@@ -252,11 +252,12 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
 
 .add-slide {
   height: 40px;
-  font-size: 12px;
+  font-size: 13px;
   display: flex;
   flex-shrink: 0;
   border-bottom: 1px solid $borderColor;
   cursor: pointer;
+  letter-spacing: 0.5px;
 
   .btn {
     flex: 1;
