@@ -62,7 +62,7 @@ const router = createRouter({
       component: PptistEditor,
       path: '/editor/:id',
       meta: {
-        title: '文档',
+        title: 'Loading',
       },
     },
     {

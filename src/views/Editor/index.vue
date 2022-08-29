@@ -35,6 +35,7 @@ import ExportDialog from './ExportDialog/index.vue'
 import { useRoute } from 'vue-router'
 import { getDocs } from '@/apis/docs'
 import { getTeamDetail } from '@/apis/team'
+import { setTitle } from '@/utils/title'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
@@ -61,6 +62,7 @@ async function handleGetData(docsId: string) {
     team: teamInfo,
     name: docs.name
   })
+  setTitle(`${docs.name} - ${teamInfo.name}`)
 }
 
 onMounted(() => {

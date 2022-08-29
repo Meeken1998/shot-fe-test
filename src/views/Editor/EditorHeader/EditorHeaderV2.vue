@@ -64,6 +64,7 @@ import { updateDocsMeta } from '@/apis/docs'
 import { message } from 'ant-design-vue'
 import { debounce } from 'lodash'
 import router from '@/views/router'
+import { setTitle } from '@/utils/title'
 
 const slidesStore = useSlidesStore()
 const { mode, docsMeta, docs } = storeToRefs(slidesStore)
@@ -76,6 +77,9 @@ const handleUpdateDocsMeta = debounce(async () => {
   const res = await updateDocsMeta(docs.value?._id || '', docsMeta.value.name)
   if (!res) {
     void message.warning('修改文档名称失败')
+  }
+  else {
+    setTitle(`${docsMeta.value.name} - ${docsMeta.value.team.name}`)
   }
 })
 
