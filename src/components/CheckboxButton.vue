@@ -19,7 +19,7 @@ defineProps({
   background-color: #fff;
   border: 1px solid #d9d9d9;
   font-size: 13px;
-  padding: 0 15px;
+  padding: 0 12px;
   height: 32px;
   text-align: center;
   cursor: pointer;

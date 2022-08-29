@@ -1,35 +1,34 @@
 <template>
   <div class="symbol-panel">
-    <div class="tabs">
-      <div 
-        class="tab" 
-        :class="{ 'active': selectedSymbolKey === item.key }" 
-        v-for="item in SYMBOL_LIST" 
-        :key="item.key"
-        @click="selectedSymbolKey = item.key"
-      >{{item.label}}</div>
-    </div>
-    <div class="pool">
-      <div class="symbol-item" v-for="(item, index) in symbolPool" :key="index" @click="selectSymbol(item)">
-        <div class="symbol">{{item}}</div>
+    <PanelItemContainer v-for="item in SYMBOL_LIST" :title="item.label" :key="item.key"
+      @onexpand="handleTabClick(item.key)" :expand="item.key === selectedSymbolKey">
+      <div class="pool">
+        <div class="symbol-item" v-for="(symbol, index) in SYMBOL_MAPPER[item.key]" :key="index" @click="selectSymbol(symbol)">
+          <div class="symbol">{{ symbol }}</div>
+        </div>
       </div>
-    </div>
+    </PanelItemContainer>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { SYMBOL_LIST } from '@/configs/symbol'
+import { ref } from 'vue'
+import { SYMBOL_MAPPER, SYMBOL_LIST } from '@/configs/symbol'
 import emitter, { EmitterEvents } from '@/utils/emitter'
+import PanelItemContainer from './PanelItemContainer.vue'
 
-const selectedSymbolKey = ref(SYMBOL_LIST[0].key)
-const symbolPool = computed(() => {
-  const selectedSymbol = SYMBOL_LIST.find(item => item.key === selectedSymbolKey.value)
-  return selectedSymbol?.children || []
-})
+const selectedSymbolKey = ref('')
 
 const selectSymbol = (value: string) => {
   emitter.emit(EmitterEvents.RICH_TEXT_COMMAND, { action: { command: 'insert', value } })
+}
+
+function handleTabClick(tab: string) {
+  if (tab === selectedSymbolKey.value) {
+    selectedSymbolKey.value = ''
+    return
+  }
+  selectedSymbolKey.value = tab
 }
 </script>
 
@@ -46,8 +45,9 @@ const selectSymbol = (value: string) => {
     border-bottom: 1px solid $borderColor;
     margin-bottom: 8px;
   }
+
   .tab {
-    padding: 6px 10px 8px;
+    padding: 6px 0;
     border-bottom: 2px solid transparent;
     cursor: pointer;
 
@@ -55,6 +55,7 @@ const selectSymbol = (value: string) => {
       border-bottom: 2px solid $themeColor;
     }
   }
+
   .pool {
     padding: 5px 12px;
     margin: 0 -12px;
@@ -64,6 +65,7 @@ const selectSymbol = (value: string) => {
     @include overflow-overlay();
     @include flex-grid-layout();
   }
+
   .symbol-item {
     @include flex-grid-layout-children(5, 18%);
 

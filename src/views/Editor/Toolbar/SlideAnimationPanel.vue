@@ -1,18 +1,15 @@
 <template>
   <div class="slide-animation-panel">
-    <div class="animation-pool">
-      <div 
-        class="animation-item" 
-        :class="{ 'active': currentTurningMode === item.value }" 
-        v-for="item in animations" 
-        :key="item.label"
-        @click="updateTurningMode(item.value)"
-      >
-        <div :class="['animation-block', item.value]"></div>
-        <div class="animation-text">{{item.label}}</div>
+    <PanelItemContainer title="切换动画" default-expand :has-divider="false">
+      <div class="animation-pool">
+        <div class="animation-item" :class="{ 'active': currentTurningMode === item.value }" v-for="item in animations"
+          :key="item.label" @click="updateTurningMode(item.value)">
+          <div :class="['animation-block', item.value]"></div>
+          <div class="animation-text">{{ item.label }}</div>
+        </div>
       </div>
-    </div>
-    <Button style="width: 100%;" @click="applyAllSlide()">应用到全部</Button>
+      <Button style="width: 100%;" @click="applyAllSlide()">应用到全部</Button>
+    </PanelItemContainer>
   </div>
 </template>
 
@@ -22,6 +19,7 @@ import { storeToRefs } from 'pinia'
 import { useSlidesStore } from '@/store'
 import { TurningMode } from '@/types/slides'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
+import PanelItemContainer from './PanelItemContainer.vue'
 
 interface Animations {
   label: string
@@ -68,6 +66,7 @@ const applyAllSlide = () => {
   flex-wrap: wrap;
   margin-bottom: 10px;
 }
+
 .animation-item {
   width: 50%;
   height: 115px;
@@ -89,10 +88,12 @@ const applyAllSlide = () => {
   &:nth-child(2n) {
     margin-left: -1px;
   }
+
   &:nth-child(n+3) {
     margin-top: -1px;
   }
 }
+
 .animation-block {
   width: 64px;
   height: 36px;
@@ -116,17 +117,20 @@ const applyAllSlide = () => {
       @include elAnimation(fade);
     }
   }
+
   &.slideX:hover {
     &::after {
       @include elAnimation(slideX);
     }
   }
+
   &.slideY:hover {
     &::after {
       @include elAnimation(slideY);
     }
   }
 }
+
 .animation-text {
   font-size: 12px;
   color: #333;
@@ -137,22 +141,27 @@ const applyAllSlide = () => {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
 }
+
 @keyframes slideX {
   0% {
     transform: translateX(100%);
   }
+
   100% {
     transform: translateX(0);
   }
 }
+
 @keyframes slideY {
   0% {
     transform: translateY(100%);
   }
+
   100% {
     transform: translateY(0);
   }

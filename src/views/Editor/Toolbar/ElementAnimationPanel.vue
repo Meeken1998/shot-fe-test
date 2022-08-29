@@ -1,115 +1,90 @@
 <template>
   <div class="element-animation-panel">
-    <div class="element-animation" v-if="handleElement">
-      <Popover 
-        trigger="click" 
-        v-model:visible="animationPoolVisible" 
-        @visibleChange="visible => handlePopoverVisibleChange(visible)"
-      >
-        <template #content>
-          <div class="tabs">
-            <div 
-              :class="['tab', tab.key, { 'active': activeTab === tab.key }]"
-              v-for="tab in tabs" 
-              :key="tab.key"
-              @click="activeTab = tab.key"
-            >{{tab.label}}</div>
-          </div>
-          <template v-for="key in animationTypes">
-            <div :class="['animation-pool', key]" :key="key" v-if="activeTab === key">
-              <div class="pool-type" :key="effect.name" v-for="effect in animations[key]">
-                <div class="type-title">{{effect.name}}：</div>
-                <div class="pool-item-wrapper">
-                  <div 
-                    class="pool-item" 
-                    v-for="item in effect.children" :key="item.name"
-                    @mouseenter="hoverPreviewAnimation = item.value"
-                    @mouseleave="hoverPreviewAnimation = ''"
-                    @click="addAnimation(key, item.value)"
-                  >
-                    <div 
-                      class="animation-box"
-                      :class="[
+    <PanelItemContainer title="动画">
+      <div class="element-animation" v-if="handleElement">
+        <Popover trigger="click" v-model:visible="animationPoolVisible"
+          @visibleChange="visible => handlePopoverVisibleChange(visible)">
+          <template #content>
+            <div class="tabs">
+              <div :class="['tab', tab.key, { 'active': activeTab === tab.key }]" v-for="tab in tabs" :key="tab.key"
+                @click="activeTab = tab.key">{{  tab.label  }}</div>
+            </div>
+            <template v-for="key in animationTypes">
+              <div :class="['animation-pool', key]" :key="key" v-if="activeTab === key">
+                <div class="pool-type" :key="effect.name" v-for="effect in animations[key]">
+                  <div class="type-title">{{  effect.name  }}：</div>
+                  <div class="pool-item-wrapper">
+                    <div class="pool-item" v-for="item in effect.children" :key="item.name"
+                      @mouseenter="hoverPreviewAnimation = item.value" @mouseleave="hoverPreviewAnimation = ''"
+                      @click="addAnimation(key, item.value)">
+                      <div class="animation-box" :class="[
                         `${ANIMATION_CLASS_PREFIX}animated`,
                         `${ANIMATION_CLASS_PREFIX}fast`,
                         hoverPreviewAnimation === item.value && `${ANIMATION_CLASS_PREFIX}${item.value}`,
-                      ]"
-                    >{{item.name}}</div>
+                      ]">{{  item.name  }}</div>
+                    </div>
                   </div>
                 </div>
+                <div class="mask" v-if="!popoverMaskHide"></div>
               </div>
-              <div class="mask" v-if="!popoverMaskHide"></div>
-            </div>
+            </template>
           </template>
+          <Button class="element-animation-btn" @click="handleAnimationId = ''">
+            <IconEffects style="margin-right: 5px;" /> 添加动画
+          </Button>
+        </Popover>
+      </div>
+
+      <div class="tip" v-else>
+        <IconClick style="margin-right: 5px;" /> 选中画布中的元素添加动画
+      </div>
+
+      <div class="tip" v-if="!animationSequence?.length" style="margin-top: 24px">暂无已添加动画</div>
+
+      <Draggable class="animation-sequence" :modelValue="animationSequence" :animation="300" :scroll="true"
+        :scrollSensitivity="50" handle=".sequence-content" @end="handleDragEnd" itemKey="id">
+        <template #item="{ element }">
+          <div class="sequence-item" :class="[element.type, { 'active': handleElement?.id === element.elId }]">
+            <div class="sequence-content">
+              <div class="index">{{  element.index  }}</div>
+              <div class="text">【{{  element.elType  }}】{{  element.animationEffect  }}</div>
+              <div class="handler">
+                <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="预览">
+                  <IconPlayOne class="handler-btn"
+                    @click="runAnimation(element.elId, element.effect, element.duration)" />
+                </Tooltip>
+                <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="删除">
+                  <IconCloseSmall class="handler-btn" @click="deleteAnimation(element.id)" />
+                </Tooltip>
+              </div>
+            </div>
+
+            <div class="configs" v-if="handleElementAnimation[0]?.elId === element.elId">
+              <Divider style="margin: 12px 0 16px 0;" />
+
+              <div class="config-item">
+                <div style="flex: 2;">时长：</div>
+                <InputNumber :min="500" :max="3000" :step="500" :value="element.duration"
+                  @change="value => updateElementAnimationDuration(element.id, value as number)" style="flex: 4;" />
+              </div>
+              <div class="config-item">
+                <div style="flex: 2;">触发：</div>
+                <Select :value="element.trigger"
+                  @change="value => updateElementAnimationTrigger(element.id, value as 'click' | 'meantime' | 'auto')"
+                  style="flex: 4;">
+                  <SelectOption value="click">主动触发</SelectOption>
+                  <SelectOption value="meantime">与上一动画同时</SelectOption>
+                  <SelectOption value="auto">上一动画之后</SelectOption>
+                </Select>
+              </div>
+              <div class="config-item">
+                <Button style="flex: 1;" @click="openAnimationPool(element.id)">更换动画</Button>
+              </div>
+            </div>
+          </div>
         </template>
-        <Button class="element-animation-btn" @click="handleAnimationId = ''">
-          <IconEffects style="margin-right: 5px;" /> 添加动画
-        </Button>
-      </Popover>
-    </div>
-
-    <div class="tip" v-else><IconClick style="margin-right: 5px;" /> 选中画布中的元素添加动画</div>
-    
-    <Divider />
-
-    <Draggable 
-      class="animation-sequence"
-      :modelValue="animationSequence"
-      :animation="300"
-      :scroll="true"
-      :scrollSensitivity="50"
-      handle=".sequence-content"
-      @end="handleDragEnd"
-      itemKey="id"
-    >
-      <template #item="{ element }">
-        <div class="sequence-item" :class="[element.type, { 'active': handleElement?.id === element.elId }]">
-          <div class="sequence-content">
-            <div class="index">{{element.index}}</div>
-            <div class="text">【{{element.elType}}】{{element.animationEffect}}</div>
-            <div class="handler">
-              <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="预览">
-                <IconPlayOne class="handler-btn" @click="runAnimation(element.elId, element.effect, element.duration)" />
-              </Tooltip>
-              <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="删除">
-                <IconCloseSmall class="handler-btn" @click="deleteAnimation(element.id)" />
-              </Tooltip>
-            </div>
-          </div>
-
-          <div class="configs" v-if="handleElementAnimation[0]?.elId === element.elId">
-            <Divider style="margin: 16px 0;" />
-
-            <div class="config-item">
-              <div style="flex: 3;">持续时长：</div>
-              <InputNumber 
-                :min="500"
-                :max="3000"
-                :step="500"
-                :value="element.duration" 
-                @change="value => updateElementAnimationDuration(element.id, value as number)" 
-                style="flex: 5;" 
-              />
-            </div>
-            <div class="config-item">
-              <div style="flex: 3;">触发方式：</div>
-              <Select
-                :value="element.trigger"
-                @change="value => updateElementAnimationTrigger(element.id, value as 'click' | 'meantime' | 'auto')"
-                style="flex: 5;"
-              >
-                <SelectOption value="click">主动触发</SelectOption>
-                <SelectOption value="meantime">与上一动画同时</SelectOption>
-                <SelectOption value="auto">上一动画之后</SelectOption>
-              </Select>
-            </div>
-            <div class="config-item">
-              <Button style="flex: 1;" @click="openAnimationPool(element.id)">更换动画</Button>
-            </div>
-          </div>
-        </div>
-      </template>
-    </Draggable>
+      </Draggable>
+    </PanelItemContainer>
   </div>
 </template>
 
@@ -119,7 +94,7 @@ import { nanoid } from 'nanoid'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import { PPTAnimation } from '@/types/slides'
-import { 
+import {
   ENTER_ANIMATIONS,
   EXIT_ANIMATIONS,
   ATTENTION_ANIMATIONS,
@@ -129,7 +104,7 @@ import {
 } from '@/configs/animation'
 import { ELEMENT_TYPE_ZH } from '@/configs/element'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
-
+import PanelItemContainer from './PanelItemContainer.vue'
 import Draggable from 'vuedraggable'
 
 const animationEffects: { [key: string]: string } = {}
@@ -223,7 +198,7 @@ const handleDragEnd = (eventData: { newIndex: number; oldIndex: number }) => {
   const animation = animations[oldIndex]
   animations.splice(oldIndex, 1)
   animations.splice(newIndex, 0, animation)
-  
+
   slidesStore.updateSlide({ animations })
   addHistorySnapshot()
 }
@@ -338,6 +313,7 @@ $attentionColor: #e8b76a;
   display: flex;
   flex-direction: column;
 }
+
 .tabs {
   display: flex;
   justify-content: flex-start;
@@ -345,6 +321,7 @@ $attentionColor: #e8b76a;
   border-bottom: 1px solid $borderColor;
   margin-bottom: 20px;
 }
+
 .tab {
   width: 33.33%;
   padding-bottom: 8px;
@@ -355,32 +332,39 @@ $attentionColor: #e8b76a;
   &.active {
     border-bottom: 2px solid $themeColor;
   }
+
   &.in.active {
     border-bottom-color: $inColor;
   }
+
   &.out.active {
     border-bottom-color: $outColor;
   }
+
   &.attention.active {
     border-bottom-color: $attentionColor;
   }
 }
+
 .element-animation {
   height: 32px;
   display: flex;
   align-items: center;
 }
+
 .element-animation-btn {
   width: 100%;
 }
+
 .config-item {
   display: flex;
   align-items: center;
 
-  & + .config-item {
-    margin-top: 5px;
+  &+.config-item {
+    margin-top: 16px;
   }
 }
+
 .tip {
   height: 32px;
   display: flex;
@@ -388,6 +372,7 @@ $attentionColor: #e8b76a;
   align-items: center;
   font-style: italic;
 }
+
 .animation-pool {
   width: 400px;
   height: 500px;
@@ -405,15 +390,18 @@ $attentionColor: #e8b76a;
     border-left-color: $inColor;
     background-color: rgba($color: $inColor, $alpha: .15);
   }
+
   &.out .type-title {
     border-left-color: $outColor;
     background-color: rgba($color: $outColor, $alpha: .15);
   }
+
   &.attention .type-title {
     border-left-color: $attentionColor;
     background-color: rgba($color: $attentionColor, $alpha: .15);
   }
 }
+
 .type-title {
   width: 100%;
   font-size: 13px;
@@ -422,9 +410,11 @@ $attentionColor: #e8b76a;
   background-color: #eee;
   padding: 2px 0 2px 10px;
 }
+
 .pool-item-wrapper {
   @include flex-grid-layout();
 }
+
 .pool-item {
   @include flex-grid-layout-children(4, 24%);
 
@@ -434,6 +424,7 @@ $attentionColor: #e8b76a;
   text-align: center;
   cursor: pointer;
 }
+
 .animation-box {
   background-color: $lightGray;
 }
@@ -442,12 +433,14 @@ $attentionColor: #e8b76a;
   flex: 1;
   padding-right: 12px;
   margin-right: -12px;
+  margin-top: 16px;
 
   @include overflow-overlay();
 }
+
 .sequence-item {
   border: 1px solid $borderColor;
-  padding: 10px 6px;
+  padding: 12px;
   border-radius: $borderRadius;
   margin-bottom: 8px;
   transition: all .5s;
@@ -455,12 +448,15 @@ $attentionColor: #e8b76a;
   &.in.active {
     border-color: $inColor;
   }
+
   &.out.active {
     border-color: $outColor;
   }
+
   &.attention.active {
     border-color: $attentionColor;
   }
+
   &.active {
     height: auto;
   }
@@ -477,14 +473,17 @@ $attentionColor: #e8b76a;
     .index {
       flex: 1;
     }
+
     .text {
       flex: 6;
     }
+
     .handler {
-      flex: 2;
+      flex-shrink: 0;
       font-size: 15px;
       text-align: right;
     }
+
     .handler-btn {
       margin-left: 8px;
       cursor: pointer;

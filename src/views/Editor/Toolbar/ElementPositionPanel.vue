@@ -1,132 +1,116 @@
 <template>
   <div class="element-positopn-panel">
-    <div class="title">层级：</div>
-    <ButtonGroup class="row">
-      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.TOP)"><IconSendToBack class="btn-icon" /> 置于顶层</Button>
-      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.BOTTOM)"><IconBringToFrontOne class="btn-icon" /> 置于底层</Button>
-    </ButtonGroup>
-    <ButtonGroup class="row">
-      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.UP)"><IconBringToFront class="btn-icon" /> 上移一层</Button>
-      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.DOWN)"><IconSentToBack class="btn-icon" /> 下移一层</Button>
-    </ButtonGroup>
+    <PanelItemContainer title="层级">
+      <ButtonGroup class="row">
+        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.TOP)">
+          <IconSendToBack class="btn-icon" /> 置于顶层
+        </Button>
+        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.BOTTOM)">
+          <IconBringToFrontOne class="btn-icon" /> 置于底层
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup class="row">
+        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.UP)">
+          <IconBringToFront class="btn-icon" /> 上移一层
+        </Button>
+        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.DOWN)">
+          <IconSentToBack class="btn-icon" /> 下移一层
+        </Button>
+      </ButtonGroup>
+    </PanelItemContainer>
 
-    <Divider />
-    
-    <div class="title">对齐：</div>
-    <ButtonGroup class="row">
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="左对齐">
-        <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.LEFT)"><IconAlignLeft /></Button>
-      </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="水平居中">
-        <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.HORIZONTAL)"><IconAlignVertically /></Button>
-      </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="右对齐">
-        <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.RIGHT)"><IconAlignRight /></Button>
-      </Tooltip>
-    </ButtonGroup>
-    <ButtonGroup class="row">
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="上对齐">
-        <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.TOP)"><IconAlignTop /></Button>
-      </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="垂直居中">
-        <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.VERTICAL)"><IconAlignHorizontally /></Button>
-      </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="下对齐">
-        <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.BOTTOM)"><IconAlignBottom /></Button>
-      </Tooltip>
-    </ButtonGroup>
+    <PanelItemContainer title="对齐">
+      <ButtonGroup class="row">
+        <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="左对齐">
+          <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.LEFT)">
+            <IconAlignLeft />
+          </Button>
+        </Tooltip>
+        <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="水平居中">
+          <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.HORIZONTAL)">
+            <IconAlignVertically />
+          </Button>
+        </Tooltip>
+        <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="右对齐">
+          <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.RIGHT)">
+            <IconAlignRight />
+          </Button>
+        </Tooltip>
+      </ButtonGroup>
+      <ButtonGroup class="row">
+        <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="上对齐">
+          <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.TOP)">
+            <IconAlignTop />
+          </Button>
+        </Tooltip>
+        <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="垂直居中">
+          <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.VERTICAL)">
+            <IconAlignHorizontally />
+          </Button>
+        </Tooltip>
+        <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="下对齐">
+          <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.BOTTOM)">
+            <IconAlignBottom />
+          </Button>
+        </Tooltip>
+      </ButtonGroup>
+    </PanelItemContainer>
 
-    <Divider />
-
-    <div class="row">
-      <div style="flex: 3;">位置：</div>
-      <InputNumber
-        :step="5"
-        :value="left"
-        @change="value => updateLeft(value as number)"
-        style="flex: 4;"
-      />
-      <div style="flex: 1;"></div>
-      <InputNumber
-        :step="5"
-        :value="top"
-        @change="value => updateTop(value as number)"
-        style="flex: 4;"
-      />
-    </div>
-    <div class="row">
-      <div style="flex: 3;"></div>
-      <div style="flex: 4;" class="label">X</div>
-      <div style="flex: 1;"></div>
-      <div style="flex: 4;" class="label">Y</div>
-    </div>
+    <PanelItemContainer title="位置">
+      <div class="row">
+        <InputNumber :step="5" :value="left" @change="value => updateLeft(value as number)" style="flex: 4;">
+          <template #prefix>X:</template>
+        </InputNumber>
+        <div style="flex: 1;"></div>
+        <InputNumber :step="5" :value="top" @change="value => updateTop(value as number)" style="flex: 4;">
+          <template #prefix>Y:</template>
+        </InputNumber>
+      </div>
+    </PanelItemContainer>
 
     <template v-if="handleElement!.type !== 'line'">
-      <div class="row">
-        <div style="flex: 3;">大小：</div>
-        <InputNumber
-          :min="minSize"
-          :max="1500"
-          :step="5"
-          :value="width"
-          @change="value => updateWidth(value as number)"
-          style="flex: 4;"
-        />
-        <template v-if="['image', 'shape', 'audio'].includes(handleElement!.type)">
-          <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="解除宽高比锁定" v-if="fixedRatio">
-            <IconLock style="flex: 1;" class="icon-btn" @click="updateFixedRatio(false)" />
-          </Tooltip>
-          <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="宽高比锁定" v-else>
-            <IconUnlock style="flex: 1;" class="icon-btn" @click="updateFixedRatio(true)" />
-          </Tooltip>
-        </template>
-        <div style="flex: 1;" v-else></div>
-        <InputNumber 
-          :min="minSize"
-          :max="800"
-          :step="5"
-          :disabled="handleElement!.type === 'text'" 
-          :value="height" 
-          @change="value => updateHeight(value as number)"
-          style="flex: 4;"
-        />
-      </div>
-      <div class="row">
-        <div style="flex: 3;"></div>
-        <div style="flex: 4;" class="label">宽</div>
-        <div style="flex: 1;"></div>
-        <div style="flex: 4;" class="label">高</div>
-      </div>
+      <PanelItemContainer title="大小">
+        <div class="row">
+          <InputNumber :min="minSize" :max="1500" :step="5" :value="width"
+            @change="value => updateWidth(value as number)" style="flex: 4;">
+            <template #prefix>W:</template>
+          </InputNumber>
+          <template v-if="['image', 'shape', 'audio'].includes(handleElement!.type)">
+            <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="解除宽高比锁定" v-if="fixedRatio">
+              <IconLock style="flex: 1;" class="icon-btn" @click="updateFixedRatio(false)" />
+            </Tooltip>
+            <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="宽高比锁定" v-else>
+              <IconUnlock style="flex: 1;" class="icon-btn" @click="updateFixedRatio(true)" />
+            </Tooltip>
+          </template>
+          <div style="flex: 1;" v-else></div>
+          <InputNumber :min="minSize" :max="800" :step="5" :disabled="handleElement!.type === 'text'" :value="height"
+            @change="value => updateHeight(value as number)" style="flex: 4;">
+            <template #prefix>H:</template>
+          </InputNumber>
+        </div>
+      </PanelItemContainer>
     </template>
 
     <template v-if="!['line', 'video', 'audio'].includes(handleElement!.type)">
-      <Divider />
-
-      <div class="row">
-        <div style="flex: 3;">旋转：</div>
-        <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="逆时针旋转">
-          <IconRotate class="icon-btn" @click="updateRotate45('-')" style="flex: 2;" />
-        </Tooltip>
-        <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="顺时针旋转">
-          <IconRotate 
-            class="icon-btn" 
-            @click="updateRotate45('+')" 
-            :style="{
+      <PanelItemContainer title="旋转">
+        <div class="row">
+          <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="逆时针旋转">
+            <IconRotate class="icon-btn" @click="updateRotate45('-')" style="flex: 2;" />
+          </Tooltip>
+          <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="顺时针旋转">
+            <IconRotate class="icon-btn" @click="updateRotate45('+')" :style="{
               flex: 2,
               transform: 'rotateY(180deg)',
-            }" 
-          />
-        </Tooltip>
-        <div style="flex: 1;"></div>
-        <InputNumber 
-          :min="-180"
-          :max="180"
-          :step="5"
-          :value="rotate" 
-          @change="value => updateRotate(value as number)" 
-          style="flex: 4;" 
-        />
-      </div>
+            }" />
+          </Tooltip>
+          <div style="flex: 1;"></div>
+          <InputNumber :min="-180" :max="180" :step="5" :value="rotate" @change="value => updateRotate(value as number)"
+            style="flex: 4;">
+            <template #prefix>角度:</template>
+          </InputNumber>
+        </div>
+      </PanelItemContainer>
     </template>
   </div>
 </template>
@@ -142,6 +126,8 @@ import { SHAPE_PATH_FORMULAS } from '@/configs/shapes'
 import useOrderElement from '@/hooks/useOrderElement'
 import useAlignElementToCanvas from '@/hooks/useAlignElementToCanvas'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
+import PanelItemContainer from './PanelItemContainer.vue'
+
 
 const slidesStore = useSlidesStore()
 const { handleElement, handleElementId } = storeToRefs(useMainStore())
@@ -258,15 +244,19 @@ const updateRotate45 = (command: '+' | '-') => {
   align-items: center;
   margin-bottom: 10px;
 }
+
 .title {
   margin-bottom: 10px;
 }
+
 .label {
   text-align: center;
 }
+
 .btn-icon {
   margin-right: 3px;
 }
+
 .icon-btn {
   cursor: pointer;
 }

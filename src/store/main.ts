@@ -23,7 +23,7 @@ export interface MainState {
   showRuler: boolean
   creatingElement: CreatingElement | null
   availableFonts: typeof SYS_FONTS
-  toolbarState: ToolbarStates
+  toolbarState: ToolbarStates | null
   clipingImageElementId: string
   isScaling: boolean
   richTextAttrs: TextAttrs
@@ -133,7 +133,7 @@ export const useMainStore = defineStore('main', {
       this.availableFonts = SYS_FONTS.filter(font => isSupportFont(font.value))
     },
   
-    setToolbarState(toolbarState: ToolbarStates) {
+    setToolbarState(toolbarState: ToolbarStates | null) {
       this.toolbarState = toolbarState
     },
   

@@ -1,7 +1,7 @@
 <template>
   <div class="element-color-mask">
     <div class="row">
-      <div style="flex: 1;">重新着色（蒙版）：</div>
+      <div style="flex: 1;">使用蒙版：</div>
       <div class="switch-wrapper" style="flex: 1;">
         <Switch 
           :checked="hasColorMask" 

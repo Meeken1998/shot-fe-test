@@ -1,16 +1,18 @@
 <template>
-  <div class="toolbar">
-    <div class="tabs">
-      <div 
-        class="tab" 
-        :class="{ 'active': tab.value === toolbarState }"
-        v-for="tab in currentTabs" 
-        :key="tab.value"
-        @click="setToolbarState(tab.value)"
-      >{{tab.label}}</div>
+  <div class="tool-bar-container">
+
+    <div v-if="toolbarState" class="toolbar">
+      <div class="content">
+        <component :is="currentPanelComponent"></component>
+      </div>
     </div>
-    <div class="content">
-      <component :is="currentPanelComponent"></component>
+  </div>
+
+  <div class="tabs-v2" :style="!toolbarState ? { paddingLeft: '16px', borderLeft: '1px solid #eee' } : {}">
+    <div class="tab" :class="{ 'active': tab.value === toolbarState }" v-for="tab in currentTabs" :key="tab.value"
+      @click="setToolbarState(tab.value)">
+      <img :src="toolsetIconMapper[tab.label]" :draggable="false" />
+      <span>{{ tab.label }}</span>
     </div>
   </div>
 </template>
@@ -53,7 +55,7 @@ const elementTabs = computed<ElementTabs[]>(() => {
   ]
 })
 const slideTabs = [
-  { label: '设计', value: ToolbarStates.SLIDE_DESIGN },
+  { label: '样式', value: ToolbarStates.SLIDE_DESIGN },
   { label: '切换', value: ToolbarStates.SLIDE_ANIMATION },
   { label: '动画', value: ToolbarStates.EL_ANIMATION },
 ]
@@ -62,7 +64,21 @@ const multiSelectTabs = [
   { label: '位置', value: ToolbarStates.MULTI_POSITION },
 ]
 
+const toolsetIconMapper: Record<string, string> = {
+  样式: 'https://static.aside.fun/upload/style.svg',
+  切换: 'https://static.aside.fun/upload/switch.svg',
+  位置: 'https://static.aside.fun/upload/position.svg',
+  历史: 'https://static.aside.fun/upload/history.svg',
+  动画: 'https://static.aside.fun/upload/animation.svg',
+  符号: 'https://static.aside.fun/upload/symbol.svg'
+}
+
 const setToolbarState = (value: ToolbarStates) => {
+  if (toolbarState.value === value) {
+    // 取消选中
+    mainStore.setToolbarState(null)
+    return
+  }
   mainStore.setToolbarState(value)
 }
 
@@ -73,6 +89,9 @@ const currentTabs = computed(() => {
 })
 
 watch(currentTabs, () => {
+  if (!toolbarState.value) {
+    return
+  }
   const currentTabsValue: ToolbarStates[] = currentTabs.value.map(tab => tab.value)
   if (!currentTabsValue.includes(toolbarState.value)) {
     mainStore.setToolbarState(currentTabsValue[0])
@@ -80,6 +99,7 @@ watch(currentTabs, () => {
 })
 
 const currentPanelComponent = computed(() => {
+  if (!toolbarState.value) return null
   const panelMap = {
     [ToolbarStates.EL_STYLE]: ElementStylePanel,
     [ToolbarStates.EL_POSITION]: ElementPositionPanel,
@@ -89,46 +109,65 @@ const currentPanelComponent = computed(() => {
     [ToolbarStates.MULTI_POSITION]: MultiPositionPanel,
     [ToolbarStates.SYMBOL]: SymbolPanel,
   }
-  return panelMap[toolbarState.value] || null
+  return panelMap[toolbarState.value]
 })
 </script>
 
 <style lang="scss" scoped>
+.tool-bar-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .toolbar {
+  width: 250px;
   border-left: solid 1px $borderColor;
   background-color: #fff;
   display: flex;
   flex-direction: column;
+  padding: 8px;
 }
-.tabs {
-  height: 40px;
-  font-size: 12px;
-  flex-shrink: 0;
-  display: flex;
-  user-select: none;
-}
-.tab {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: $lightGray;
-  border-bottom: 1px solid $borderColor;
-  cursor: pointer;
 
-  &.active {
-    background-color: #fff;
-    border-bottom-color: #fff;
-  }
-
-  & + .tab {
-    border-left: 1px solid $borderColor;
-  }
-}
 .content {
   padding: 12px;
   font-size: 13px;
+  overflow-y: overlay;
+  overflow-x: hidden;
+}
 
-  @include overflow-overlay();
+.tabs-v2 {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  padding-left: 0;
+
+  .tab {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    gap: 4px;
+    font-size: 12px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background-color: #f7f7f7;
+    transition: background-color 0.3s;
+    letter-spacing: 0.5px;
+
+    &.active {
+      background-color: #ebebeb;
+    }
+
+    &:not(:first-child) {
+      margin-top: 16px;
+    }
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
 }
 </style>

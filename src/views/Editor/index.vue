@@ -107,7 +107,7 @@ watch(() => handleElementId.value, (val, last) => {
 }
 
 .layout-content-center {
-  width: calc(100% - 160px - 260px);
+  flex: 1;
 
   .center-top {
     height: 40px;
@@ -115,7 +115,7 @@ watch(() => handleElementId.value, (val, last) => {
 }
 
 .layout-content-right {
-  width: 260px;
   height: 100%;
+  flex-shrink: 0;
 }
 </style>

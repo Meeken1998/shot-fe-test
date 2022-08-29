@@ -1,61 +1,70 @@
 <template>
   <div class="image-style-panel">
-    <div 
-      class="origin-image"
-      :style="{ backgroundImage: `url(${handleImageElement.src})` }"
-    ></div>
+    <PanelItemContainer title="缩略图" default-expand>
+      <div class="origin-image" :style="{ backgroundImage: `url(${handleImageElement.src})`, marginBottom: '24px' }"></div>
+    </PanelItemContainer>
 
-    <ElementFlip />
-
-    <ButtonGroup class="row">
-      <Button style="flex: 5;" @click="clipImage()"><IconTailoring class="btn-icon" /> 裁剪图片</Button>
-      <Popover trigger="click" v-model:visible="clipPanelVisible">
-        <template #content>
-          <div class="clip">
-            <div class="title">按形状：</div>
-            <div class="shape-clip">
-              <div 
-                class="shape-clip-item" 
-                v-for="(item, key) in shapeClipPathOptions" 
-                :key="key"
-                @click="presetImageClip(key)"
-              >
-                <div class="shape" :style="{ clipPath: item.style }"></div>
+    <PanelItemContainer title="操作" default-expand>
+      <ElementFlip />
+      <ButtonGroup class="row">
+        <Button style="flex: 5;" @click="clipImage()">
+          <IconTailoring class="btn-icon" /> 裁剪图片
+        </Button>
+        <Popover trigger="click" v-model:visible="clipPanelVisible">
+          <template #content>
+            <div class="clip">
+              <div class="title">按形状：</div>
+              <div class="shape-clip">
+                <div class="shape-clip-item" v-for="(item, key) in shapeClipPathOptions" :key="key"
+                  @click="presetImageClip(key)">
+                  <div class="shape" :style="{ clipPath: item.style }"></div>
+                </div>
               </div>
+
+              <template v-for="t in ratioClipOptions" :key="t.label">
+                <div class="title" v-if="t.label">按{{  t.label  }}：</div>
+                <ButtonGroup class="row">
+                  <Button style="flex: 1;" v-for="item in t.children" :key="item.key"
+                    @click="presetImageClip('rect', item.ratio)">{{  item.key  }}</Button>
+                </ButtonGroup>
+              </template>
             </div>
+          </template>
+          <Button class="no-padding" style="flex: 1;">
+            <IconDown />
+          </Button>
+        </Popover>
+      </ButtonGroup>
 
-            <template v-for="type in ratioClipOptions" :key="type.label">
-              <div class="title" v-if="type.label">按{{type.label}}：</div>
-              <ButtonGroup class="row">
-                <Button 
-                  style="flex: 1;"
-                  v-for="item in type.children"
-                  :key="item.key"
-                  @click="presetImageClip('rect', item.ratio)"
-                >{{item.key}}</Button>
-              </ButtonGroup>
-            </template>
-          </div>
-        </template>
-        <Button class="no-padding" style="flex: 1;"><IconDown /></Button>
-      </Popover>
-    </ButtonGroup>
+      <FileInput @change="files => replaceImage(files)">
+        <Button class="full-width-btn" style="margin-top: 16px">
+          <IconTransform class="btn-icon" />替换图片
+        </Button>
+      </FileInput>
+      <Button class="full-width-btn" @click="resetImage()">
+        <IconUndo class="btn-icon" /> 重置样式
+      </Button>
+      <Button class="full-width-btn" @click="setBackgroundImage()">
+        <IconTheme class="btn-icon" /> 设为背景
+      </Button>
+    </PanelItemContainer>
 
-    <Divider />
-    <ElementColorMask />
-    <Divider />
-    <ElementFilter />
-    <Divider />
-    <ElementOutline />
-    <Divider />
-    <ElementShadow />
-    <Divider />
-    
-    <FileInput @change="files => replaceImage(files)">
-      <Button class="full-width-btn"><IconTransform class="btn-icon" /> 替换图片</Button>
-    </FileInput>
-    <Button class="full-width-btn" @click="resetImage()"><IconUndo class="btn-icon" /> 重置样式</Button>
-    <Button class="full-width-btn" @click="setBackgroundImage()"><IconTheme class="btn-icon" /> 设为背景</Button>
+
+    <PanelItemContainer title="颜色">
+      <ElementColorMask />
+    </PanelItemContainer>
+
+    <PanelItemContainer title="滤镜">
+      <ElementFilter />
+    </PanelItemContainer>
+
+    <PanelItemContainer title="边框">
+      <ElementOutline />
+    </PanelItemContainer>
+
+    <PanelItemContainer title="阴影">
+      <ElementShadow />
+    </PanelItemContainer>
   </div>
 </template>
 
@@ -73,6 +82,7 @@ import ElementShadow from '../common/ElementShadow.vue'
 import ElementFlip from '../common/ElementFlip.vue'
 import ElementFilter from '../common/ElementFilter.vue'
 import ElementColorMask from '../common/ElementColorMask.vue'
+import PanelItemContainer from '../PanelItemContainer.vue'
 
 const shapeClipPathOptions = CLIPPATHS
 const ratioClipOptions = [
@@ -161,7 +171,7 @@ const presetImageClip = (shape: string, ratio = 0) => {
     originLeft,
     originTop,
   } = getImageElementDataBeforeClip()
-  
+
   // 纵横比裁剪（形状固定为矩形）
   if (ratio) {
     const imageRatio = originHeight / originWidth
@@ -265,9 +275,11 @@ const setBackgroundImage = () => {
   align-items: center;
   margin-bottom: 10px;
 }
+
 .switch-wrapper {
   text-align: right;
 }
+
 .origin-image {
   height: 100px;
   background-size: contain;
@@ -276,10 +288,12 @@ const setBackgroundImage = () => {
   background-color: $lightGray;
   margin-bottom: 10px;
 }
+
 .full-width-btn {
   width: 100%;
   margin-bottom: 10px;
 }
+
 .btn-icon {
   margin-right: 3px;
 }
@@ -292,11 +306,13 @@ const setBackgroundImage = () => {
     margin-bottom: 5px;
   }
 }
+
 .shape-clip {
   margin-bottom: 10px;
 
   @include flex-grid-layout();
 }
+
 .shape-clip-item {
   display: flex;
   justify-content: center;
