@@ -1,6 +1,6 @@
 <template>
   <div class="slide-animation-panel">
-    <PanelItemContainer title="切换动画" default-expand :has-divider="false">
+    <PanelItemContainer title="切换动画" default-expand>
       <div class="animation-pool">
         <div class="animation-item" :class="{ 'active': currentTurningMode === item.value }" v-for="item in animations"
           :key="item.label" @click="updateTurningMode(item.value)">

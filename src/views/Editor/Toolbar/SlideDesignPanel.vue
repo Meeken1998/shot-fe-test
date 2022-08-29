@@ -135,7 +135,7 @@
       <div class="row"><Button style="flex: 1;" @click="applyThemeToAllSlides()">应用主题到全部</Button></div>
     </PanelItemContainer>
 
-    <PanelItemContainer title="预置主题" :hasDivider="false">
+    <PanelItemContainer title="预置主题">
       <div class="theme-list">
         <div class="theme-item" v-for="(item, index) in PRESET_THEMES" :key="index" :style="{
           backgroundColor: item.background,
