@@ -6,9 +6,13 @@ self.addEventListener('message', async (e) => {
   const { json, docsId, jpg, type, token, isDev } = e.data
   const { post } = request.default(token, isDev)
   if (type === 'sync') {
-    await post(`/api/docs/${docsId}/update`, {
+    const { json: newSlidesJson } = await post(`/api/docs/${docsId}/update`, {
       json,
       previewImageUrl: jpg || defaultJpg,
+    })
+    self.postMessage({
+      type: 'resp',
+      json: newSlidesJson
     })
   }
 })

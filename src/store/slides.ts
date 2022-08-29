@@ -195,7 +195,7 @@ export const useSlidesStore = defineStore('slides', {
       const slideIndex = broadcastSlideIndex ?? this.slideIndex
       const addIndex = slideIndex + 1
       this.slides.splice(addIndex, 0, ...slides)
-      this._sync(this.docsId, this.slides.slice())
+      this.syncDocs(this.docsId, this.slides.slice())
       if (!fromBroadcast) {
         this.slideIndex = addIndex
         coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'addSlide', slideIndex: addIndex - 1, data: slide } }))
@@ -205,7 +205,7 @@ export const useSlidesStore = defineStore('slides', {
     updateSlide(props: Partial<Slide>, broadcastSlideIndex?: number, fromBroadcast = false) {
       const slideIndex = broadcastSlideIndex ?? this.slideIndex
       this.slides[slideIndex] = { ...this.slides[slideIndex], ...props }
-      this._sync(this.docsId, this.slides.slice())
+      this.syncDocs(this.docsId, this.slides.slice())
       if (!fromBroadcast) coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'updateSlide', slideIndex: this.slideIndex, data: props } }))
     },
 
@@ -224,7 +224,7 @@ export const useSlidesStore = defineStore('slides', {
 
       this.slideIndex = newIndex
       this.slides = this.slides.filter((item) => !slidesId.includes(item.id))
-      this._sync(this.docsId, this.slides.slice())
+      this.syncDocs(this.docsId, this.slides.slice())
       if (!fromBroadcast) coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'deleteSlide', slideIndex: this.slideIndex, data: slideId } }))
     },
 
@@ -239,7 +239,7 @@ export const useSlidesStore = defineStore('slides', {
       const currentSlideEls = this.slides[slideIndex].elements
       const newEls = [...currentSlideEls, ...elements]
       this.slides[slideIndex].elements = newEls
-      this._sync(this.docsId, this.slides.slice())
+      this.syncDocs(this.docsId, this.slides.slice())
       if (!fromBroadcast) coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'addElement', slideIndex: this.slideIndex, data: element } }))
     },
 
@@ -249,7 +249,7 @@ export const useSlidesStore = defineStore('slides', {
       const currentSlideEls = this.slides[slideIndex].elements
       const newEls = currentSlideEls.filter((item) => !elementIdList.includes(item.id))
       this.slides[slideIndex].elements = newEls
-      this._sync(this.docsId, this.slides.slice())
+      this.syncDocs(this.docsId, this.slides.slice())
       if (!fromBroadcast) coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'deleteElement', slideIndex: this.slideIndex, data: elementId } }))
     },
 
@@ -264,6 +264,17 @@ export const useSlidesStore = defineStore('slides', {
       })
       this.slides[slideIndex].elements = elements as PPTElement[]
       if (!fromBroadcast) coopWs?.send(JSON.stringify({ event: 'broadcast-update', data: { type: 'updateElement', slideIndex: this.slideIndex, data } }))
+    },
+
+    syncDocs(docsId: string, slides: Slide[]) {
+      worker.addEventListener('message', e => {
+        const { type, json } = e.data as Record<string, string>
+        if (type === 'resp') {
+          // 详见 src/workers/sync.worker.js
+          this.setSlides(JSON.parse(json))
+        }
+      })
+      this._sync(docsId, slides)
     },
 
     _sync: throttle(async (docsId: string, slides: Slide[]) => {
@@ -367,7 +378,7 @@ export const useSlidesStore = defineStore('slides', {
     cloudSlidesLoadedCallback() {
       if (this.cloudSlidesLoaded) return
       this.cloudSlidesLoaded = true
-      this._sync(this.docsId, this.slides.slice())
+      this.syncDocs(this.docsId, this.slides.slice())
     },
 
     closeWebsocket() {
