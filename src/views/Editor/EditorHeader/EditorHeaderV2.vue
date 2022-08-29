@@ -2,7 +2,8 @@
   <div class="editor-header-v2">
     <div class="flex-row" :style="{ flex: '1' }">
       <div class="logo-bar">
-        <img class="logo" src="https://static.aside.fun/upload/logo-no-text.svg" :draggable="false" />
+        <img class="logo" src="https://static.aside.fun/upload/logo-no-text.svg" :draggable="false"
+          @click="router.replace({ path: '/' })" />
         <div class="team-info" v-if="docsMeta.name && docsMeta?.team?.id">
           <div @click="handleTitleBlur">
             <div v-if="!isTitleInputVisible" class="title">{{ docsMeta.name }}</div>
@@ -47,7 +48,10 @@
       <img src="https://static.aside.fun/upload/metrics.svg" class="right-icon" :draggable="false" />
       <img src="https://static.aside.fun/upload/member.svg" class="right-icon" :draggable="false" />
       <img src="https://static.aside.fun/upload/share.svg" class="right-icon" :draggable="false" />
-      <img src="https://static.aside.fun/upload/play.svg" class="right-icon" :draggable="false" />
+      <Tooltip title="全屏演示 (F5)">
+        <img src="https://static.aside.fun/upload/play.svg" class="right-icon" :draggable="false"
+          @click="enterScreening()" />
+      </Tooltip>
     </div>
   </div>
 </template>
@@ -65,6 +69,9 @@ import { message } from 'ant-design-vue'
 import { debounce } from 'lodash'
 import router from '@/views/router'
 import { setTitle } from '@/utils/title'
+// import { enterFullscreen } from '@/utils/fullscreen'
+import useScreening from '@/hooks/useScreening'
+const { enterScreening } = useScreening()
 
 const slidesStore = useSlidesStore()
 const { mode, docsMeta, docs } = storeToRefs(slidesStore)
@@ -162,6 +169,7 @@ function handleBack2Team() {
     .logo {
       width: 32px;
       height: 48px;
+      cursor: pointer;
     }
 
     .team-info {
