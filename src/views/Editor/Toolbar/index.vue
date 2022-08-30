@@ -8,7 +8,7 @@
     </div>
   </div>
 
-  <div class="tabs-v2" :style="!toolbarState ? { paddingLeft: '16px', borderLeft: '1px solid #eee' } : {}">
+  <div class="tabs-v2">
     <div class="tab" :class="{ 'active': tab.value === toolbarState }" v-for="tab in currentTabs" :key="tab.value"
       @click="setToolbarState(tab.value)">
       <img :src="toolsetIconMapper[tab.label]" :draggable="false" />
@@ -138,8 +138,9 @@ const currentPanelComponent = computed(() => {
 
 .tabs-v2 {
   flex-shrink: 0;
-  padding: 12px 16px;
-  padding-left: 0;
+  padding: 12px;
+  // padding-left: 0;
+  background-color: #f9f9f9;
 
   .tab {
     display: flex;
@@ -149,24 +150,29 @@ const currentPanelComponent = computed(() => {
     user-select: none;
     gap: 4px;
     font-size: 12px;
-    width: 54px;
-    height: 54px;
+    width: 53px;
+    height: 53px;
     border-radius: 50%;
-    background-color: #f7f7f7;
+    background-color: #fff;
     transition: background-color 0.3s;
     letter-spacing: 0.5px;
-
-    &.active {
-      background-color: #ebebeb;
-    }
-
-    &:not(:first-child) {
-      margin-top: 16px;
-    }
+    border: 1px solid #eee;
 
     img {
       width: 16px;
       height: 16px;
+    }
+
+    &:hover {
+      background-color: #fafafa;
+    }
+
+    &.active {
+      background-color: #eee;
+    }
+
+    &:not(:first-child) {
+      margin-top: 16px;
     }
   }
 }

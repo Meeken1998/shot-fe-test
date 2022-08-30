@@ -47,30 +47,34 @@ defineProps({
 </script>
 
 <style lang="scss" scoped>
-$menuWidth: 170px;
+$menuWidth: 200px;
 $menuHeight: 30px;
 $subMenuWidth: 120px;
 
 .menu-content {
   width: $menuWidth;
-  padding: 5px 0;
+  padding: 6px 0;
   background: #fff;
   border: 1px solid $borderColor;
   box-shadow: $boxShadow;
   border-radius: 2px;
   list-style: none;
   margin: 0;
+  border-radius: $borderRadius;
 }
 .menu-item {
-  padding: 0 20px;
+  padding: 0 12px;
+  padding-left: 24px;
   color: #555;
-  font-size: 12px;
+  font-size: 13px;
   transition: all $transitionDelayFast;
   white-space: nowrap;
   height: $menuHeight;
   line-height: $menuHeight;
   background-color: #fff;
   cursor: pointer;
+  margin: 0 6px;
+  border-radius: calc($borderRadius / 2);
 
   &:not(.disable):hover > .menu-item-content > .sub-menu {
     display: block;

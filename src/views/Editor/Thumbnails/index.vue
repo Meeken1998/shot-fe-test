@@ -1,11 +1,12 @@
 <template>
   <div class="thumbnails" @mousedown="() => setThumbnailsFocus(true)" v-click-outside="() => setThumbnailsFocus(false)"
     v-contextmenu="contextmenusThumbnails">
-    <div class="add-slide">
-      <div class="btn" @click="createSlide()">
-        <IconPlus class="icon" />
-      </div>
-      <!-- <Popover trigger="click" placement="bottomLeft" v-model:visible="presetLayoutPopoverVisible">
+    <Tooltip title="新建幻灯片 (Enter)" :mouseEnterDelay="1">
+      <div class="add-slide">
+        <div class="btn" @click="createSlide()">
+          <IconPlus class="icon" />
+        </div>
+        <!-- <Popover trigger="click" placement="bottomLeft" v-model:visible="presetLayoutPopoverVisible">
         <template #content>
           <LayoutPool @select="slide => { createSlideByTemplate(slide); presetLayoutPopoverVisible = false }" />
         </template>
@@ -13,7 +14,8 @@
           <IconDown />
         </div>
       </Popover> -->
-    </div>
+      </div>
+    </Tooltip>
 
     <Draggable class="thumbnail-list" :modelValue="slides" :animation="300" :scroll="true" :scrollSensitivity="50"
       :setData="null" @end="handleDragEnd" itemKey="id">
@@ -22,14 +24,14 @@
           'active': slideIndex === index,
           'selected': selectedSlidesIndex.includes(index),
         }" @mousedown="$event => handleClickSlideThumbnail($event, index)" v-contextmenu="contextmenusThumbnailItem">
-          <div class="label" :class="{ 'offset-left': index >= 99 }">{{ index + 1 }}</div>
+          <div class="label" :class="{ 'offset-left': index >= 99 }">{{  index + 1  }}</div>
           <ThumbnailSlide class="thumbnail" :slide="element" :size="190" :visible="index < slidesLoadLimit"
-            :coopUser="slideEditor[index]" />
+            :coopUser="slideEditor[index]" :selected="selectedSlidesIndex.includes(index)" />
         </div>
       </template>
     </Draggable>
 
-    <div class="page-number">幻灯片 {{ slideIndex + 1 }} / {{ slides.length }}</div>
+    <div class="page-number">幻灯片 {{  slideIndex + 1  }} / {{  slides.length  }}</div>
   </div>
 </template>
 

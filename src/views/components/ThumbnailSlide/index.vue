@@ -2,6 +2,8 @@
   <div class="thumbnail-slide" :style="{
     width: size + 'px',
     height: size * viewportRatio + 'px',
+    outlineColor: selected ? '#6B9056' : '#d8d8d880',
+    borderRadius: '3px'
   }" style="position: relative">
     <div class="elements" :style="{
       width: VIEWPORT_SIZE + 'px',
@@ -50,6 +52,11 @@ const props = defineProps({
     type: Object as PropType<ICoopUserInfo>,
     required: false,
   },
+  selected: {
+    type: Boolean,
+    required: false,
+    default: false
+  }
 })
 
 const slidesStore = useSlidesStore()
@@ -68,6 +75,7 @@ onMounted(() => slidesStore.cloudSlidesLoadedCallback())
 .thumbnail-slide {
   background-color: #fff;
   overflow: hidden;
+  outline: 2px solid #d8d8d880;
 }
 
 .elements {

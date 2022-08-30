@@ -144,6 +144,8 @@ const goIssues = () => {
   font-size: 14px;
   padding: 0 10px;
   cursor: pointer;
+  margin: 0 8px;
+  border-radius: calc($borderRadius / 2);
 
   .text {
     margin-left: 4px;
