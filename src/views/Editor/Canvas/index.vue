@@ -305,7 +305,7 @@ provide(injectKeySlideScale, canvasScale)
 }
 .viewport-wrapper {
   position: absolute;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 1px 4px 0 rgba(0, 0, 0, 0.1);
 }
 .viewport {
   position: absolute;
