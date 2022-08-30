@@ -6,7 +6,7 @@
           @click="router.replace({ path: '/' })" />
         <div class="team-info" v-if="docsMeta.name && docsMeta?.team?.id">
           <div @click="handleTitleBlur">
-            <div v-if="!isTitleInputVisible" class="title">{{ docsMeta.name }}</div>
+            <div v-if="!isTitleInputVisible" class="title">{{  docsMeta.name  }}</div>
             <input ref="inputRef" v-else class="title edit-title" v-model="docsMeta.name" v-on:keyup="(e) => {
               if (e.keyCode === 13) {
                 handleTitleChange()
@@ -17,7 +17,7 @@
             <Tooltip :title="`返回到「${docsMeta?.team?.name}」团队首页`" :mouseEnterDelay="1">
               <div class="second-link flex-row" @click="handleBack2Team()">
                 <LeftOutlined :style="{ fontSize: '12px' }" />
-                <span>{{ docsMeta?.team?.name }}</span>
+                <span>{{  docsMeta?.team?.name  }}</span>
               </div>
             </Tooltip>
           </div>
@@ -40,9 +40,12 @@
       </div>
     </div>
 
-    <ToolBarV2 />
+    <ToolBarV2 :narrow-screen="clientWidth < 1600" />
 
-    <div class="right-side">
+    <div :class="{
+      'right-side': true,
+      'small-screen': clientWidth < 1600
+    }">
       <ScaleSelector class="scale-bar-container" />
       <CoUsers class="co-users-container" />
       <img src="https://static.aside.fun/upload/metrics.svg" class="right-icon" :draggable="false" />
@@ -154,6 +157,17 @@ function handleBack2Team() {
 
       &:last-child {
         margin-left: calc(24px + 16px);
+      }
+    }
+
+    &.small-screen {
+      gap: 0;
+      .co-users-container {
+        margin-right: 12px !important;
+      }
+
+      .right-icon:last-child {
+        margin-left: 12px;
       }
     }
   }

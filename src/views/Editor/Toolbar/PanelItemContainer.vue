@@ -70,7 +70,7 @@ function handleExpandClick() {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 16px;
     user-select: none;
 

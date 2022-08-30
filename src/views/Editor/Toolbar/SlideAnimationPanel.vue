@@ -1,15 +1,13 @@
 <template>
   <div class="slide-animation-panel">
-    <PanelItemContainer title="切换动画" default-expand>
-      <div class="animation-pool">
+    <div class="animation-pool">
         <div class="animation-item" :class="{ 'active': currentTurningMode === item.value }" v-for="item in animations"
           :key="item.label" @click="updateTurningMode(item.value)">
           <div :class="['animation-block', item.value]"></div>
           <div class="animation-text">{{ item.label }}</div>
         </div>
       </div>
-      <Button style="width: 100%;" @click="applyAllSlide()">应用到全部</Button>
-    </PanelItemContainer>
+      <Button style="width: 100%;margin-top: 8px;" @click="applyAllSlide()">应用到全部</Button>
   </div>
 </template>
 
@@ -19,7 +17,6 @@ import { storeToRefs } from 'pinia'
 import { useSlidesStore } from '@/store'
 import { TurningMode } from '@/types/slides'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
-import PanelItemContainer from './PanelItemContainer.vue'
 
 interface Animations {
   label: string
@@ -97,7 +94,7 @@ const applyAllSlide = () => {
 .animation-block {
   width: 64px;
   height: 36px;
-  background: #666;
+  background: $themeColor;
   position: relative;
   overflow: hidden;
 

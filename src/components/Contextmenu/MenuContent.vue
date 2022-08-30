@@ -65,7 +65,6 @@ $subMenuWidth: 120px;
 .menu-item {
   padding: 0 12px;
   padding-left: 24px;
-  color: #555;
   font-size: 13px;
   transition: all $transitionDelayFast;
   white-space: nowrap;

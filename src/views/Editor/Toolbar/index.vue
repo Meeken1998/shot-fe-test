@@ -2,6 +2,17 @@
   <div class="tool-bar-container">
 
     <div v-if="toolbarState" class="toolbar">
+      <div class="title">
+        <div class="flex-row">
+          <img :src="toolsetIconMapper[toolbarLabel]" :draggable="false" />
+          <span style="margin-left: 8px">{{  toolbarLabel  }}</span>
+        </div>
+        <Tooltip title="隐藏面板">
+          <div class="button" @click="mainStore.setToolbarState(null)">
+            <CloseOutlined />
+          </div>
+        </Tooltip>
+      </div>
       <div class="content">
         <component :is="currentPanelComponent"></component>
       </div>
@@ -10,9 +21,9 @@
 
   <div class="tabs-v2">
     <div class="tab" :class="{ 'active': tab.value === toolbarState }" v-for="tab in currentTabs" :key="tab.value"
-      @click="setToolbarState(tab.value)">
+      @click="setToolbarState(tab)">
       <img :src="toolsetIconMapper[tab.label]" :draggable="false" />
-      <span>{{ tab.label }}</span>
+      <span>{{  tab.label  }}</span>
     </div>
   </div>
 </template>
@@ -30,6 +41,7 @@ import SlideDesignPanel from './SlideDesignPanel.vue'
 import SlideAnimationPanel from './SlideAnimationPanel.vue'
 import MultiPositionPanel from './MultiPositionPanel.vue'
 import SymbolPanel from './SymbolPanel.vue'
+import { CloseOutlined } from '@ant-design/icons-vue'
 
 interface ElementTabs {
   label: string
@@ -73,19 +85,24 @@ const toolsetIconMapper: Record<string, string> = {
   符号: 'https://static.aside.fun/upload/symbol.svg'
 }
 
-const setToolbarState = (value: ToolbarStates) => {
-  if (toolbarState.value === value) {
+const setToolbarState = (tab: ElementTabs) => {
+  if (toolbarState.value === tab.value) {
     // 取消选中
     mainStore.setToolbarState(null)
     return
   }
-  mainStore.setToolbarState(value)
+  mainStore.setToolbarState(tab.value)
 }
 
 const currentTabs = computed(() => {
   if (!activeElementIdList.value.length) return slideTabs
   else if (activeElementIdList.value.length > 1) return multiSelectTabs
   return elementTabs.value
+})
+
+const toolbarLabel = computed<string>(() => {
+  const tab = currentTabs.value.find(c => c.value === toolbarState.value)
+  return tab?.label || ''
 })
 
 watch(currentTabs, () => {
@@ -118,19 +135,54 @@ const currentPanelComponent = computed(() => {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  background: #f9f9f9;
 }
 
 .toolbar {
-  width: 250px;
-  border-left: solid 1px $borderColor;
+  width: calc(280px - 16px);
+  height: calc(100vh - 72px - 16px - 2 * 16px);
+  border: 1px solid $borderColor;
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  padding: 8px;
+  padding-bottom: 8px;
+  margin: 16px;
+  margin-right: 0;
+  border-radius: $borderRadius;
+  overflow: hidden;
+
+  .title {
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid $borderColor;
+    user-select: none;
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+
+    .button {
+      padding: 8px;
+      font-size: 12px;
+      transition: all .3s;
+      border-radius: 4px;
+
+      &:hover {
+        background-color: #f7f7f7;
+      }
+    }
+  }
 }
 
 .content {
-  padding: 12px;
+  padding: 16px;
   font-size: 13px;
   overflow-y: overlay;
   overflow-x: hidden;

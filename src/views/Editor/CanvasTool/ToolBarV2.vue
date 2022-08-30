@@ -1,5 +1,13 @@
 <template>
-  <div class="toolbar-v2">
+  <div :class="{
+    'toolbar-v2': true,
+    'small-screen': props.narrowScreen
+  }">
+    <div v-if="props.narrowScreen" class="tool-btn" style="margin-right: 12px;">
+      <img src="https://static.aside.fun/upload/shot.svg" class="icon" :draggable="false" />
+      <span>纷镜</span>
+    </div>
+
     <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="撤销">
       <div class="tool-btn" @click="undo()">
         <img src="https://static.aside.fun/upload/undo.svg" class="icon" :draggable="false" />
@@ -8,7 +16,7 @@
     </Tooltip>
 
     <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="重做">
-      <div class="tool-btn" @click="redo()">
+      <div class="tool-btn" @click="redo()" :style="{ marginRight: props.narrowScreen ? '12px' : '24px' }">
         <img src="https://static.aside.fun/upload/remake.svg" class="icon" :draggable="false" />
         <span>重做</span>
       </div>
@@ -108,7 +116,7 @@
   </Modal>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, defineProps } from 'vue'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 import { useMainStore } from '@/store'
 import { getImageDataURL } from '@/utils/image'
@@ -121,6 +129,13 @@ import ChartPool from './ChartPool.vue'
 import TableGenerator from './TableGenerator.vue'
 import MediaInput from './MediaInput.vue'
 import LaTeXEditor from '@/components/LaTeXEditor/index.vue'
+
+const props = defineProps({
+  narrowScreen: {
+    type: Boolean,
+    required: true,
+  }
+})
 
 const shapePoolVisible = ref(false)
 const linePoolVisible = ref(false)
@@ -200,10 +215,17 @@ const drawShape = (shape: ShapePoolItem) => {
       width: 18px;
       height: 18px;
     }
+  }
 
-    &:nth-child(2) {
-      // 重做
-      margin-right: 24px;
+  &.small-screen {
+    .tool-btn {
+      padding: 12px 8px;
+      gap: 6px;
+    }
+
+    .icon {
+      width: 16px;
+      height: 16px;
     }
   }
 

@@ -1,90 +1,88 @@
 <template>
   <div class="element-animation-panel">
-    <PanelItemContainer title="动画">
-      <div class="element-animation" v-if="handleElement">
-        <Popover trigger="click" v-model:visible="animationPoolVisible"
-          @visibleChange="visible => handlePopoverVisibleChange(visible)">
-          <template #content>
-            <div class="tabs">
-              <div :class="['tab', tab.key, { 'active': activeTab === tab.key }]" v-for="tab in tabs" :key="tab.key"
-                @click="activeTab = tab.key">{{  tab.label  }}</div>
-            </div>
-            <template v-for="key in animationTypes">
-              <div :class="['animation-pool', key]" :key="key" v-if="activeTab === key">
-                <div class="pool-type" :key="effect.name" v-for="effect in animations[key]">
-                  <div class="type-title">{{  effect.name  }}：</div>
-                  <div class="pool-item-wrapper">
-                    <div class="pool-item" v-for="item in effect.children" :key="item.name"
-                      @mouseenter="hoverPreviewAnimation = item.value" @mouseleave="hoverPreviewAnimation = ''"
-                      @click="addAnimation(key, item.value)">
-                      <div class="animation-box" :class="[
-                        `${ANIMATION_CLASS_PREFIX}animated`,
-                        `${ANIMATION_CLASS_PREFIX}fast`,
-                        hoverPreviewAnimation === item.value && `${ANIMATION_CLASS_PREFIX}${item.value}`,
-                      ]">{{  item.name  }}</div>
-                    </div>
+    <div class="element-animation" v-if="handleElement">
+      <Popover trigger="click" v-model:visible="animationPoolVisible"
+        @visibleChange="visible => handlePopoverVisibleChange(visible)">
+        <template #content>
+          <div class="tabs">
+            <div :class="['tab', tab.key, { 'active': activeTab === tab.key }]" v-for="tab in tabs" :key="tab.key"
+              @click="activeTab = tab.key">{{  tab.label  }}</div>
+          </div>
+          <template v-for="key in animationTypes">
+            <div :class="['animation-pool', key]" :key="key" v-if="activeTab === key">
+              <div class="pool-type" :key="effect.name" v-for="effect in animations[key]">
+                <div class="type-title">{{  effect.name  }}：</div>
+                <div class="pool-item-wrapper">
+                  <div class="pool-item" v-for="item in effect.children" :key="item.name"
+                    @mouseenter="hoverPreviewAnimation = item.value" @mouseleave="hoverPreviewAnimation = ''"
+                    @click="addAnimation(key, item.value)">
+                    <div class="animation-box" :class="[
+                      `${ANIMATION_CLASS_PREFIX}animated`,
+                      `${ANIMATION_CLASS_PREFIX}fast`,
+                      hoverPreviewAnimation === item.value && `${ANIMATION_CLASS_PREFIX}${item.value}`,
+                    ]">{{  item.name  }}</div>
                   </div>
                 </div>
-                <div class="mask" v-if="!popoverMaskHide"></div>
               </div>
-            </template>
-          </template>
-          <Button class="element-animation-btn" @click="handleAnimationId = ''">
-            <IconEffects style="margin-right: 5px;" /> 添加动画
-          </Button>
-        </Popover>
-      </div>
-
-      <div class="tip" v-else>
-        <IconClick style="margin-right: 5px;" /> 选中画布中的元素添加动画
-      </div>
-
-      <div class="tip" v-if="!animationSequence?.length" style="margin-top: 24px">暂无已添加动画</div>
-
-      <Draggable class="animation-sequence" :modelValue="animationSequence" :animation="300" :scroll="true"
-        :scrollSensitivity="50" handle=".sequence-content" @end="handleDragEnd" itemKey="id">
-        <template #item="{ element }">
-          <div class="sequence-item" :class="[element.type, { 'active': handleElement?.id === element.elId }]">
-            <div class="sequence-content">
-              <div class="index">{{  element.index  }}</div>
-              <div class="text">【{{  element.elType  }}】{{  element.animationEffect  }}</div>
-              <div class="handler">
-                <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="预览">
-                  <IconPlayOne class="handler-btn"
-                    @click="runAnimation(element.elId, element.effect, element.duration)" />
-                </Tooltip>
-                <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="删除">
-                  <IconCloseSmall class="handler-btn" @click="deleteAnimation(element.id)" />
-                </Tooltip>
-              </div>
+              <div class="mask" v-if="!popoverMaskHide"></div>
             </div>
+          </template>
+        </template>
+        <Button class="element-animation-btn" @click="handleAnimationId = ''">
+          <IconEffects style="margin-right: 5px;" /> 添加动画
+        </Button>
+      </Popover>
+    </div>
 
-            <div class="configs" v-if="handleElementAnimation[0]?.elId === element.elId">
-              <Divider style="margin: 12px 0 16px 0;" />
+    <div class="tip" v-else>
+      <IconClick style="margin-right: 5px;" /> 选中画布中的元素添加动画
+    </div>
 
-              <div class="config-item">
-                <div style="flex: 2;">时长：</div>
-                <InputNumber :min="500" :max="3000" :step="500" :value="element.duration"
-                  @change="value => updateElementAnimationDuration(element.id, value as number)" style="flex: 4;" />
-              </div>
-              <div class="config-item">
-                <div style="flex: 2;">触发：</div>
-                <Select :value="element.trigger"
-                  @change="value => updateElementAnimationTrigger(element.id, value as 'click' | 'meantime' | 'auto')"
-                  style="flex: 4;">
-                  <SelectOption value="click">主动触发</SelectOption>
-                  <SelectOption value="meantime">与上一动画同时</SelectOption>
-                  <SelectOption value="auto">上一动画之后</SelectOption>
-                </Select>
-              </div>
-              <div class="config-item">
-                <Button style="flex: 1;" @click="openAnimationPool(element.id)">更换动画</Button>
-              </div>
+    <div class="tip" v-if="!animationSequence?.length" style="margin-top: 24px">暂无已添加动画</div>
+
+    <Draggable class="animation-sequence" :modelValue="animationSequence" :animation="300" :scroll="true"
+      :scrollSensitivity="50" handle=".sequence-content" @end="handleDragEnd" itemKey="id">
+      <template #item="{ element }">
+        <div class="sequence-item" :class="[element.type, { 'active': handleElement?.id === element.elId }]">
+          <div class="sequence-content">
+            <div class="index">{{  element.index  }}</div>
+            <div class="text">【{{  element.elType  }}】{{  element.animationEffect  }}</div>
+            <div class="handler">
+              <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="预览">
+                <IconPlayOne class="handler-btn"
+                  @click="runAnimation(element.elId, element.effect, element.duration)" />
+              </Tooltip>
+              <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="删除">
+                <IconCloseSmall class="handler-btn" @click="deleteAnimation(element.id)" />
+              </Tooltip>
             </div>
           </div>
-        </template>
-      </Draggable>
-    </PanelItemContainer>
+
+          <div class="configs" v-if="handleElementAnimation[0]?.elId === element.elId">
+            <Divider style="margin: 12px 0 16px 0;" />
+
+            <div class="config-item">
+              <div style="flex: 2;">时长：</div>
+              <InputNumber :min="500" :max="3000" :step="500" :value="element.duration"
+                @change="value => updateElementAnimationDuration(element.id, value as number)" style="flex: 4;" />
+            </div>
+            <div class="config-item">
+              <div style="flex: 2;">触发：</div>
+              <Select :value="element.trigger"
+                @change="value => updateElementAnimationTrigger(element.id, value as 'click' | 'meantime' | 'auto')"
+                style="flex: 4;">
+                <SelectOption value="click">主动触发</SelectOption>
+                <SelectOption value="meantime">与上一动画同时</SelectOption>
+                <SelectOption value="auto">上一动画之后</SelectOption>
+              </Select>
+            </div>
+            <div class="config-item">
+              <Button style="flex: 1;" @click="openAnimationPool(element.id)">更换动画</Button>
+            </div>
+          </div>
+        </div>
+      </template>
+    </Draggable>
   </div>
 </template>
 
@@ -104,7 +102,6 @@ import {
 } from '@/configs/animation'
 import { ELEMENT_TYPE_ZH } from '@/configs/element'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
-import PanelItemContainer from './PanelItemContainer.vue'
 import Draggable from 'vuedraggable'
 
 const animationEffects: { [key: string]: string } = {}

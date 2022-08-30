@@ -17,7 +17,7 @@
         width: viewportStyles.width * canvasScale + 'px',
         height: viewportStyles.height * canvasScale + 'px',
         left: viewportStyles.left + 'px',
-        top: viewportStyles.top + 'px',
+        top: viewportStyles.top - 30 + 'px',
       }"
     >
       <div class="operates">

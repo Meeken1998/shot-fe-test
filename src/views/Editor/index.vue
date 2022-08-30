@@ -5,8 +5,9 @@
       <Thumbnails class="layout-content-left" />
       <div class="layout-content-center">
         <!-- <CanvasTool class="center-top" /> -->
-        <Canvas class="center-body" :style="{ height: `calc(100% - ${remarkHeight + 40}px)` }" />
-        <Remark class="center-bottom" v-model:height="remarkHeight" :style="{ height: `${remarkHeight}px` }" />
+        <Canvas class="center-body" :style="{ height: `100%` }" />
+        <!-- :style="{ height: `calc(100% - ${remarkHeight + 40}px)` }" -->
+        <!-- <Remark class="center-bottom" v-model:height="remarkHeight" :style="{ height: `${remarkHeight}px` }" /> -->
       </div>
       <Toolbar class="layout-content-right" />
     </div>

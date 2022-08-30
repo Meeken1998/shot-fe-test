@@ -1,6 +1,6 @@
 <template>
   <div class="symbol-panel">
-    <PanelItemContainer v-for="item in SYMBOL_LIST" :title="item.label" :key="item.key"
+    <PanelItemContainer v-for="item in SYMBOL_LIST" :title="`插入${item.label}`" :key="item.key"
       @onexpand="handleTabClick(item.key)" :expand="item.key === selectedSymbolKey">
       <div class="pool">
         <div class="symbol-item" v-for="(symbol, index) in SYMBOL_MAPPER[item.key]" :key="index" @click="selectSymbol(symbol)">
