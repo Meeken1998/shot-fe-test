@@ -156,7 +156,7 @@ function handleBack2Team() {
       }
 
       &:last-child {
-        margin-left: calc(24px + 16px);
+        margin-left: calc(24px + 12px);
       }
     }
 
