@@ -60,7 +60,7 @@ const toolsetIconMapper: Record<string, string> = {
   设计: 'https://static.aside.fun/upload/skin.svg',
   动画: 'https://static.aside.fun/upload/animation.svg',
   符号: 'https://static.aside.fun/upload/symbol.svg',
-  历史: 'https://static.aside.fun/upload/history.svg'
+  历史: 'https://static.aside.fun/upload/history-v2.svg'
 }
 
 const setToolbarState = (tab: ElementTabs) => {
