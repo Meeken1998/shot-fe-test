@@ -274,7 +274,7 @@ export const useSlidesStore = defineStore('slides', {
           this.setSlides(JSON.parse(json))
         }
       })
-      this._sync(docsId, slides)
+      setTimeout(() => this._sync(docsId, slides), 1000)
     },
 
     _sync: throttle(async (docsId: string, slides: Slide[]) => {
