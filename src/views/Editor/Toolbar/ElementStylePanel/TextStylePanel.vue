@@ -1,14 +1,5 @@
 <template>
   <div class="text-style-panel">
-
-    <PanelItemContainer title="预设">
-      <div class="preset-style">
-        <div class="preset-style-item" v-for="item in presetStyles" :key="item.label" :style="item.style"
-          @click="emitBatchRichTextCommand(item.cmd)">{{  item.label  }}</div>
-      </div>
-    </PanelItemContainer>
-
-
     <PanelItemContainer title="字体" default-expand>
       <Select style="width: 100%;margin-bottom: 12px" :value="richTextAttrs.fontname"
         @change="value => emitRichTextCommand('fontname', value as string)">
@@ -146,7 +137,7 @@
       </CheckboxButtonGroup>
     </PanelItemContainer>
 
-    <PanelItemContainer title="位置">
+    <PanelItemContainer title="位置" default-expand>
       <RadioGroup class="row" button-style="solid" :value="richTextAttrs.align"
         @change="e => emitRichTextCommand('align', e.target.value)">
         <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="左对齐">
@@ -165,6 +156,13 @@
           </RadioButton>
         </Tooltip>
       </RadioGroup>
+    </PanelItemContainer>
+
+    <PanelItemContainer title="预设样式">
+      <div class="preset-style">
+        <div class="preset-style-item" v-for="item in presetStyles" :key="item.label" :style="item.style"
+          @click="emitBatchRichTextCommand(item.cmd)">{{  item.label  }}</div>
+      </div>
     </PanelItemContainer>
 
     <PanelItemContainer title="段落">

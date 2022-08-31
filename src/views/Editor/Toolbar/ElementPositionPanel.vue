@@ -1,25 +1,16 @@
 <template>
   <div class="element-positopn-panel">
-    <PanelItemContainer title="层级">
-      <ButtonGroup class="row">
-        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.TOP)">
-          <IconSendToBack class="btn-icon" /> 置于顶层
-        </Button>
-        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.BOTTOM)">
-          <IconBringToFrontOne class="btn-icon" /> 置于底层
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup class="row">
-        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.UP)">
-          <IconBringToFront class="btn-icon" /> 上移一层
-        </Button>
-        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.DOWN)">
-          <IconSentToBack class="btn-icon" /> 下移一层
-        </Button>
-      </ButtonGroup>
-    </PanelItemContainer>
+    <PanelItemContainer title="位置" defaultExpand>
+      <div class="row">
+        <InputNumber :step="5" :value="left" @change="value => updateLeft(value as number)" style="flex: 4;">
+          <template #prefix>X:</template>
+        </InputNumber>
+        <div style="flex: 1;"></div>
+        <InputNumber :step="5" :value="top" @change="value => updateTop(value as number)" style="flex: 4;">
+          <template #prefix>Y:</template>
+        </InputNumber>
+      </div>
 
-    <PanelItemContainer title="对齐">
       <ButtonGroup class="row">
         <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="左对齐">
           <Button style="flex: 1;" @click="alignElementToCanvas(ElementAlignCommands.LEFT)">
@@ -56,20 +47,8 @@
       </ButtonGroup>
     </PanelItemContainer>
 
-    <PanelItemContainer title="位置">
-      <div class="row">
-        <InputNumber :step="5" :value="left" @change="value => updateLeft(value as number)" style="flex: 4;">
-          <template #prefix>X:</template>
-        </InputNumber>
-        <div style="flex: 1;"></div>
-        <InputNumber :step="5" :value="top" @change="value => updateTop(value as number)" style="flex: 4;">
-          <template #prefix>Y:</template>
-        </InputNumber>
-      </div>
-    </PanelItemContainer>
-
     <template v-if="handleElement!.type !== 'line'">
-      <PanelItemContainer title="大小">
+      <PanelItemContainer title="尺寸" defaultExpand>
         <div class="row">
           <InputNumber :min="minSize" :max="1500" :step="5" :value="width"
             @change="value => updateWidth(value as number)" style="flex: 4;">
@@ -91,6 +70,25 @@
         </div>
       </PanelItemContainer>
     </template>
+
+    <PanelItemContainer title="层级">
+      <ButtonGroup class="row">
+        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.TOP)">
+          <IconSendToBack class="btn-icon" /> 置于顶层
+        </Button>
+        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.BOTTOM)">
+          <IconBringToFrontOne class="btn-icon" /> 置于底层
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup class="row">
+        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.UP)">
+          <IconBringToFront class="btn-icon" /> 上移一层
+        </Button>
+        <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.DOWN)">
+          <IconSentToBack class="btn-icon" /> 下移一层
+        </Button>
+      </ButtonGroup>
+    </PanelItemContainer>
 
     <template v-if="!['line', 'video', 'audio'].includes(handleElement!.type)">
       <PanelItemContainer title="旋转">

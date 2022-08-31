@@ -1,6 +1,14 @@
 <template>
   <div class="slide-design-panel">
-    <PanelItemContainer title="背景填充">
+    <PanelItemContainer title="画布尺寸" defaultExpand>
+      <Select style="width: 100%" :value="viewportRatio" @change="value => updateViewportRatio(value as number)">
+        <SelectOption :value="0.5625">宽屏 16 : 9</SelectOption>
+        <SelectOption :value="0.625">宽屏 16 ：10</SelectOption>
+        <SelectOption :value="0.75">标准 4 ：3</SelectOption>
+      </Select>
+    </PanelItemContainer>
+
+    <PanelItemContainer title="背景填充" defaultExpand>
       <div class="row">
         <Select style="flex: 10;" :value="background.type"
           @change="value => updateBackgroundType(value as 'gradient' | 'image' | 'solid')">
@@ -76,26 +84,18 @@
       <div class="row"><Button style="flex: 1;" @click="applyBackgroundAllSlide()">应用背景到全部</Button></div>
     </div>
 
-    <PanelItemContainer title="画布尺寸">
-      <Select style="width: 100%" :value="viewportRatio" @change="value => updateViewportRatio(value as number)">
-        <SelectOption :value="0.5625">宽屏 16 : 9</SelectOption>
-        <SelectOption :value="0.625">宽屏 16 ：10</SelectOption>
-        <SelectOption :value="0.75">标准 4 ：3</SelectOption>
-      </Select>
-    </PanelItemContainer>
-
-    <PanelItemContainer title="全局主题">
+    <PanelItemContainer title="全局主题" defaultExpand>
       <div class="row">
         <div style="flex: 2;">字体：</div>
         <Select style="flex: 3;" :value="theme.fontName" @change="value => updateTheme({ fontName: value as string })">
           <SelectOptGroup label="系统字体">
             <SelectOption v-for="font in availableFonts" :key="font.value" :value="font.value">
-              <span :style="{ fontFamily: font.value }">{{ font.label }}</span>
+              <span :style="{ fontFamily: font.value }">{{  font.label  }}</span>
             </SelectOption>
           </SelectOptGroup>
           <SelectOptGroup label="在线字体">
             <SelectOption v-for="font in WEB_FONTS" :key="font.value" :value="font.value">
-              <span>{{ font.label }}</span>
+              <span>{{  font.label  }}</span>
             </SelectOption>
           </SelectOptGroup>
         </Select>
@@ -135,7 +135,7 @@
       <div class="row"><Button style="flex: 1;" @click="applyThemeToAllSlides()">应用主题到全部</Button></div>
     </PanelItemContainer>
 
-    <PanelItemContainer title="预置主题">
+    <PanelItemContainer title="预设样式">
       <div class="theme-list">
         <div class="theme-item" v-for="(item, index) in PRESET_THEMES" :key="index" :style="{
           backgroundColor: item.background,

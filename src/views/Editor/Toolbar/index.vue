@@ -1,11 +1,11 @@
 <template>
   <div class="tool-bar-container">
 
-    <div v-if="toolbarState" class="toolbar">
+    <div v-if="selectedTab" class="toolbar">
       <div class="title">
         <div class="flex-row">
-          <img :src="toolsetIconMapper[toolbarLabel]" :draggable="false" />
-          <span style="margin-left: 8px">{{  toolbarLabel  }}</span>
+          <img :src="toolsetIconMapper[selectedTab.label]" :draggable="false" />
+          <span style="margin-left: 8px">{{ selectedTab.label }}</span>
         </div>
         <Tooltip title="隐藏面板">
           <div class="button" @click="mainStore.setToolbarState(null)">
@@ -14,7 +14,8 @@
         </Tooltip>
       </div>
       <div class="content">
-        <component :is="currentPanelComponent"></component>
+        <component v-if="!selectedTab.disabledTips" :is="currentPanelComponent"></component>
+        <div v-else class="tips">{{ selectedTab.disabledTips }}</div>
       </div>
     </div>
   </div>
@@ -23,13 +24,13 @@
     <div class="tab" :class="{ 'active': tab.value === toolbarState }" v-for="tab in currentTabs" :key="tab.value"
       @click="setToolbarState(tab)">
       <img :src="toolsetIconMapper[tab.label]" :draggable="false" />
-      <span>{{  tab.label  }}</span>
+      <span>{{ tab.label }}</span>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '@/store'
 import { ToolbarStates } from '@/types/toolbar'
@@ -46,43 +47,20 @@ import { CloseOutlined } from '@ant-design/icons-vue'
 interface ElementTabs {
   label: string
   value: ToolbarStates
+  disabledTips?: string
 }
 
 const mainStore = useMainStore()
-const { activeElementIdList, handleElement, toolbarState } = storeToRefs(mainStore)
-
-const elementTabs = computed<ElementTabs[]>(() => {
-  if (handleElement.value?.type === 'text') {
-    return [
-      { label: '样式', value: ToolbarStates.EL_STYLE },
-      { label: '符号', value: ToolbarStates.SYMBOL },
-      { label: '位置', value: ToolbarStates.EL_POSITION },
-      { label: '动画', value: ToolbarStates.EL_ANIMATION },
-    ]
-  }
-  return [
-    { label: '样式', value: ToolbarStates.EL_STYLE },
-    { label: '位置', value: ToolbarStates.EL_POSITION },
-    { label: '动画', value: ToolbarStates.EL_ANIMATION },
-  ]
-})
-const slideTabs = [
-  { label: '样式', value: ToolbarStates.SLIDE_DESIGN },
-  { label: '切换', value: ToolbarStates.SLIDE_ANIMATION },
-  { label: '动画', value: ToolbarStates.EL_ANIMATION },
-]
-const multiSelectTabs = [
-  { label: '样式', value: ToolbarStates.EL_STYLE },
-  { label: '位置', value: ToolbarStates.MULTI_POSITION },
-]
+const { activeElementIdList, toolbarState } = storeToRefs(mainStore)
 
 const toolsetIconMapper: Record<string, string> = {
   样式: 'https://static.aside.fun/upload/style.svg',
   切换: 'https://static.aside.fun/upload/switch.svg',
   位置: 'https://static.aside.fun/upload/position.svg',
-  历史: 'https://static.aside.fun/upload/history.svg',
+  设计: 'https://static.aside.fun/upload/skin.svg',
   动画: 'https://static.aside.fun/upload/animation.svg',
-  符号: 'https://static.aside.fun/upload/symbol.svg'
+  符号: 'https://static.aside.fun/upload/symbol.svg',
+  历史: 'https://static.aside.fun/upload/history.svg'
 }
 
 const setToolbarState = (tab: ElementTabs) => {
@@ -94,15 +72,55 @@ const setToolbarState = (tab: ElementTabs) => {
   mainStore.setToolbarState(tab.value)
 }
 
-const currentTabs = computed(() => {
-  if (!activeElementIdList.value.length) return slideTabs
-  else if (activeElementIdList.value.length > 1) return multiSelectTabs
-  return elementTabs.value
+const currentTabs = computed<ElementTabs[]>(() => {
+  const totalTabs: ElementTabs[] = [
+    { label: '设计', value: ToolbarStates.SLIDE_DESIGN },
+    { label: '切换', value: ToolbarStates.SLIDE_ANIMATION },
+  ]
+  if (!activeElementIdList.value.length) {
+    totalTabs.push(
+      { label: '样式', value: ToolbarStates.EL_STYLE, disabledTips: '请选中一个元素' },
+      { label: '位置', value: ToolbarStates.EL_POSITION, disabledTips: '请选中一个元素' },
+      { label: '动画', value: ToolbarStates.EL_ANIMATION, disabledTips: '请选中一个元素' },
+      { label: '符号', value: ToolbarStates.SYMBOL, disabledTips: '请选中一个元素' }
+    )
+  }
+  else if (activeElementIdList.value.length > 1) {
+    totalTabs.push(
+      { label: '样式', value: ToolbarStates.EL_STYLE },
+      { label: '位置', value: ToolbarStates.MULTI_POSITION },
+      { label: '动画', value: ToolbarStates.EL_ANIMATION, disabledTips: '请选中一个元素' },
+      { label: '符号', value: ToolbarStates.SYMBOL, disabledTips: '请选中一个元素' }
+    )
+  }
+  else {
+    totalTabs.push(
+      { label: '样式', value: ToolbarStates.EL_STYLE },
+      { label: '符号', value: ToolbarStates.SYMBOL },
+      { label: '位置', value: ToolbarStates.EL_POSITION },
+      { label: '动画', value: ToolbarStates.EL_ANIMATION },
+    )
+  }
+  totalTabs.push({
+    label: '历史',
+    value: ToolbarStates.HISTORY,
+    disabledTips: '即将上线，敬请期待'
+  })
+  return totalTabs
 })
 
-const toolbarLabel = computed<string>(() => {
+// const currentTabs = ref([
+//   { label: '设计', value: ToolbarStates.SLIDE_DESIGN },
+//   { label: '切换', value: ToolbarStates.SLIDE_ANIMATION },
+//   { label: '样式', value: ToolbarStates.EL_STYLE },
+//   { label: '位置', value: ToolbarStates.EL_POSITION },
+//   { label: '动画', value: ToolbarStates.EL_ANIMATION },
+//   { label: '符号', value: ToolbarStates.SYMBOL },
+// ])
+
+const selectedTab = computed<ElementTabs | undefined>(() => {
   const tab = currentTabs.value.find(c => c.value === toolbarState.value)
-  return tab?.label || ''
+  return tab
 })
 
 watch(currentTabs, () => {
@@ -186,6 +204,14 @@ const currentPanelComponent = computed(() => {
   font-size: 13px;
   overflow-y: overlay;
   overflow-x: hidden;
+}
+
+.tips {
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-style: italic;
 }
 
 .tabs-v2 {

@@ -2,7 +2,7 @@
   <div class="panel-item-container" :style="hasDivider ? { borderColor: '#eee' } : {}">
     <div class="bar" @click="handleExpandClick()">
       <div class="title">{{ title }}</div>
-      <div class="expand-button">
+      <div v-if="!props.defaultExpand" class="expand-button">
         <PlusOutlined v-if="control ? !expand : !isExpand" />
         <MinusOutlined v-else />
       </div>
@@ -52,6 +52,9 @@ const emit = defineEmits<{
 }>()
 
 function handleExpandClick() {
+  if (props.defaultExpand) {
+    return
+  }
   if (!props.control) {
     isExpand.value = !isExpand.value
   }

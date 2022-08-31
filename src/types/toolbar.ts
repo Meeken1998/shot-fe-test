@@ -6,6 +6,7 @@ export const enum ToolbarStates {
   SLIDE_DESIGN = 'slideDesign',
   SLIDE_ANIMATION = 'slideAnimation',
   MULTI_POSITION = 'multiPosition',
+  HISTORY = 'history'
 }
 
 export const slideEditorTools: { key: string; iconUrl: string; name: string }[] = [
