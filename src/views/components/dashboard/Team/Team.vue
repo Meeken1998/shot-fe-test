@@ -19,7 +19,16 @@
         </div>
 
         <div v-if="teamInfo?.id" class="flex-row right-side">
-          <UploadWrapper :team-id="teamInfo.id">
+          <UploadWrapper :team-id="teamInfo.id" accept=".pdf" id="upload_pdf">
+            <Button class="primary-btn load-btn">
+              <template #icon>
+                <img :draggable="false" class="ppt-icon" src="https://static.aside.fun/upload/ppt-icon.png" />
+              </template>
+              从PDF导入
+            </Button>
+          </UploadWrapper>
+          <UploadWrapper :team-id="teamInfo.id" accept=".ppt,.pptx" id="upload_ppt"
+            @file="file => hamdleGetPptFile(file)">
             <Button class="primary-btn load-btn">
               <template #icon>
                 <img :draggable="false" class="ppt-icon" src="https://static.aside.fun/upload/ppt-icon.png" />
@@ -60,10 +69,11 @@ import { getActiveMenuItem } from '@/store/dashboard'
 import { setTitle } from '@/utils/title'
 import ProjectWrapper from '../../project/ProjectWrapper.vue'
 import GuideBar from '../GuideBar/GuideBar.vue'
-import { Docs } from '@/apis/docs'
+import { Docs, uploadDocs, getDocsConvertProgress, DocsConvertProcessStatus } from '@/apis/docs'
 import { DownOutlined, PlusCircleFilled } from '@ant-design/icons-vue'
 import UploadWrapper from '../../widget/UploadWrapper.vue'
-
+import { message } from 'ant-design-vue'
+import { sleep } from '@/utils/sleep'
 
 const dashboardStore = useDashboardStore()
 const { activeMenuItem, sidebarKey, menuItems, currentTeam } = storeToRefs(dashboardStore)
@@ -85,6 +95,30 @@ async function getData() {
   currentTeam.value = team
   setTitle(team.name)
   loading.value = false
+}
+
+async function hamdleGetPptFile(file: File) {
+  const docsId = await uploadDocs(teamInfo.value!.id, file)
+  await checkDocsConvertProgress(docsId)
+}
+
+async function checkDocsConvertProgress(docsId: string) {
+  const TTL = 1000
+  // window.open(`/editor/${docs._id}`, '_blank')
+  const info = await getDocsConvertProgress(docsId)
+  if (!info) {
+    void message.warning('上传失败，网络错误')
+    return
+  }
+  if (info?.status !== DocsConvertProcessStatus.FINISHED) {
+    console.log('上传进度', info)
+    await sleep(TTL)
+    await checkDocsConvertProgress(docsId)
+  }
+  else {
+    void message.success('创建成功')
+    window.open(`/editor/${docsId}`, '_blank')
+  }
 }
 
 watch(() => route.params?.teamId, getData)

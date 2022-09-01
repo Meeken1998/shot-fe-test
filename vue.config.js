@@ -49,13 +49,14 @@ module.exports = {
     // set worker-loader
     config.module
       .rule('worker')
-      .test(/\.worker\.js$/)
+      .test(/\.workers\.js$/)
       .use('worker-loader')
       .loader('worker-loader')
       .end()
 
     // 解决：worker 热更新问题
-    config.module.rule('js').exclude.add(/\.worker\.js$/)
+    config.module.rule('js').exclude.add(/\.workers\.js$/)
+    // config.module.rule('js').use('remove-hashbag-loader').loader('remove-hashbag-loader')
   },
   parallel: false,
   pwa: {

@@ -7,10 +7,10 @@ import { theme } from '@/mocks/theme'
 import { layouts } from '@/mocks/layout'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import WebWorker from '@/workers/sync.worker.js'
+import WebWorker from '@/workers/sync.workers.js'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import SnapshotWorker from '@/workers/snapshot.worker.js'
+import SnapshotWorker from '@/workers/snapshot.workers.js'
 import { getUserInfoById } from '@/apis/user'
 import { toPng } from 'html-to-image'
 import { WS_SERVICE_ENDPOINT } from '@/hooks/useRequest'
