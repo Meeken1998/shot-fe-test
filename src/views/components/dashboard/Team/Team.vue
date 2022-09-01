@@ -19,14 +19,14 @@
         </div>
 
         <div v-if="teamInfo?.id" class="flex-row right-side">
-          <UploadWrapper :team-id="teamInfo.id" accept=".pdf" id="upload_pdf">
+          <!-- <UploadWrapper :team-id="teamInfo.id" accept=".pdf" id="upload_pdf">
             <Button class="primary-btn load-btn">
               <template #icon>
                 <img :draggable="false" class="ppt-icon" src="https://static.aside.fun/upload/ppt-icon.png" />
               </template>
               从PDF导入
             </Button>
-          </UploadWrapper>
+          </UploadWrapper> -->
           <UploadWrapper :team-id="teamInfo.id" accept=".ppt,.pptx" id="upload_ppt"
             @file="file => hamdleGetPptFile(file)">
             <Button class="primary-btn load-btn">
