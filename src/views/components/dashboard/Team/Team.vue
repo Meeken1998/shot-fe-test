@@ -111,7 +111,6 @@ async function checkDocsConvertProgress(docsId: string) {
     return
   }
   if (info?.status !== DocsConvertProcessStatus.FINISHED) {
-    console.log('上传进度', info)
     await sleep(TTL)
     await checkDocsConvertProgress(docsId)
   }
