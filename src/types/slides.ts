@@ -1,5 +1,8 @@
 import { IBarChartOptions, ILineChartOptions, IPieChartOptions } from 'chartist'
 
+export const PREVIEW_CANVAS_WIDTH = 736
+export const PREVIEW_CANVAS_HEIGHT = 428
+
 export const enum ShapePathFormulasKeys {
   ROUND_RECT = 'roundRect',
   ROUND_RECT_DIAGONAL = 'roundRectDiagonal',
@@ -692,3 +695,28 @@ export enum SlidesDisplayMode {
   PPT,
   STORYBOARD,
 }
+
+export const DEFAULT_SLIDES = [
+  {
+    id: 'slide-1',
+    elements: [
+      {
+        type: 'text',
+        id: 'mid_e29ab2d3a',
+        left: 145,
+        top: 228,
+        width: 711,
+        height: 77,
+        lineHeight: 1.2,
+        content: "<p style='text-align: center;'><strong><span style='font-size: 48px'>在此处添加标题</span></strong></p>",
+        rotate: 0,
+        defaultFontName: 'Microsoft Yahei',
+        defaultColor: '#333',
+      },
+    ],
+    background: {
+      type: 'solid',
+      color: '#fff',
+    },
+  },
+]

@@ -7,6 +7,7 @@ self.addEventListener('message', async (e) => {
   const { post } = request.default(token, isDev)
   if (type === 'sync') {
     const { json: newSlidesJson } = await post(`/api/docs/${docsId}/update`, {
+      type: 'ppt',
       json,
       previewImageUrl: jpg || defaultJpg,
     })

@@ -4,20 +4,20 @@
       <div class="logo-bar">
         <img class="logo" src="https://static.aside.fun/upload/logo-no-text.svg" :draggable="false"
           @click="router.replace({ path: '/' })" />
-        <div class="team-info" v-if="docsMeta.name && docsMeta?.team?.id">
+        <div class="team-info" v-if="docs?.name && team?.id">
           <div @click="handleTitleBlur">
-            <div v-if="!isTitleInputVisible" class="title">{{  docsMeta.name  }}</div>
-            <input ref="inputRef" v-else class="title edit-title" v-model="docsMeta.name" v-on:keyup="(e) => {
+            <div v-if="!isTitleInputVisible" class="title">{{  docs.name  }}</div>
+            <input ref="inputRef" v-else class="title edit-title" v-model="docs.name" v-on:keyup="(e) => {
               if (e.keyCode === 13) {
                 handleTitleChange()
               }
             }" @focusout="handleTitleChange" />
           </div>
           <div class="flex-row">
-            <Tooltip :title="`返回到「${docsMeta?.team?.name}」团队首页`" :mouseEnterDelay="1">
+            <Tooltip :title="`返回到「${team.name}」团队首页`" :mouseEnterDelay="1">
               <div class="second-link flex-row" @click="handleBack2Team()">
                 <LeftOutlined :style="{ fontSize: '12px' }" />
-                <span>{{  docsMeta?.team?.name  }}</span>
+                <span>{{  team.name  }}</span>
               </div>
             </Tooltip>
           </div>
@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <div v-if="clientWidth >= 1600" class="switch-mode flex-row">
+      <div v-if="isLargeScreen && editable" class="switch-mode flex-row">
         <span class="switch-link" :data-active="mode === SlidesDisplayMode.PPT"
           @click="mode = SlidesDisplayMode.PPT">幻灯片模式</span>
         <Switch :checked="mode === SlidesDisplayMode.STORYBOARD" @change="(e) => {
@@ -40,11 +40,11 @@
       </div>
     </div>
 
-    <ToolBarV2 :narrow-screen="clientWidth < 1600" />
+    <ToolBarV2 v-if="editable" :narrow-screen="clientWidth < 1600" />
 
     <div :class="{
       'right-side': true,
-      'small-screen': clientWidth < 1600
+      'small-screen': !isLargeScreen
     }">
       <ScaleSelector class="scale-bar-container" />
       <CoUsers class="co-users-container" />
@@ -59,8 +59,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { nextTick, ref } from 'vue'
-import { useScreenStore, useSlidesStore } from '@/store'
+import { computed, nextTick, ref } from 'vue'
+import { useDocsStore, useScreenStore, useSlidesStore } from '@/store'
 import { LeftOutlined } from '@ant-design/icons-vue'
 import { storeToRefs } from 'pinia'
 import { SlidesDisplayMode } from '@/types/slides'
@@ -72,31 +72,36 @@ import { message } from 'ant-design-vue'
 import { debounce } from 'lodash'
 import router from '@/views/router'
 import { setTitle } from '@/utils/title'
-// import { enterFullscreen } from '@/utils/fullscreen'
 import useScreening from '@/hooks/useScreening'
 const { enterScreening } = useScreening()
 
 const slidesStore = useSlidesStore()
-const { mode, docsMeta, docs } = storeToRefs(slidesStore)
-const { clientWidth } = storeToRefs(useScreenStore())
+const docsStore = useDocsStore()
 
+const { docs, team } = storeToRefs(docsStore)
+
+const { mode } = storeToRefs(slidesStore)
+const { clientWidth } = storeToRefs(useScreenStore())
 const isTitleInputVisible = ref(false)
 const inputRef = ref<HTMLInputElement>()
 
+const editable = computed(() => docs.value?.type === 'ppt')
+const isLargeScreen = computed(() => clientWidth.value >= 1600)
+
 const handleUpdateDocsMeta = debounce(async () => {
-  const res = await updateDocsMeta(docs.value?._id || '', docsMeta.value.name)
+  const res = await updateDocsMeta(docs.value?._id || '', docs.value?.name || '')
   if (!res) {
     void message.warning('修改文档名称失败')
   }
   else {
-    setTitle(`${docsMeta.value.name} - ${docsMeta.value.team.name}`)
+    setTitle(`${docs.value?.name} - ${team.value?.name}`)
   }
 })
 
 
 function handleTitleChange() {
-  if (!docsMeta.value.name.trim()) {
-    docsMeta.value.name = '未命名文档'
+  if (!docs.value!.name.trim()) {
+    docs.value!.name = '未命名文档'
   }
   void handleUpdateDocsMeta()
   isTitleInputVisible.value = false
@@ -178,7 +183,6 @@ function handleBack2Team() {
     gap: 16px;
     user-select: none;
     width: 216px;
-    border-right: 1px solid $borderColor;
 
     .logo {
       width: 32px;
@@ -191,6 +195,10 @@ function handleBack2Team() {
       line-height: 24px;
       font-weight: 500;
       overflow: hidden;
+
+      &.skeleton-wrapper {
+        pointer-events: none;
+      }
 
       .title {
         font-weight: bold;
@@ -244,7 +252,7 @@ function handleBack2Team() {
     user-select: none;
     width: 250px;
     height: 54px;
-
+    border-left: 1px solid $borderColor;
     .switch-link {
       cursor: pointer;
       transition: color 0.3s;

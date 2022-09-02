@@ -19,16 +19,17 @@
         </div>
 
         <div v-if="teamInfo?.id" class="flex-row right-side">
-          <!-- <UploadWrapper :team-id="teamInfo.id" accept=".pdf" id="upload_pdf">
+
+          <UploadWrapper :team-id="teamInfo.id" accept=".pdf" id="upload_pdf" @file="file => handleGetPdfFile(file)">
             <Button class="primary-btn load-btn">
               <template #icon>
                 <img :draggable="false" class="ppt-icon" src="https://static.aside.fun/upload/ppt-icon.png" />
               </template>
-              从PDF导入
+              从 PDF 导入
             </Button>
-          </UploadWrapper> -->
+          </UploadWrapper>
           <UploadWrapper :team-id="teamInfo.id" accept=".ppt,.pptx" id="upload_ppt"
-            @file="file => hamdleGetPptFile(file)">
+            @file="file => handleGetPptFile(file)">
             <Button class="primary-btn load-btn">
               <template #icon>
                 <img :draggable="false" class="ppt-icon" src="https://static.aside.fun/upload/ppt-icon.png" />
@@ -69,11 +70,12 @@ import { getActiveMenuItem } from '@/store/dashboard'
 import { setTitle } from '@/utils/title'
 import ProjectWrapper from '../../project/ProjectWrapper.vue'
 import GuideBar from '../GuideBar/GuideBar.vue'
-import { Docs, uploadDocs, getDocsConvertProgress, DocsConvertProcessStatus } from '@/apis/docs'
+import { Docs, uploadPptDocs, getDocsConvertProgress, DocsConvertProcessStatus } from '@/apis/docs'
 import { DownOutlined, PlusCircleFilled } from '@ant-design/icons-vue'
 import UploadWrapper from '../../widget/UploadWrapper.vue'
 import { message } from 'ant-design-vue'
 import { sleep } from '@/utils/sleep'
+import useCreateDocs from '@/hooks/useCreateDocs'
 
 const dashboardStore = useDashboardStore()
 const { activeMenuItem, sidebarKey, menuItems, currentTeam } = storeToRefs(dashboardStore)
@@ -97,9 +99,16 @@ async function getData() {
   loading.value = false
 }
 
-async function hamdleGetPptFile(file: File) {
-  const docsId = await uploadDocs(teamInfo.value!.id, file)
+async function handleGetPptFile(file: File) {
+  const docsId = await uploadPptDocs(teamInfo.value!.id, file)
   await checkDocsConvertProgress(docsId)
+}
+
+async function handleGetPdfFile(file: File) {
+  const { createPdfDocs } = useCreateDocs()
+  const docs = await createPdfDocs(file, teamInfo.value!.id)
+  void message.success('创建成功')
+  window.open(`/viewer/${docs?._id}`, '_blank')
 }
 
 async function checkDocsConvertProgress(docsId: string) {

@@ -2,6 +2,8 @@ import useRequest from '@/hooks/useRequest'
 
 const { post, get } = useRequest()
 
+type DocsType = 'pdf' | 'ppt'
+
 export interface Docs {
   _id: string
   createdTimestamp: number
@@ -12,7 +14,10 @@ export interface Docs {
   previewImageUrl: string
   name: string
   json: string
+  type: DocsType
+  url: string // for pdf
 }
+
 
 export enum DocsConvertProcessStatus {
   PENDING = 0,
@@ -33,22 +38,29 @@ export interface DocsConvertProcess {
   updatedTimestamp: number
 }
 
-export function createDocs(teamId: string) {
-  return post<Docs>('/api/docs', { teamId })
+export function createDocs(teamId: string, name: string, type: DocsType) {
+  return post<Docs>('/api/docs', { teamId, type, name })
 }
 
-export function updateSlide(docsId: string, json: string, previewImageUrl?: string) {
-  return post<Docs>(`/api/docs/${docsId}/update`, {
-    json,
+export function updateDocs(docsId: string, previewImageUrl: string, type: DocsType, data: string) {
+  const payload: Record<string, string | undefined> = {
     previewImageUrl,
-  })
+    json: ''
+  }
+  if (type === 'ppt') {
+    payload.json = data
+  }
+  if (type === 'pdf') {
+    payload.url = data
+  }
+  return post<Docs>(`/api/docs/${docsId}/update`, payload)
 }
 
 export function getDocs(docsId: string) {
   return get<Docs>(`/api/docs/${docsId}`, {})
 }
 
-export function uploadDocs(teamId: string, file: File) {
+export function uploadPptDocs(teamId: string, file: File) {
   const formdata = new FormData()
   formdata.append('file', file)
   return post<string>(`/api/docs/upload/${teamId}/ppt`, formdata, {

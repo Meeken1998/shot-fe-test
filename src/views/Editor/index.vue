@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useMainStore, useSlidesStore } from '@/store'
+import { useDocsStore, useMainStore, useSlidesStore } from '@/store'
 import useGlobalHotkey from '@/hooks/useGlobalHotkey'
 import usePasteEvent from '@/hooks/usePasteEvent'
 
@@ -37,9 +37,11 @@ import { useRoute } from 'vue-router'
 import { getDocs } from '@/apis/docs'
 import { getTeamDetail } from '@/apis/team'
 import { setTitle } from '@/utils/title'
+import { DEFAULT_SLIDES } from '@/types/slides'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
+const docsStore = useDocsStore()
 const { dialogForExport, handleElementId } = storeToRefs(mainStore)
 const { docsId } = storeToRefs(slidesStore)
 
@@ -48,22 +50,17 @@ const route = useRoute()
 
 const closeExportDialog = () => mainStore.setDialogForExport('')
 
-const remarkHeight = ref(40)
-
 useGlobalHotkey()
 usePasteEvent()
 
 async function handleGetData(docsId: string) {
   const docs = await getDocs(docsId)
-  slidesStore.setSlides(JSON.parse(docs.json))
-  slidesStore.setDocs(docs)
+  slidesStore.setSlides(docs.json ? JSON.parse(docs.json) : DEFAULT_SLIDES)
+  docsStore.setDocs(docs)
   loaded.value = true
-  const teamInfo = await getTeamDetail(docs.teamId)
-  slidesStore.setDocsMeta({
-    team: teamInfo,
-    name: docs.name
-  })
-  setTitle(`${docs.name} - ${teamInfo.name}`)
+  const team = await getTeamDetail(docs.teamId)
+  docsStore.setTeam(team)
+  setTitle(`${docs.name} - ${team.name}`)
 }
 
 onMounted(() => {
@@ -81,7 +78,6 @@ watch(() => handleElementId.value, (val, last) => {
   if (last && !val) {
     nextTick(() => {
       slidesStore._sync(docsId.value, slidesStore.slides.slice())
-      // slidesStore._snapshoot()
     })
   }
 })
@@ -91,10 +87,6 @@ watch(() => handleElementId.value, (val, last) => {
 .pptist-editor {
   height: 100%;
 }
-
-// .layout-header {
-//   height: 40px;
-// }
 
 .layout-content {
   height: calc(100% - 40px);

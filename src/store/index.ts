@@ -4,6 +4,7 @@ import { useSnapshotStore } from './snapshot'
 import { useKeyboardStore } from './keyboard'
 import { useScreenStore } from './screen'
 import { useDashboardStore } from './dashboard'
+import { useDocsStore } from './docs'
 
 export {
   useMainStore,
@@ -11,5 +12,6 @@ export {
   useSnapshotStore,
   useKeyboardStore,
   useScreenStore,
-  useDashboardStore
+  useDashboardStore,
+  useDocsStore,
 }

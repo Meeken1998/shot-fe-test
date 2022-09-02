@@ -13,15 +13,15 @@ import PptistEditor from '@/views/Editor/PptistEditor.vue'
 import JoinTeam from '@/views/components/dashboard/Team/JoinTeam.vue'
 import Home from '../Dashboard/index.vue'
 import ProfilePage from '@/views/components/dashboard/Setting/ProfilePage.vue'
-import PDFTest from '@/views/components/pdf/PDFTest.vue'
+import DocsViewer from '@/views/components/viewer/DocsViewer.vue'
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes: [
     {
-      name: 'pdf',
-      path: '/pdf-test',
-      component: PDFTest,
+      name: 'viewer',
+      path: '/viewer/:docsId',
+      component: DocsViewer,
     },
     {
       name: 'home',

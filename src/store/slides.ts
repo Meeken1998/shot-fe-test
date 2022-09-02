@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import tinycolor from 'tinycolor2'
 import { omit, throttle } from 'lodash'
-import { Slide, SlideTheme, PPTElement, PPTAnimation, SlidesDisplayMode } from '@/types/slides'
+import { Slide, SlideTheme, PPTElement, PPTAnimation, SlidesDisplayMode, PREVIEW_CANVAS_WIDTH, PREVIEW_CANVAS_HEIGHT } from '@/types/slides'
 import { slides } from '@/mocks/slides'
 import { theme } from '@/mocks/theme'
 import { layouts } from '@/mocks/layout'
@@ -15,8 +15,6 @@ import { getUserInfoById } from '@/apis/user'
 import { toPng } from 'html-to-image'
 import { WS_SERVICE_ENDPOINT } from '@/hooks/useRequest'
 import { genRandomColor } from '@/utils/color'
-import { Docs } from '@/apis/docs'
-import { Team } from '@/apis/team'
 
 const worker: Worker = new WebWorker()
 const snapshotWorker: Worker = new SnapshotWorker()
@@ -51,11 +49,6 @@ export interface SlidesState {
   coopUserInfo: Record<string, ICoopUserInfo>
   cloudSlidesLoaded: boolean
   mode: SlidesDisplayMode
-  docs: Docs | null
-  docsMeta: {
-    team: Partial<Team>,
-    name: string,
-  }
 }
 
 interface IBroadcastDocUpdateMessage {
@@ -96,11 +89,6 @@ export const useSlidesStore = defineStore('slides', {
     coopUserInfo: {},
     cloudSlidesLoaded: false,
     mode: SlidesDisplayMode.PPT,
-    docs: null,
-    docsMeta: {
-      team: {},
-      name: ''
-    }
   }),
 
   getters: {
@@ -180,14 +168,6 @@ export const useSlidesStore = defineStore('slides', {
 
     setSlides(slides: Slide[]) {
       this.slides = slides
-    },
-
-    setDocs(docs: Docs) {
-      this.docs = docs
-    },
-
-    setDocsMeta(meta: SlidesState['docsMeta']) {
-      this.docsMeta = meta
     },
 
     addSlide(slide: Slide | Slide[], broadcastSlideIndex?: number, fromBroadcast = false) {
@@ -285,8 +265,8 @@ export const useSlidesStore = defineStore('slides', {
           outline: 'unset',
           borderRadius: 'unset',
         },
-        canvasWidth: 736,
-        canvasHeight: 428,
+        canvasWidth: PREVIEW_CANVAS_WIDTH,
+        canvasHeight: PREVIEW_CANVAS_HEIGHT,
         backgroundColor: 'rgba(255, 255, 255, 0)'
       }) : ''
       worker.postMessage({

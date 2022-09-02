@@ -10,7 +10,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 async function handleCreateDocs(teamId: string) {
-  const docs = await createDocs(teamId)
+  const docs = await createDocs(teamId, '未命名文档', 'ppt')
   router.push({
     path: `/editor/${docs._id}`
   })

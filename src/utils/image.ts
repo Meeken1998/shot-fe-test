@@ -49,8 +49,8 @@ export const getImageDataURL = (file: File): Promise<string> => {
 
 /**
  * 图片转 base64 字符串
- * @param buffer 
- * @returns 
+ * @param buffer
+ * @returns
  */
 export const arrayBufferToBase64Img = (buffer: ArrayBuffer) => {
   const str = String.fromCharCode(...new Uint8Array(buffer))

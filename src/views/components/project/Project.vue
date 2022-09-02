@@ -30,10 +30,24 @@ const props = defineProps({
   }
 })
 
-const { _id, name, previewImageUrl, updatedTimestamp } = props.item || {}
+const { _id, name, previewImageUrl, updatedTimestamp, type } = props.item || {}
 
 function handleOpenDocs() {
-  window.open(`/editor/${_id}`, '_blank')
+  let url: string
+  switch (type) {
+    case 'ppt':
+      url = `/editor/${_id}`
+      break
+    case 'pdf':
+      url = `/viewer/${_id}`
+      break
+    default:
+      url = 'about:blank'
+  }
+  if (type === 'ppt') {
+    url = `/editor/${_id}`
+  }
+  window.open(url, '_blank')
 }
 </script>
 <style lang="scss" scoped>

@@ -30,7 +30,8 @@ onMounted(() => {
   const input = document.getElementById(props.id) as HTMLInputElement
   input.addEventListener('change', (e) => {
     const [file] = (e.target as any).files as File[]
-    emit('file', file)
+    if (file) emit('file', file)
+    input.removeAttribute('files')
   })
 })
 
