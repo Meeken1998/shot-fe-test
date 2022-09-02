@@ -5,7 +5,6 @@
 </template>
 <script lang="ts" setup>
 import { defineProps, computed, onMounted, ref } from 'vue'
-import { toJpeg } from 'html-to-image'
 
 const iframeOrigin = location.origin
 
@@ -22,18 +21,16 @@ const iframeUrl = computed(() => `${iframeOrigin}/pdf-viewer/viewer.html?file=${
 const iframe = ref<HTMLIFrameElement>()
 
 function handlePdfLoad(loaded: number, total: number) {
-  console.log(loaded / total)
+  //
 }
 
 function handleLoaded() {
   loaded.value = true
-  void getThumbImages()
 }
 
 onMounted(() => {
   window.addEventListener('message', e => {
     if (e.origin === iframeOrigin) {
-      console.log(e.data)
       const { data, type } = e.data
       switch (type) {
         case 'load':
@@ -49,20 +46,6 @@ onMounted(() => {
     }
   })
 })
-
-async function getThumbImages() {
-  // const $pdfview: any = iframe.value?.contentWindow
-  const pages = iframe.value?.contentDocument?.querySelectorAll('img.')
-  if (pages) {
-    const els = [...pages.values() as unknown as HTMLElement[]]
-    for (const el of els) {
-      const jpg = await toJpeg(el)
-      console.log(jpg)
-    }
-  }
-}
-
-
 </script>
 <style lang="scss" scoped>
 .pdf-viewer {
