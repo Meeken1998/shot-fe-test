@@ -46,7 +46,9 @@
       'right-side': true,
       'small-screen': !isLargeScreen
     }">
-      <ScaleSelector class="scale-bar-container" />
+      <ScaleSelector v-if="docs?.type === 'ppt'" class="scale-bar-container" />
+      <PDFScaleSelector v-if="docs?.type === 'pdf'" class="scale-bar-container" />
+
       <CoUsers class="co-users-container" />
       <img src="https://static.aside.fun/upload/metrics.svg" class="right-icon" :draggable="false" />
       <img src="https://static.aside.fun/upload/member.svg" class="right-icon" :draggable="false" />
@@ -73,6 +75,7 @@ import { debounce } from 'lodash'
 import router from '@/views/router'
 import { setTitle } from '@/utils/title'
 import useScreening from '@/hooks/useScreening'
+import PDFScaleSelector from '@/views/components/viewer/pdf/PDFScaleSelector.vue'
 const { enterScreening } = useScreening()
 
 const slidesStore = useSlidesStore()

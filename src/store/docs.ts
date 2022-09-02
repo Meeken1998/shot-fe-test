@@ -2,9 +2,14 @@ import { Docs } from '@/apis/docs'
 import { Team } from '@/apis/team'
 import { defineStore } from 'pinia'
 
+interface PDFController {
+  scaleMode: string
+}
+
 interface DocsStoreState {
   docs: Docs | null
   team: Team | null
+  pdfController: PDFController | null
 }
 
 export const useDocsStore = defineStore('docs', {
@@ -12,6 +17,7 @@ export const useDocsStore = defineStore('docs', {
     return {
       docs: null,
       team: null,
+      pdfController: null
     }
   },
 
