@@ -20,9 +20,7 @@ const iframe = ref<HTMLIFrameElement>()
 
 onMounted(() => {
   window.addEventListener('message', e => {
-    if (e.origin === iframeUrlOrigin) {
-      console.log(e.data)
-    }
+    //
   })
 })
 </script>
