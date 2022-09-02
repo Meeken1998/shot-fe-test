@@ -13,6 +13,7 @@ import { useDocsStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { getTeamDetail } from '@/apis/team'
 import PDFViewer from './pdf/PDFViewer.vue'
+import { setTitle } from '@/utils/title'
 
 const docsStore = useDocsStore()
 const { docs } = storeToRefs(docsStore)
@@ -25,6 +26,7 @@ async function getData() {
   docsStore.setDocs(docs)
   const team = await getTeamDetail(docs.teamId)
   docsStore.team = team
+  setTitle(`${docs.name} - ${team.name}`)
 }
 
 onMounted(() => {
