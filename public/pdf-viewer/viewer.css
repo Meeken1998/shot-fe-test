@@ -2581,6 +2581,7 @@ a.secondaryToolbarButton[href="#"] {
   background-clip: content-box;
   border: 2px solid #eee;
   border-radius: 3px;
+  opacity: 1 !important;
 }
 
 .thumbnailSelectionRing {
@@ -2588,10 +2589,10 @@ a.secondaryToolbarButton[href="#"] {
   padding: 7px;
 }
 
-a:focus > .thumbnail > .thumbnailSelectionRing > .thumbnailImage,
+/* a:focus > .thumbnail > .thumbnailSelectionRing > .thumbnailImage,
 .thumbnail:hover > .thumbnailSelectionRing > .thumbnailImage {
   opacity: 0.9;
-}
+} */
 
 a:focus > .thumbnail > .thumbnailSelectionRing,
 .thumbnail:hover > .thumbnailSelectionRing {
