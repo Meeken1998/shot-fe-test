@@ -11146,7 +11146,7 @@ function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { 
 const DRAW_UPSCALE_FACTOR = 2;
 const MAX_NUM_SCALING_STEPS = 3;
 const THUMBNAIL_CANVAS_BORDER_WIDTH = 1;
-const THUMBNAIL_WIDTH = 160;
+const THUMBNAIL_WIDTH = 180;
 
 class TempImageFactory {
   static getCanvas(width, height) {
@@ -11235,6 +11235,10 @@ class PDFThumbnailView {
     div.className = "thumbnail";
     div.setAttribute("data-page-number", this.id);
     this.div = div;
+    const slideNum = document.createElement("div");
+    slideNum.className = "num";
+    slideNum.innerText = this.id.toString();
+    div.append(slideNum);
     const ring = document.createElement("div");
     ring.className = "thumbnailSelectionRing";
     const borderAdjustment = 2 * THUMBNAIL_CANVAS_BORDER_WIDTH;

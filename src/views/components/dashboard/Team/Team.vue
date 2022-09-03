@@ -22,9 +22,6 @@
 
           <UploadWrapper :team-id="teamInfo.id" accept=".pdf" id="upload_pdf" @file="file => handleGetPdfFile(file)">
             <Button class="primary-btn load-btn">
-              <template #icon>
-                <img :draggable="false" class="ppt-icon" src="https://static.aside.fun/upload/ppt-icon.png" />
-              </template>
               从 PDF 导入
             </Button>
           </UploadWrapper>
@@ -34,7 +31,7 @@
               <template #icon>
                 <img :draggable="false" class="ppt-icon" src="https://static.aside.fun/upload/ppt-icon.png" />
               </template>
-              从文件导入
+              从 PPTX 导入
             </Button>
           </UploadWrapper>
           <router-link :to="{ path: `/createDocs`, query: { teamId: teamInfo?.id } }" target="_blank">

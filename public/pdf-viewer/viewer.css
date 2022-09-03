@@ -849,7 +849,7 @@
 :root {
   --viewer-container-height: 0;
   --pdfViewer-padding-bottom: 0;
-  --page-margin: 8px auto 8px;
+  --page-margin: 12px auto 12px;
   --page-border: 9px solid #ffffff00;
   --page-border-image: none;
   --spreadHorizontalWrapped-margin-LR: 8px;
@@ -859,7 +859,7 @@
 @media screen and (forced-colors: active) {
   :root {
     --pdfViewer-padding-bottom: 9px;
-    --page-margin: 8px auto 8px;
+    --page-margin: 12px auto 12px;
     --page-border: 1px solid CanvasText;
     --page-border-image: none;
     --spreadHorizontalWrapped-margin-LR: 8px;
@@ -1268,22 +1268,6 @@ select {
   right: calc(-1 * var(--sidebar-width));
 }
 
-[dir="ltr"] #sidebarContainer {
-  border-right: var(--doorhanger-border-color-whcm);
-}
-
-[dir="rtl"] #sidebarContainer {
-  border-left: var(--doorhanger-border-color-whcm);
-}
-
-[dir="ltr"] #sidebarContainer {
-  transition-property: left;
-}
-
-[dir="rtl"] #sidebarContainer {
-  transition-property: right;
-}
-
 #sidebarContainer {
   position: absolute;
   top: 0;
@@ -1292,12 +1276,14 @@ select {
   width: var(--sidebar-width);
   visibility: hidden;
   z-index: 100;
-  border-top: 1px solid rgba(51, 51, 51, 1);
-  -webkit-border-end: var(--doorhanger-border-color-whcm);
-          border-inline-end: var(--doorhanger-border-color-whcm);
-  transition-property: inset-inline-start;
+  /* border-top: 1px solid rgba(51, 51, 51, 1);
+  border-inline-end: var(--doorhanger-border-color-whcm); */
+  /* transition-property: inset-inline-start;
   transition-duration: var(--sidebar-transition-duration);
-  transition-timing-function: var(--sidebar-transition-timing-function);
+  transition-timing-function: var(--sidebar-transition-timing-function); */
+  border: none !important;
+  outline: none !important;
+  /* display: none; */
 }
 
 #outerContainer.sidebarMoving #sidebarContainer,
@@ -1340,7 +1326,6 @@ select {
   position: absolute;
   width: 100%;
   background-color: #fff;
-  box-shadow: inset calc(-1px * var(--dir-factor)) 0 0 rgba(0, 0, 0, 0.25);
   border-right: 1px solid #eee;
 }
 
@@ -1352,6 +1337,7 @@ select {
   bottom: 0;
   left: 0;
   outline: none;
+  padding: 24px 0;
 }
 #viewerContainer:not(.pdfPresentationMode) {
   transition-duration: var(--sidebar-transition-duration);
@@ -1395,8 +1381,8 @@ select {
   width: 100%;
   height: 32px;
   background-color: var(--sidebar-toolbar-bg-color);
-  box-shadow: inset calc(-1px * var(--dir-factor)) 0 0 rgba(0, 0, 0, 0.25),
-    0 1px 0 rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
+  /* box-shadow: inset calc(-1px * var(--dir-factor)) 0 0 rgba(0, 0, 0, 0.25),
+    0 1px 0 rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1); */
 }
 
 [dir="ltr"] #sidebarResizer {
@@ -2551,6 +2537,7 @@ a.secondaryToolbarButton[href="#"] {
 
 #thumbnailView > a {
   width: 100%;
+  outline: 0;
 }
 
 #thumbnailView > a:active,
@@ -2564,6 +2551,7 @@ a.secondaryToolbarButton[href="#"] {
   justify-content: center;
   align-items: center;
   padding: 12px 0;
+  background-color: #fff;
 }
 
 .thumbnail.selected {
@@ -2797,7 +2785,6 @@ dialog {
   font-size: 12px;
   line-height: 14px;
   background-color: var(--doorhanger-bg-color);
-  border: 1px solid rgba(0, 0, 0, 0.5);
   border-radius: 4px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
@@ -3026,4 +3013,24 @@ dialog :link {
   #scaleSelectContainer {
     display: none;
   }
+}
+
+#thumbnailView a {
+  text-decoration: unset !important;
+}
+
+.thumbnail .num {
+  font-style: unset;
+  align-self: flex-end;
+  justify-self: flex-start;
+  color: #999;
+  padding-bottom: 4px;
+  font-size: 12px;
+  width: 16px;
+  transform: translateX(-2px);
+  text-align: center;
+}
+
+.thumbnail.selected .num {
+  color: #469d8f;
 }
