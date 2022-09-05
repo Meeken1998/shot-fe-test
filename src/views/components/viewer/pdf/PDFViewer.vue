@@ -1,5 +1,9 @@
 <template>
   <div v-if="url" class="pdf-viewer">
+    <div v-if="progressPercent !== 100" class="progress">
+      <Progress :percent="progressPercent" :showInfo="false" strokeColor="#469d8f" />
+      <div>正在加载文档</div>
+    </div>
     <iframe :src="iframeUrl" allowfullscreen width="100%" height="100%" ref="iframe"></iframe>
   </div>
 </template>
@@ -23,9 +27,10 @@ const loaded = ref(false)
 
 const iframeUrl = computed(() => `${iframeOrigin}/pdf-viewer/viewer.html?file=${props.url}`)
 const iframe = ref<HTMLIFrameElement>()
+const progressPercent = ref(0)
 
-function handlePdfLoad(loaded: number, total: number) {
-  //
+function handlePdfProgress(loaded: number, total: number) {
+  progressPercent.value = loaded / total * 100
 }
 
 function handleLoaded() {
@@ -57,7 +62,7 @@ onMounted(() => {
       const { data, type } = e.data
       switch (type) {
         case 'load':
-          handlePdfLoad(data.loaded, data.total)
+          handlePdfProgress(data.loaded, data.total)
           break
         case 'ui':
           if (!loaded.value) {
@@ -79,5 +84,27 @@ onMounted(() => {
   overflow-x: hidden;
   height: calc(100vh - $headerBarHeight - 1px);
   overflow-y: hidden;
+}
+
+.progress {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  text-align: center;
+  font-size: 16px;
+  padding-bottom: 10%;
+  color: #666;
+
+  & > div {
+    margin-top: 24px;
+  }
+
+  * {
+    max-width: 400px;
+  }
 }
 </style>

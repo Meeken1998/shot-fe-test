@@ -42,7 +42,8 @@ declare module 'vue' {
     TabPane: typeof import('ant-design-vue')['TabPane']
     Empty: typeof import('ant-design-vue')['Empty']
     Skeleton: typeof import('vue-loading-skeleton')['Skeleton']
-    SkeletonTheme: typeof import('vue-loading-skeleton')['SkeletonTheme']
+    SkeletonTheme: typeof import('vue-loading-skeleton')['SkeletonTheme'],
+    Progress: typeof import('ant-design-vue')['Progress']
   }
 }
 

@@ -40,6 +40,7 @@ import {
   Upload,
   Tabs,
   Empty,
+  Progress,
 } from 'ant-design-vue'
 import router from './views/router'
 
@@ -80,6 +81,7 @@ app.component('TabPane', Tabs.TabPane)
 app.component('Empty', Empty)
 app.component('Skeleton', Skeleton)
 app.component('SkeletonTheme', SkeletonTheme)
+app.component('Progress', Progress)
 
 app.use(Icon)
 app.use(Component)
