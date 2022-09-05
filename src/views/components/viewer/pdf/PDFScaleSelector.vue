@@ -1,35 +1,22 @@
 <template>
   <Dropdown v-model:visible="canvasScaleVisible">
     <div class="scale-seletor flex-row" @click="canvasScaleVisible = !canvasScaleVisible">
-      <span class="text">{{ canvasScalePercentage }}</span>
+      <span class="text">{{ scaleText }}</span>
       <CaretDownFilled class="icon" />
     </div>
     <template #overlay>
       <Menu class="small-menu" @click="e => {
         e.domEvent.preventDefault()
       }">
-        <MenuItem @click="resetCanvas()">
+        <MenuItem v-for="(val, key) in scaleOptionsMapper" :key="key" @click="handleChangeMode(key)">
         <div class="menu-between">
-          <span>适应屏幕</span>
-          <span>⌘ + 0</span>
+          <span>{{ val }}</span>
+          <span></span>
         </div>
         </MenuItem>
         <MenuDivider />
-        <MenuItem v-for="item in canvasScalePresetList" :key="item" @click="applyCanvasPresetScale(item)">
-        {{ item }}%
-        </MenuItem>
-        <MenuDivider />
-        <MenuItem @click="scaleCanvas('-')">
-        <div class="menu-between">
-          <span>缩小</span>
-          <span>-</span>
-        </div>
-        </MenuItem>
-        <MenuItem @click="scaleCanvas('+')">
-        <div class="menu-between">
-          <span>放大</span>
-          <span>+</span>
-        </div>
+        <MenuItem v-for="item in scaleNumberOptions" :key="item" @click="handleChangeMode(item)">
+        {{ `${Number(item) * 100}%` }}
         </MenuItem>
       </Menu>
     </template>
@@ -37,23 +24,45 @@
 
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
-import useScaleCanvas from '@/hooks/useScaleCanvas'
+import { computed, ref, watch } from 'vue'
 import { CaretDownFilled } from '@ant-design/icons-vue'
-const canvasScalePresetList = [200, 150, 100, 80, 50]
+import { useDocsStore } from '@/store'
+import { storeToRefs } from 'pinia'
+const docsStore = useDocsStore()
+const { pdfController } = storeToRefs(docsStore)
 
 const canvasScaleVisible = ref(false)
-const {
-  scaleCanvas,
-  setCanvasScalePercentage,
-  resetCanvas,
-  canvasScalePercentage,
-} = useScaleCanvas()
 
-const applyCanvasPresetScale = (value: number) => {
-  setCanvasScalePercentage(value)
+const scaleOptionsMapper = {
+  'auto': '自动缩放',
+  'page-actual': '实际大小',
+  'page-fit': '适应页面',
+  'page-width': '适应页宽'
+}
+
+const scaleText = computed(() => {
+  const val = pdfController.value?.scaleMode as string
+  if (Number(val) > 0) {
+    return `${Number(val) * 100}%`
+  }
+  return scaleOptionsMapper[val || 'auto']
+})
+
+function handleChangeMode(mode: string) {
+  docsStore.updatePdfController({
+    changedMode: mode
+  })
   canvasScaleVisible.value = false
 }
+
+const scaleNumberOptions = computed(() => {
+  if (!pdfController.value?.scaleModeList?.length) {
+    return []
+  }
+  const list = pdfController.value.scaleModeList
+  return list.filter(o => Number(o) > 0)
+})
+
 </script>
 <style lang="scss">
 .small-menu {
@@ -87,7 +96,7 @@ const applyCanvasPresetScale = (value: number) => {
   padding: 8px 12px;
   border-radius: $borderRadius;
   margin-right: 24px;
-  width: 84px;
+  width: 100px;
   justify-content: space-between;
   font-size: 13px;
   letter-spacing: 0.5px;

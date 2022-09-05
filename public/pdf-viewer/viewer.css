@@ -3035,3 +3035,9 @@ dialog :link {
 .thumbnail.selected .num {
   color: #469d8f;
 }
+
+#viewerContainer[mode="3"] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

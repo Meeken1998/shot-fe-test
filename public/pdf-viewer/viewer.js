@@ -16236,6 +16236,7 @@ function _bindScrollModeListener2(_ref3) {
     spreadNoneButton.disabled = isHorizontal;
     spreadOddButton.disabled = isHorizontal;
     spreadEvenButton.disabled = isHorizontal;
+    document.getElementById("viewerContainer").setAttribute("mode", mode);
   };
 
   this.eventBus._on("scrollmodechanged", scrollModeChanged);
@@ -16700,7 +16701,7 @@ exports.postPdfFileLoadingProcess = postPdfFileLoadingProcess;
 exports.postUiChangeEvent = void 0;
 
 function debounce(fn) {
-  let wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1000;
+  let wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 200;
   var timer = null;
   return function () {
     if (timer !== null) {
