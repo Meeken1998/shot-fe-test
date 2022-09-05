@@ -8,9 +8,14 @@
   </div>
 </template>
 <script lang="ts" setup>
+// eslint-disable @typescript-eslint/no-explicit-any
 import { useDocsStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { defineProps, computed, onMounted, ref, watch } from 'vue'
+import { defineProps, computed, onMounted, ref, watch, onUnmounted } from 'vue'
+import { copyText } from '@/utils/clipboard'
+import { message } from 'ant-design-vue'
+import { KEYS } from '@/configs/hotkey'
+
 const docsStore = useDocsStore()
 const { pdfController } = storeToRefs(docsStore)
 
@@ -25,9 +30,16 @@ const props = defineProps({
 
 const loaded = ref(false)
 
-const iframeUrl = computed(() => `${iframeOrigin}/pdf-viewer/viewer.html?file=${props.url}`)
+const iframeUrl = computed(() => `${iframeOrigin}/pdf-viewer/viewer.html?file=${props.url}${location.hash || ''}`)
 const iframe = ref<HTMLIFrameElement>()
 const progressPercent = ref(0)
+
+function registerHotKey(e: KeyboardEvent) {
+  const key = e.key.toUpperCase()
+  if (key === KEYS.F5) {
+    docsStore.emitEvent({ type: 'screening' })
+  }
+}
 
 function handlePdfProgress(loaded: number, total: number) {
   progressPercent.value = loaded / total * 100
@@ -35,6 +47,30 @@ function handlePdfProgress(loaded: number, total: number) {
 
 function handleLoaded() {
   loaded.value = true
+  docsStore.updatePdfController({
+    loaded: true
+  })
+}
+
+function handleUiChanged() {
+  getScaleInfo()
+  getSearchBarStatus()
+  getSidebarStatus()
+  getScrollMode()
+}
+
+function getSearchBarStatus() {
+  const opened = !!(iframe.value?.contentWindow as any).$pdfview.findBar.opened
+  docsStore.updatePdfController({
+    findBarOpened: opened
+  })
+}
+
+function getSidebarStatus() {
+  const opened = !!(iframe.value?.contentWindow as any).$pdfview.pdfSidebar.isOpen
+  docsStore.updatePdfController({
+    sidebarOpened: opened
+  })
 }
 
 function getScaleInfo() {
@@ -51,12 +87,63 @@ function getScaleInfo() {
   })
 }
 
-watch(() => pdfController.value?.changedMode, (val) => {
-  (iframe.value?.contentWindow as any).$pdfview.pdfViewer._setScale(val)
-  getScaleInfo()
+function getScrollMode() {
+  const isSinglePageMode = (iframe.value?.contentWindow as any)?.$pdfview?.pdfViewer?.scrollMode === 3
+  docsStore.updatePdfController({
+    isSinglePageMode
+  })
+}
+
+function copyLink() {
+  const href = (iframe.value?.contentDocument?.querySelector('#viewBookmark') as HTMLLinkElement)?.href || ''
+  const hash = href.split('#')?.[1] || ''
+  copyText(`${location.origin}${location.pathname}#${hash}`)
+  void message.success('已复制当前位置的链接')
+}
+
+watch(() => pdfController.value?.eventBus, (ev) => {
+  if (ev?.type === 'scale') {
+    (iframe.value?.contentWindow as any).$pdfview.pdfViewer._setScale(ev.data)
+    getScaleInfo()
+  }
+  if (ev?.type === 'search') {
+    (iframe.value?.contentWindow as any).$pdfview.findBar.toggleButton.click()
+    getSearchBarStatus()
+  }
+  if (ev?.type === 'sidebar') {
+    (iframe.value?.contentWindow as any).$pdfview.pdfSidebar.toggleButton.click()
+    getSidebarStatus()
+  }
+  if (ev?.type === 'link') {
+    copyLink()
+  }
+  if (ev?.type === 'prev') {
+    (iframe.value?.contentWindow as any).$pdfview.pdfViewer.previousPage()
+  }
+  if (ev?.type === 'next') {
+    (iframe.value?.contentWindow as any).$pdfview.pdfViewer.nextPage()
+  }
+  if (ev?.type === 'incScale') {
+    (iframe.value?.contentWindow as any).$pdfview.pdfViewer.increaseScale()
+  }
+  if (ev?.type === 'decScale') {
+    (iframe.value?.contentWindow as any).$pdfview.pdfViewer.decreaseScale()
+  }
+  if (ev?.type === 'screening') {
+    (iframe.value?.contentDocument?.querySelector('#presentationMode') as HTMLButtonElement)?.click()
+  }
+  if (ev?.type === 'singleMode') {
+    (iframe.value!.contentWindow as any).$pdfview.pdfViewer.scrollMode = docsStore.pdfController?.isSinglePageMode ? 0 : 3
+    docsStore.emitEvent({
+      type: 'scale',
+      data: docsStore.pdfController?.isSinglePageMode ? 'auto' : 'page-fit'
+    })
+    getScrollMode()
+  }
 })
 
 onMounted(() => {
+  document.addEventListener('keydown', registerHotKey)
   window.addEventListener('message', e => {
     if (e.origin === iframeOrigin) {
       const { data, type } = e.data
@@ -68,7 +155,7 @@ onMounted(() => {
           if (!loaded.value) {
             handleLoaded()
           }
-          getScaleInfo()
+          handleUiChanged()
           break
         default:
       }
@@ -76,7 +163,9 @@ onMounted(() => {
   })
 })
 
-
+onUnmounted(() => {
+  document.removeEventListener('keydown', registerHotKey)
+})
 </script>
 <style lang="scss" scoped>
 .pdf-viewer {
@@ -99,7 +188,7 @@ onMounted(() => {
   padding-bottom: 10%;
   color: #666;
 
-  & > div {
+  &>div {
     margin-top: 24px;
   }
 

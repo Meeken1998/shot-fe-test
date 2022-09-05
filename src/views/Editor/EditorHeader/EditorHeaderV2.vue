@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-header-v2">
+  <div v-if="!screening" class="editor-header-v2">
     <div class="flex-row" :style="{ flex: '1' }">
       <div class="logo-bar">
         <img class="logo" src="https://static.aside.fun/upload/logo-no-text.svg" :draggable="false"
@@ -41,6 +41,7 @@
     </div>
 
     <ToolBarV2 v-if="editable" :narrow-screen="clientWidth < 1600" />
+    <PDFToolBar v-if="docs?.type === 'pdf'" :narrow-screen="clientWidth < 1600" />
 
     <div :class="{
       'right-side': true,
@@ -55,7 +56,7 @@
       <img src="https://static.aside.fun/upload/share.svg" class="right-icon" :draggable="false" />
       <Tooltip title="全屏演示 (F5)">
         <img src="https://static.aside.fun/upload/play.svg" class="right-icon" :draggable="false"
-          @click="enterScreening()" />
+          @click="handleEnterScreening()" />
       </Tooltip>
     </div>
   </div>
@@ -76,6 +77,7 @@ import router from '@/views/router'
 import { setTitle } from '@/utils/title'
 import useScreening from '@/hooks/useScreening'
 import PDFScaleSelector from '@/views/components/viewer/pdf/PDFScaleSelector.vue'
+import PDFToolBar from '@/views/components/viewer/pdf/PDFToolBar.vue'
 const { enterScreening } = useScreening()
 
 const slidesStore = useSlidesStore()
@@ -84,7 +86,7 @@ const docsStore = useDocsStore()
 const { docs, team } = storeToRefs(docsStore)
 
 const { mode } = storeToRefs(slidesStore)
-const { clientWidth } = storeToRefs(useScreenStore())
+const { clientWidth, screening } = storeToRefs(useScreenStore())
 const isTitleInputVisible = ref(false)
 const inputRef = ref<HTMLInputElement>()
 
@@ -100,6 +102,17 @@ const handleUpdateDocsMeta = debounce(async () => {
     setTitle(`${docs.value?.name} - ${team.value?.name}`)
   }
 })
+
+function handleEnterScreening() {
+  if (docs.value?.type === 'ppt') {
+    enterScreening()
+  }
+  if (docs.value?.type === 'pdf') {
+    docsStore.emitEvent({
+      type: 'screening'
+    })
+  }
+}
 
 
 function handleTitleChange() {

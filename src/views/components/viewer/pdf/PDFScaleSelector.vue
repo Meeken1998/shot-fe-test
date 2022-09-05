@@ -43,14 +43,15 @@ const scaleOptionsMapper = {
 const scaleText = computed(() => {
   const val = pdfController.value?.scaleMode as string
   if (Number(val) > 0) {
-    return `${Number(val) * 100}%`
+    return `${Math.ceil(Number(val) * 100)}%`
   }
   return scaleOptionsMapper[val || 'auto']
 })
 
 function handleChangeMode(mode: string) {
-  docsStore.updatePdfController({
-    changedMode: mode
+  docsStore.emitEvent({
+    type: 'scale',
+    data: mode
   })
   canvasScaleVisible.value = false
 }

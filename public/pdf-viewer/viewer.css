@@ -1048,9 +1048,9 @@
   --sidebar-toolbar-bg-color: rgba(245, 246, 247, 1);
   --toolbar-bg-color: rgba(249, 249, 250, 1);
   --toolbar-border-color: rgba(204, 204, 204, 1);
-  --button-hover-color: rgba(221, 222, 223, 1);
+  --button-hover-color: #fafafa;
   --toggled-btn-color: rgba(0, 0, 0, 1);
-  --toggled-btn-bg-color: rgba(0, 0, 0, 0.3);
+  --toggled-btn-bg-color: #eee;
   --toggled-hover-active-btn-color: rgba(0, 0, 0, 0.4);
   --dropdown-btn-bg-color: rgba(215, 215, 219, 1);
   --separator-color: rgba(0, 0, 0, 0.3);
@@ -1061,7 +1061,7 @@
   --treeitem-hover-color: rgba(0, 0, 0, 0.9);
   --treeitem-selected-color: rgba(0, 0, 0, 0.9);
   --treeitem-selected-bg-color: rgba(0, 0, 0, 0.25);
-  --sidebaritem-bg-color: rgba(0, 0, 0, 0.15);
+  --sidebaritem-bg-color: #ffffff00;
   --doorhanger-bg-color: rgba(255, 255, 255, 1);
   --doorhanger-border-color: rgba(12, 12, 13, 0.2);
   --doorhanger-hover-color: rgba(12, 12, 13, 1);
@@ -1116,52 +1116,6 @@
   --dir-factor: -1;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --main-color: rgba(249, 249, 250, 1);
-    --body-bg-color: rgba(42, 42, 46, 1);
-    --errorWrapper-bg-color: rgba(169, 14, 14, 1);
-    --progressBar-color: rgba(0, 96, 223, 1);
-    --progressBar-indeterminate-bg-color: rgba(40, 40, 43, 1);
-    --progressBar-indeterminate-blend-color: rgba(20, 68, 133, 1);
-    --scrollbar-color: rgba(121, 121, 123, 1);
-    --scrollbar-bg-color: rgba(35, 35, 39, 1);
-    --toolbar-icon-bg-color: rgba(255, 255, 255, 1);
-    --toolbar-icon-hover-bg-color: rgba(255, 255, 255, 1);
-
-    --sidebar-narrow-bg-color: rgba(42, 42, 46, 0.9);
-    --sidebar-toolbar-bg-color: rgba(50, 50, 52, 1);
-    --toolbar-bg-color: rgba(56, 56, 61, 1);
-    --toolbar-border-color: rgba(12, 12, 13, 1);
-    --button-hover-color: rgba(102, 102, 103, 1);
-    --toggled-btn-color: rgba(255, 255, 255, 1);
-    --toggled-btn-bg-color: rgba(0, 0, 0, 0.3);
-    --toggled-hover-active-btn-color: rgba(0, 0, 0, 0.4);
-    --dropdown-btn-bg-color: rgba(74, 74, 79, 1);
-    --separator-color: rgba(0, 0, 0, 0.3);
-    --field-color: rgba(250, 250, 250, 1);
-    --field-bg-color: rgba(64, 64, 68, 1);
-    --field-border-color: rgba(115, 115, 115, 1);
-    --treeitem-color: rgba(255, 255, 255, 0.8);
-    --treeitem-hover-color: rgba(255, 255, 255, 0.9);
-    --treeitem-selected-color: rgba(255, 255, 255, 0.9);
-    --treeitem-selected-bg-color: rgba(255, 255, 255, 0.25);
-    --sidebaritem-bg-color: rgba(255, 255, 255, 0.15);
-    --doorhanger-bg-color: rgba(74, 74, 79, 1);
-    --doorhanger-border-color: rgba(39, 39, 43, 1);
-    --doorhanger-hover-color: rgba(249, 249, 250, 1);
-    --doorhanger-hover-bg-color: rgba(93, 94, 98, 1);
-    --doorhanger-separator-color: rgba(92, 92, 97, 1);
-    --dialog-button-bg-color: rgba(92, 92, 97, 1);
-    --dialog-button-hover-bg-color: rgba(115, 115, 115, 1);
-
-    /* This image is used in <input> elements, which unfortunately means that
-     * the `mask-image` approach used with all of the other images doesn't work
-     * here; hence why we still have two versions of this particular image. */
-    --loading-icon: url(images/loading-dark.svg);
-  }
-}
-
 @media screen and (forced-colors: active) {
   :root {
     --button-hover-color: Highlight;
@@ -1172,7 +1126,7 @@
     --toggled-btn-color: HighlightText;
     --toggled-btn-bg-color: LinkText;
     --doorhanger-hover-color: ButtonFace;
-    --doorhanger-border-color-whcm: 1px solid ButtonText;
+    --doorhanger-border-color-whcm: 1px solid #fff;
     --doorhanger-triangle-opacity-whcm: 0;
     --dialog-button-border: 1px solid Highlight;
     --dialog-button-hover-bg-color: Highlight;
@@ -1524,7 +1478,7 @@ select {
 .findbar,
 .secondaryToolbar,
 .editorParamsToolbar {
-  top: 32px;
+  top: 48px;
   position: absolute;
   z-index: 10000;
   height: auto;
@@ -1578,6 +1532,7 @@ select {
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+  border-radius: 4px;
 }
 
 .findbar label:hover,
@@ -1606,7 +1561,7 @@ select {
   background-position: calc(50% + 48% * var(--dir-factor));
 }
 #findInput[data-status="notFound"] {
-  background-color: rgba(255, 102, 102, 1);
+  background-color: rgba(255, 102, 102, 0.1);
 }
 
 [dir="ltr"] .secondaryToolbar,[dir="ltr"] 
@@ -1928,6 +1883,7 @@ select {
 .splitToolbarButton {
   margin: 2px;
   display: inline-block;
+  margin-left: 8px;
 }
 [dir="ltr"] .splitToolbarButton > .toolbarButton {
   float: left;
@@ -2005,6 +1961,7 @@ select {
   width: 1px;
   height: 20px;
   background-color: var(--separator-color);
+  display: none;
 }
 
 .toolbarButton,
@@ -2479,9 +2436,9 @@ a.secondaryToolbarButton[href="#"] {
   -webkit-appearance: none;
 }
 
-.toolbarField:focus {
+/* .toolbarField:focus {
   border-color: #0a84ff;
-}
+} */
 
 .toolbarLabel {
   min-width: 16px;
@@ -3040,4 +2997,40 @@ dialog :link {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.findbar {
+  left: unset !important;
+  right: 24px !important;
+  top: 24px !important;
+  padding: 8px 16px !important;
+  box-shadow: unset !important;
+  border: 1px solid #eee !important;
+  background-color: #fff !important;
+}
+
+.findbarWrapper {
+  display: inline-flex;
+}
+
+.findbar:before, .doorHanger:after {
+  display: none !important;
+}
+
+#findbarOptionsOneContainer, #findbarOptionsTwoContainer {
+}
+
+.findbar .toolbarField[type="checkbox"]:checked + .toolbarLabel {
+
+}
+
+.toolbarField {
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+#findbarMessageContainer span {
+  padding: 0 !important;
+  background-color: unset !important;
+  margin-top: 8px;
 }
