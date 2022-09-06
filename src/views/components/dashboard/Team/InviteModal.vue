@@ -52,7 +52,7 @@
           <div class="subtitle">收到链接的所有用户同意后将加入团队</div>
         </div>
 
-        <Button type="primary" class="primary-btn" @click="handleMakeInviteLink()">复制链接</Button>
+        <Button type="primary" class="primary-btn" @click="handleMakeInviteLink()">生成并复制链接</Button>
       </div>
     </div>
   </Modal>
