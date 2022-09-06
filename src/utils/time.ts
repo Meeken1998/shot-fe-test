@@ -39,7 +39,7 @@ export function getDateDiff(timestamp: number) {
     result = '' + d(minC) + '分钟前'
   }
   else {
-    result = '即刻'
+    result = '刚刚'
   }
 
   if (timestamp > Date.now()) {
