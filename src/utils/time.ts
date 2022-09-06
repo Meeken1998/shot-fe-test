@@ -8,7 +8,7 @@ export function getDateDiff(timestamp: number) {
   const hour = minute * 60
   const day = hour * 24
   const month = day * 30
-  const diffValue = new Date().getTime() - new Date(timestamp).getTime()
+  const diffValue = Math.abs(new Date().getTime() - new Date(timestamp).getTime())
   if (diffValue < 0) {
     return
   }
@@ -39,7 +39,11 @@ export function getDateDiff(timestamp: number) {
     result = '' + d(minC) + '分钟前'
   }
   else {
-    result = '刚刚'
+    result = '即刻'
+  }
+
+  if (timestamp > Date.now()) {
+    result = result.replace('前', '后')
   }
   return result
 }

@@ -1,5 +1,6 @@
 import useRequest from '@/hooks/useRequest'
 import { UserInfo } from '@authing/browser/dist/types/global'
+import { User } from 'authing-js-sdk'
 import { Docs } from './docs'
 
 const { post, get } = useRequest()
@@ -36,13 +37,35 @@ export enum TeamInviteType {
   PUBLIC = 2,
 }
 
+export enum TeamInviteLinkOutdateType {
+  SEVEN_DAYS = 1,
+  NEVER = 2,
+}
+
+
+export enum TeamInviteStatus {
+  EFFECTIVE = 1,
+  ACCEPTED = 2,
+  DISABLED = 3,
+}
+
 export type TeamInvite = {
   _id: string
   inviterUserId: string
   targetUserId?: string
   teamId: string
   type: TeamInviteType
+  status: TeamInviteStatus
   outdateTimestamp: number
+  acceptedUserIds: string[]
+  remark?: string
+  createdTimestamp: number
+}
+
+export type TeamInviteWithUserProfile = TeamInvite & {
+  acceptedUsers?: Partial<User>[]
+  inviterUser?: Partial<User>
+  targetUser?: Partial<User>
 }
 
 export function createTeam(payload: CreateTeamPayload) {
@@ -72,13 +95,35 @@ export function getTeamMembers(teamId: string) {
   return get<TeamMemberResponse>(`/api/teams/${teamId}/members`)
 }
 
-export function createTeamInviteLink(teamId: string, inviterUserId: string, targetUserId?: string) {
+export function createTeamInviteLink(
+  teamId: string,
+  inviterUserId: string,
+  outdateType: TeamInviteLinkOutdateType,
+  targetUserId?: string
+) {
   return post<string>(`/api/teams/invites/${teamId}`, {
     inviterUserId,
     targetUserId,
+    outdateType,
   })
+}
+
+export function getTeamInvites(teamId: string) {
+  return get<TeamInviteWithUserProfile[]>(`/api/teams/invites/manage/${teamId}`)
 }
 
 export function acceptTeamInvite(inviteId: string) {
   return post<boolean>(`/api/teams/invites/${inviteId}/accept`, {})
+}
+
+export function updateTeamInviteRemark(teamId: string, teamInviteId: string, remark: string) {
+  return post<boolean>(`/api/teams/invites/manage/${teamId}/remark/${teamInviteId}`, { remark })
+}
+
+export function toggleTeamInviteStatus(teamId: string, teamInviteId: string) {
+  return post<boolean>(`/api/teams/invites/manage/${teamId}/toggle/${teamInviteId}`)
+}
+
+export function deleteTeamInvite(teamId: string, teamInviteId: string) {
+  return post<boolean>(`/api/teams/invites/manage/${teamId}/delete/${teamInviteId}`)
 }

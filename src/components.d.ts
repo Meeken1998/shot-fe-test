@@ -44,6 +44,8 @@ declare module 'vue' {
     Skeleton: typeof import('vue-loading-skeleton')['Skeleton']
     SkeletonTheme: typeof import('vue-loading-skeleton')['SkeletonTheme'],
     Progress: typeof import('ant-design-vue')['Progress']
+    AvatarGroup: typeof import('ant-design-vue')['Avatar']['Group']
+    Popconfigm: typeof import('ant-design-vue')['Popconfirm']
   }
 }
 

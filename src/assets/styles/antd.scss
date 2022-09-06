@@ -124,3 +124,8 @@ $border-radius-base: 8px;
     display: none;
   }
 }
+
+// popconfirm
+.ant-popover-message-title {
+  padding-left: 0;
+}

@@ -1,10 +1,8 @@
 <template>
   <div class="team-member-page">
     <TeamInfo @info="handleGetTeamInfo">
-      <router-link :to="{ path: `/createDocs`, query: { teamId: route.params.teamId } }" target="_blank">
-        <Button class="primary-btn">新建文档</Button>
-      </router-link>
-      <Button class="primary-btn" @click="inviteModalVisible = true">邀请成员</Button>
+      <Button class="primary-btn" @click="manageiIviteLinkModalVisible = true">邀请链接管理</Button>
+      <Button class="primary-btn" type="primary" @click="inviteModalVisible = true">邀请成员</Button>
     </TeamInfo>
     <div v-if="!loading" class="team-member">
       <div class="user" v-for="(item) in memberList" :key="item.id">
@@ -35,6 +33,8 @@
     </div>
     <InviteModal :visible="inviteModalVisible" @close="inviteModalVisible = false" :team-id="teamInfo?.id!"
       :team-name="teamInfo?.name!" />
+
+    <ManageInviteLinkModal :visible="manageiIviteLinkModalVisible" @close="manageiIviteLinkModalVisible = false" :team-id="teamInfo?.id!" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -46,9 +46,11 @@ import { getName } from '@/utils/authing'
 import TeamInfo from '../Team/TeamInfo.vue'
 import InviteModal from '../Team/InviteModal.vue'
 import { useRoute } from 'vue-router'
+import ManageInviteLinkModal from '../Team/ManageInviteLinkModal.vue'
 
 const route = useRoute()
 const inviteModalVisible = ref(false)
+const manageiIviteLinkModalVisible = ref(false)
 const teamInfo = ref<Team>()
 const loading = ref(true)
 

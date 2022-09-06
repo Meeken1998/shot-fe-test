@@ -41,6 +41,7 @@ import {
   Tabs,
   Empty,
   Progress,
+  Popconfirm,
 } from 'ant-design-vue'
 import router from './views/router'
 
@@ -82,6 +83,8 @@ app.component('Empty', Empty)
 app.component('Skeleton', Skeleton)
 app.component('SkeletonTheme', SkeletonTheme)
 app.component('Progress', Progress)
+app.component('AvatarGroup', Avatar.Group)
+app.component('Popconfirm', Popconfirm)
 
 app.use(Icon)
 app.use(Component)

@@ -31,11 +31,25 @@
 
       <div class="invite-by-link">
         <div>
-          <div class="title">
+          <div class="title flex-row">
             <LinkOutlined class="link" />
-            一次性链接邀请
+            生成链接邀请
+            <Dropdown>
+              <a class="select-time">
+                <span>{{ (inviteLinkOutdateTime === TeamInviteLinkOutdateType.SEVEN_DAYS && '7 天内有效') ||
+                    (inviteLinkOutdateTime === TeamInviteLinkOutdateType.NEVER && '永久有效')
+                }}</span>
+                <CaretDownFilled class="icon" />
+              </a>
+              <template #overlay>
+                <Menu>
+                  <MenuItem @click="inviteLinkOutdateTime = TeamInviteLinkOutdateType.SEVEN_DAYS">7 天内有效</MenuItem>
+                  <MenuItem @click="inviteLinkOutdateTime = TeamInviteLinkOutdateType.NEVER">永久有效</MenuItem>
+                </Menu>
+              </template>
+            </Dropdown>
           </div>
-          <div class="subtitle">收到链接的用户同意后将加入团队</div>
+          <div class="subtitle">收到链接的所有用户同意后将加入团队</div>
         </div>
 
         <Button type="primary" class="primary-btn" @click="handleMakeInviteLink()">复制链接</Button>
@@ -45,14 +59,16 @@
 </template>
 <script lang="ts" setup>
 import { ref, defineProps } from 'vue'
-import { LinkOutlined, SearchOutlined } from '@ant-design/icons-vue'
+import { LinkOutlined, SearchOutlined, CaretDownFilled } from '@ant-design/icons-vue'
 import { searchUsers } from '@/apis/user'
 import { User } from 'authing-js-sdk'
 import { storeToRefs } from 'pinia'
 import { useDashboardStore } from '@/store'
-import { createTeamInviteLink } from '@/apis/team'
+import { createTeamInviteLink, TeamInviteLinkOutdateType } from '@/apis/team'
 import { copyText } from '@/utils/clipboard'
 import { message } from 'ant-design-vue'
+
+const inviteLinkOutdateTime = ref<TeamInviteLinkOutdateType>(TeamInviteLinkOutdateType.SEVEN_DAYS)
 
 const searchValue = ref('')
 const searchedUsersList = ref<User[]>([])
@@ -87,13 +103,30 @@ async function handleMakeInviteLink(targetUserId?: string) {
   // 如果没有传 userId，则生成公共的邀请链接，否则是一对一的
   const teamId = props.teamId
   const inviterUserId = user.value?.sub || ''
-  const inviteLink = await createTeamInviteLink(teamId, inviterUserId, targetUserId)
+  const inviteLink = await createTeamInviteLink(teamId, inviterUserId, inviteLinkOutdateTime.value, targetUserId)
   await copyText(inviteLink)
   message.success('已复制邀请链接')
 }
 
 </script>
 <style lang="scss" scoped>
+.select-time {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  border-bottom: 1px solid #ddd;
+  gap: 4px;
+  font-weight: normal;
+  margin-left: 8px;
+  cursor: pointer;
+  color: #333;
+  line-height: 20px;
+
+  .icon {
+    font-size: 9px;
+  }
+}
+
 .invite-modal-container {
   width: 100%;
   height: 400px;
@@ -126,6 +159,8 @@ async function handleMakeInviteLink(targetUserId?: string) {
     .title {
       font-weight: bold;
       font-size: 14px;
+      display: flex;
+      align-items: center;
     }
 
     .subtitle {
