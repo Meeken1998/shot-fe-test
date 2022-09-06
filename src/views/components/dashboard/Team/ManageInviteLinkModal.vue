@@ -91,7 +91,7 @@
               <template #title>
                 <div>用户：{{ getName(item.inviterUser) }}</div>
               </template>
-              <Avatar :src="item.inviterUser?.photo!" :size="24" />
+              <Avatar :src="item.inviterUser?.photo!" :size="22" />
             </Tooltip>
           </div>
         </div>
