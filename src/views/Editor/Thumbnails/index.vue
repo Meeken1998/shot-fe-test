@@ -298,9 +298,9 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
 
 .thumbnail-item {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  padding: 16px 18px 16px 12px;
+  padding: 16px 12px;
 
   .thumbnail {
     outline: 1px solid rgba($color: $themeColor, $alpha: .15);
