@@ -52,13 +52,15 @@
 
       <CoUsers class="co-users-container" />
       <img src="https://static.aside.fun/upload/metrics.svg" class="right-icon" :draggable="false" />
-      <img src="https://static.aside.fun/upload/member.svg" class="right-icon" :draggable="false" />
-      <img src="https://static.aside.fun/upload/share.svg" class="right-icon" :draggable="false" />
+      <img src="https://static.aside.fun/upload/download-2.svg" class="right-icon" :draggable="false" />
+      <img src="https://static.aside.fun/upload/share.svg" class="right-icon" :draggable="false" @click="isShareModalVisible = true" />
       <Tooltip title="全屏演示 (F5)">
         <img src="https://static.aside.fun/upload/play.svg" class="right-icon" :draggable="false"
           @click="handleEnterScreening()" />
       </Tooltip>
     </div>
+
+    <DocsShareModal :visible="isShareModalVisible" @close="isShareModalVisible = false"></DocsShareModal>
   </div>
 </template>
 <script lang="ts" setup>
@@ -78,6 +80,7 @@ import { setTitle } from '@/utils/title'
 import useScreening from '@/hooks/useScreening'
 import PDFScaleSelector from '@/views/components/viewer/pdf/PDFScaleSelector.vue'
 import PDFToolBar from '@/views/components/viewer/pdf/PDFToolBar.vue'
+import DocsShareModal from '@/views/components/dashboard/Docs/DocsShareModal.vue'
 const { enterScreening } = useScreening()
 
 const slidesStore = useSlidesStore()
@@ -92,6 +95,8 @@ const inputRef = ref<HTMLInputElement>()
 
 const editable = computed(() => docs.value?.type === 'ppt')
 const isLargeScreen = computed(() => clientWidth.value >= 1600)
+
+const isShareModalVisible = ref(true)
 
 const handleUpdateDocsMeta = debounce(async () => {
   const res = await updateDocsMeta(docs.value?._id || '', docs.value?.name || '')

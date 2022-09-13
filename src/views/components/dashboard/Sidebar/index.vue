@@ -199,42 +199,10 @@ onMounted(() => {
       gap: 4px;
       margin-top: 4px;
     }
-
-    .menu-item {
-      padding: 0 24px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-size: 13px;
-      cursor: pointer;
-      width: calc(100% - 24px);
-      margin: 0 12px;
-      border-radius: $borderRadius;
-      transition: background-color 0.3s;
-      font-size: 14px;
-
-      .title {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        line-height: 1.5;
-      }
-
-      &:hover {
-        background-color: $themeColor;
-        color: #fff;
-      }
-
-      &.active {
-        background-color: $themeColor;
-        color: #fff;
-      }
-
-      .icon {
-        width: 16px;
-      }
-    }
   }
+}
+
+.menu-item {
+  width: calc(100% - 24px);
 }
 </style>
