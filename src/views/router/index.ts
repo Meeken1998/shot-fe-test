@@ -116,7 +116,6 @@ router.beforeEach((to, _, next) => {
         // 获取当前用户在当前团队下的资源权限
         getUserResources().then(res => {
           userResources.value = res
-          console.log('resources:', res)
           next()
         })
       }
