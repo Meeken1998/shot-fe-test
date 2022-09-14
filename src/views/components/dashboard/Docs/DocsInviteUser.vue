@@ -7,21 +7,20 @@
       生成分享链接
     </Button>
 
-
     <div v-else class="create">
       <div class="flex-row" style="gap: 12px">
-        <Button type="primary" class="primary-btn-mini">完成生成</Button>
+        <Button type="primary" class="primary-btn-mini" @click="handleCreateShareLink()">完成生成</Button>
         <Button class="primary-btn-mini" @click="isCreateMode = false">取消</Button>
       </div>
 
       <div class="form">
         <div class="item">
           <div class="title">备注</div>
-          <Input class="input" style="flex: 1;" placeholder="内部可见的分享链接备注（可选）" />
+          <Input class="input" style="flex: 1;" placeholder="内部可见的分享链接备注（可选）" v-model:value="remark" />
         </div>
         <div class="item">
           <div class="title">地址</div>
-          <Input class="input" addon-before="https://aside.fun/" style="flex: 1;" placeholder="自动分配" />
+          <Input disabled class="input" addon-before="https://aside.fun/" style="flex: 1;" placeholder="自动分配" />
         </div>
         <div class="item">
           <div class="title">授予权限</div>
@@ -34,20 +33,37 @@
       </div>
     </div>
 
+    <div v-if="!isCreateMode" class="links">
+      <div class="link" v-for="item in links" :key="item._id">
+        <div class="flex-row">
+          
+        </div>
+      </div>
+    </div>
+
     <SelectUsersModal :visible="isSelectUsersModalVisible" title="选择被分享文档的用户"
       @close="isSelectUsersModalVisible = false">
     </SelectUsersModal>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import SelectUsersModal from './SelectUsersModal.vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
+import { createDocsShareLink, getDocsShareLinks, ShareLink } from '@/apis/shareLink'
+import { useDocsStore } from '@/store/docs'
+
+const docsStore = useDocsStore()
+
+const docsId = docsStore.docs?._id || ''
 
 const isSelectUsersModalVisible = ref(false)
 const isCreateMode = ref(false)
 const selectedRoleActions = ref(['docs:read'])
 const isAutoPlay = ref(false)
+const remark = ref<string>()
+
+const links = ref<ShareLink[]>([])
 
 const roleActions = [
   {
@@ -65,8 +81,26 @@ const roleActions = [
   }
 ]
 
+async function getData() {
+  const res = await getDocsShareLinks(docsId)
+  links.value = res
+}
+
+async function handleCreateShareLink() {
+  const res = await createDocsShareLink(docsId, selectedRoleActions.value, remark.value)
+}
+
+onMounted(() => {
+  void getData()
+})
+
 </script>
 <style lang="scss" scoped>
+.links {
+  padding: 24px 0;
+  .link {}
+}
+
 .invite-user {
   .form {
     width: 400px;

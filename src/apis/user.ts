@@ -14,3 +14,7 @@ export function getUserInfoById(userId: string) {
 export function searchUsers(keyword: string) {
   return post<User[]>('/api/users/search', { keyword })
 }
+
+export function getUserResources() {
+  return get<Record<string, string[]>>(`/api/users/resources`)
+}

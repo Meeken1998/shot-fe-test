@@ -37,6 +37,7 @@ export interface DashboardState {
   headerBarMenuItems: HeaderBarMenuItem[]
   activeHeaderBarMenuKey: string
   currentTeam: Team | null
+  userResources: Record<string, string[]>
 }
 
 const headerBarMenuItems: HeaderBarMenuItem[] = [
@@ -100,7 +101,8 @@ export const useDashboardStore = defineStore('dashboard', {
       activeMenuItem: null,
       headerBarMenuItems,
       activeHeaderBarMenuKey: 'docs',
-      currentTeam: null
+      currentTeam: null,
+      userResources: {}
     }
   },
 

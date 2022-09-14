@@ -14,6 +14,7 @@ import JoinTeam from '@/views/components/dashboard/Team/JoinTeam.vue'
 import Home from '../Dashboard/index.vue'
 import ProfilePage from '@/views/components/dashboard/Setting/ProfilePage.vue'
 import DocsViewer from '@/views/components/viewer/DocsViewer.vue'
+import { getUserResources } from '@/apis/user'
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -93,13 +94,16 @@ const router = createRouter({
 const NEEDNOT_AUTH_ROUTE_NAMES: string[] = ['login', 'join-team']
 
 router.beforeEach((to, _, next) => {
-  const { user } = storeToRefs(useDashboardStore())
+  const { user, userResources } = storeToRefs(useDashboardStore())
   if (NEEDNOT_AUTH_ROUTE_NAMES.includes(to?.name as string)) {
     if (to?.meta?.title) {
       setTitle(to.meta.title as string)
     }
     next()
     return
+  }
+  if (to.params?.teamId) {
+    localStorage.setItem('team', to.params?.teamId as string)
   }
   sdk
     .getUserInfo()
@@ -109,7 +113,12 @@ router.beforeEach((to, _, next) => {
         if (to?.meta?.title) {
           setTitle(to.meta.title as string)
         }
-        next()
+        // 获取当前用户在当前团队下的资源权限
+        getUserResources().then(res => {
+          userResources.value = res
+          console.log('resources:', res)
+          next()
+        })
       }
       else {
         next({ name: 'login' })

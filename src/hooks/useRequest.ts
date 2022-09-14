@@ -9,8 +9,10 @@ export interface SuccessResponse<T> {
 
 type RequestFn = <T = any>(url: string, data?: any, headers?: Record<string, string>) => Promise<T>
 
-export const HTTP_SERVICE_ENDPOINT = process.env.NODE_ENV !== 'development' ? 'https://storyboard-api.aside.fun' : 'http://localhost:3000'
-export const WS_SERVICE_ENDPOINT = process.env.NODE_ENV !== 'development' ? 'wss://storyboard-api.aside.fun' : 'ws://localhost:3000'
+export const HTTP_SERVICE_ENDPOINT =
+  process.env.NODE_ENV !== 'development' ? 'https://storyboard-api.aside.fun' : 'http://localhost:3000'
+export const WS_SERVICE_ENDPOINT =
+  process.env.NODE_ENV !== 'development' ? 'wss://storyboard-api.aside.fun' : 'ws://localhost:3000'
 
 export default () => {
   if (process.env.NODE_ENV !== 'development') {
@@ -27,13 +29,19 @@ export default () => {
     return res
   })
   async function request<T>(method: Method, url: string, data: any, headers?: Record<string, string>): Promise<T> {
+    const clientHeaders: Record<string, string> = {}
     const token = localStorage.getItem('token')
+    if (token) clientHeaders['authentication'] = `Bearer ${token}`
+
+    const teamId = localStorage.getItem('team')
+    if (teamId) clientHeaders['team'] = teamId
+  
     const res = await axios({
       method,
       url,
       data,
       headers: {
-        authentication: `Bearer ${token}`,
+        ...clientHeaders,
         ...headers,
       },
     })
