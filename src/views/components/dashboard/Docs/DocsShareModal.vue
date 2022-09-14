@@ -1,7 +1,7 @@
 <template>
   <Modal :visible="visible" @cancel="emit('close')" title="分享" :width="720" :footer="null" centered>
     <div class="share-modal-container">
-      <div>
+      <div style="flex-shrink: 0;">
         <div class="menu-container side-menu">
           <div :class="{
             'menu-item': true,
@@ -21,13 +21,14 @@
 
 
       <div class="menu-box">
-        {{ shareMode }}
+        <DocsInviteUser v-if="shareMode === 'user'" />
       </div>
     </div>
   </Modal>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
+import DocsInviteUser from './DocsInviteUser.vue'
 
 const shareMode = ref<'user' | 'universal'>('user')
 
@@ -45,7 +46,11 @@ const emit = defineEmits<{
 <style lang="scss">
 .share-modal-container {
   display: flex;
-  gap: 16px;
+  gap: 24px;
+}
+
+.menu-box {
+  flex: 1;
 }
 
 .ant-modal-body {

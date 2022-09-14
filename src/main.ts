@@ -85,6 +85,7 @@ app.component('SkeletonTheme', SkeletonTheme)
 app.component('Progress', Progress)
 app.component('AvatarGroup', Avatar.Group)
 app.component('Popconfirm', Popconfirm)
+app.component('CheckboxGroup', Checkbox.Group)
 
 app.use(Icon)
 app.use(Component)

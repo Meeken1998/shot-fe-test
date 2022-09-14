@@ -76,9 +76,20 @@ $border-radius-base: 8px;
 .input {
   background-color: #f6f8fc;
   border-color: #f6f8fc !important;
+  border-radius: $borderRadius;
 
   input {
     background-color: #f6f8fc !important;
+  }
+
+  .ant-input-group-addon {
+    color: #888;
+    border-color: #f6f8fc !important;
+    background-color: #f6f8fc;
+  }
+
+  .ant-input-group input {
+    border: none;
   }
 }
 

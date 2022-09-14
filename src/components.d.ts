@@ -46,6 +46,7 @@ declare module 'vue' {
     Progress: typeof import('ant-design-vue')['Progress']
     AvatarGroup: typeof import('ant-design-vue')['Avatar']['Group']
     Popconfigm: typeof import('ant-design-vue')['Popconfirm']
+    CheckboxGroup: typeof import('ant-design-vue')['Checkbox']['Group']
   }
 }
 
