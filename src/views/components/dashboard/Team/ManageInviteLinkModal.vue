@@ -30,14 +30,14 @@
       <div v-else v-for="(item) in (filterData || invites)" :key="item._id" class="link">
         <div class="left">
           <div class="flex-row">
-            <Tooltip v-if="item.status === TeamInviteStatus.EFFECTIVE" title="生效中">
+            <Tooltip v-if="(item.outdateTimestamp > 0 && item.outdateTimestamp < Date.now())" title="已失效">
+              <StopFilled class="disabled" />
+            </Tooltip>
+            <Tooltip v-else-if="item.status === TeamInviteStatus.EFFECTIVE" title="生效中">
               <ClockCircleFilled class="info" />
             </Tooltip>
             <Tooltip v-if="item.status === TeamInviteStatus.DISABLED" title="暂停使用">
               <PauseCircleFilled class="warning" />
-            </Tooltip>
-            <Tooltip v-if="(item.outdateTimestamp > 0 && item.outdateTimestamp < Date.now())" title="已失效">
-              <StopFilled class="disabled" />
             </Tooltip>
             <Tooltip v-if="item.targetUser && item.acceptedUserIds?.length" title="已通过">
               <CheckCircleFilled class="success" />
