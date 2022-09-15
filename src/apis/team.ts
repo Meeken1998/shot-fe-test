@@ -85,10 +85,7 @@ export function getTeamDocs(teamId: string) {
 }
 
 export function getTeamInviteInfo(inviteId: string) {
-  return get<{
-    team: Team
-    invite: TeamInvite
-  }>(`/api/teams/invites/${inviteId}`)
+  return get(`/api/teams/invites/${inviteId}`, {}, {}, true)
 }
 
 export function getTeamMembers(teamId: string) {

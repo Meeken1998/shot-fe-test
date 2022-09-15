@@ -7,7 +7,7 @@ export interface SuccessResponse<T> {
   data: T
 }
 
-type RequestFn = <T = any>(url: string, data?: any, headers?: Record<string, string>) => Promise<T>
+type RequestFn = <T = any>(url: string, data?: any, headers?: Record<string, string>, returnOrigin?: boolean) => Promise<T>
 
 export const HTTP_SERVICE_ENDPOINT =
   process.env.NODE_ENV !== 'development' ? 'https://storyboard-api.aside.fun' : 'http://localhost:3000'
@@ -22,9 +22,9 @@ export default () => {
     if (res?.data?.code) {
       if (res.data.code !== 200) {
         message.warning(res?.data?.message || '网络错误')
-        return null
+        return res.data || null
       }
-      return res?.data?.data
+      return res?.data
     }
     return res
   })
@@ -48,8 +48,14 @@ export default () => {
     return res as unknown as T
   }
 
-  const post: RequestFn = (url, data, headers) => request('POST', url, data, headers)
-  const get: RequestFn = (url, data, headers) => request('GET', url, data, headers)
+  const post: RequestFn = async (url, data, headers, returnOrigin) => {
+    const res = await request('POST', url, data, headers) as any
+    return returnOrigin ? res : res?.data
+  }
+  const get: RequestFn = async (url, data, headers, returnOrigin) => {
+    const res = await request('GET', url, data, headers) as any
+    return returnOrigin ? res : res?.data
+  }
 
   return { client: axios, post, get }
 }

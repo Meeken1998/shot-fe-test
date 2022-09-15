@@ -14,7 +14,7 @@
         </div>
         <div v-if="inviteInfo?.outdateTimestamp" class="tips">这个邀请链接将在
           {{ Math.ceil((inviteInfo.outdateTimestamp -
-              Date.now()) / 86400000)
+          Date.now()) / 86400000)
           }} 天后过期</div>
       </div>
 
@@ -43,11 +43,22 @@ const inviterInfo = ref<User>()
 const { loginState } = storeToRefs(useDashboardStore())
 
 async function getData() {
-  const { team, invite } = await getTeamInviteInfo(inviteId)
-  teamInfo.value = team
-  inviteInfo.value = invite
-  const inviter = await getUserInfoById(invite?.inviterUserId)
-  inviterInfo.value = inviter
+  const res = await getTeamInviteInfo(inviteId)
+  const { team, invite } = res?.data || {}
+  if (team && invite) {
+    teamInfo.value = team
+    inviteInfo.value = invite
+    const inviter = await getUserInfoById(invite?.inviterUserId)
+    inviterInfo.value = inviter
+  }
+  else {
+    // FIXME: 非常愚蠢的判断方式
+    if (res.code === 500 && (res.message as string).includes('您已加入该团队')) {
+      const teamId = res.error
+      message.destroy()
+      redirect2Team(teamId)
+    }
+  }
 }
 
 function handleAcceptInviteAfterLogin() {
@@ -74,12 +85,14 @@ async function handleJoin() {
   const res = await acceptTeamInvite(inviteId)
   if (res) {
     void message.success(`你已成功加入 ${teamInfo.value?.name}`)
-    setTimeout(() => {
-      router.push({
-        path: `/team/${teamInfo.value?.id}`
-      })
-    }, 1000)
+    setTimeout(() => redirect2Team(teamInfo.value?.id || ''), 1000)
   }
+}
+
+function redirect2Team(teamId: string) {
+  router.push({
+    path: `/team/${teamId}`
+  })
 }
 
 onMounted(() => {
