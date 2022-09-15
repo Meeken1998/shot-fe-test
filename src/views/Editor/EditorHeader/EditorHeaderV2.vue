@@ -96,7 +96,7 @@ const inputRef = ref<HTMLInputElement>()
 const editable = computed(() => docs.value?.type === 'ppt')
 const isLargeScreen = computed(() => clientWidth.value >= 1600)
 
-const isShareModalVisible = ref(true)
+const isShareModalVisible = ref(false)
 
 const handleUpdateDocsMeta = debounce(async () => {
   const res = await updateDocsMeta(docs.value?._id || '', docs.value?.name || '')
