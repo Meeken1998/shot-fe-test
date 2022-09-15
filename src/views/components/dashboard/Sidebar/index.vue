@@ -166,6 +166,7 @@ onMounted(() => {
   padding: 16px;
   padding-top: 24px;
   padding-bottom: 0;
+  overflow-y: auto;
 
   .fake-data {
     display: flex;

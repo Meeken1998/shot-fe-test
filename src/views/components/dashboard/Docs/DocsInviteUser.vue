@@ -35,9 +35,17 @@
 
     <div v-if="!isCreateMode" class="links">
       <div class="link" v-for="item in links" :key="item._id">
-        <div class="flex-row">
-          
+        <div class="info-bar">
+          <div class="flex-row" style="gap: 8px;">
+            <Switch v-model:checked="item.enabled" style="transform: scale(0.8);"></Switch>
+            <div class="title">{{ item.name }}</div>
+            <div class="flex-row" style="gap: 4px">
+              <div v-for="tag in getTags(item)" :key="tag" class="tag">{{ tag }}</div>
+            </div>
+          </div>
         </div>
+
+        <Input :value="`https://aside.fun/s/${item._id}`" />
       </div>
     </div>
 
@@ -52,6 +60,7 @@ import SelectUsersModal from './SelectUsersModal.vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { createDocsShareLink, getDocsShareLinks, ShareLink } from '@/apis/shareLink'
 import { useDocsStore } from '@/store/docs'
+import { message } from 'ant-design-vue'
 
 const docsStore = useDocsStore()
 
@@ -87,7 +96,25 @@ async function getData() {
 }
 
 async function handleCreateShareLink() {
-  const res = await createDocsShareLink(docsId, selectedRoleActions.value, remark.value)
+  const res = await createDocsShareLink(docsId, selectedRoleActions.value, remark.value, isAutoPlay.value)
+  if (res._id) {
+    void message.success('创建成功')
+    await getData()
+    isCreateMode.value = false
+  }
+}
+
+function getTags(link: ShareLink) {
+  const roleMapper: Record<string, string> = {
+    'docs:read': '可阅读',
+    'docs:write': '可编辑',
+    'docs:share': '可分享',
+  }
+  const res = (link.resourceActions || []).map(r => roleMapper[r]).filter(r => r)
+  if (link.configs?.autoplay) {
+    res.unshift('演示模式')
+  }
+  return res
 }
 
 onMounted(() => {
@@ -98,7 +125,36 @@ onMounted(() => {
 <style lang="scss" scoped>
 .links {
   padding: 24px 0;
-  .link {}
+  padding-right: 12px;
+
+  .link {
+    .info-bar {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+
+      .title {
+        font-weight: bold;
+        font-size: 15px;
+      }
+
+      .tag {
+        font-size: 13px;
+        color: #fff;
+        background-color: $themeColor;
+        height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 8px;
+        border-radius: 12px;
+        transform: scale(0.9);
+        user-select: none;
+      }
+    }
+  }
 }
 
 .invite-user {
