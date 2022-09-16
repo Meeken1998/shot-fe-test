@@ -2,7 +2,7 @@ import useRequest from '@/hooks/useRequest'
 
 const { post, get } = useRequest()
 
-type DocsType = 'pdf' | 'ppt'
+export type DocsType = 'pdf' | 'ppt'
 
 export interface Docs {
   _id: string

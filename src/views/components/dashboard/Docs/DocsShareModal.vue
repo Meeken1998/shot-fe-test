@@ -21,7 +21,8 @@
 
 
       <div class="menu-box">
-        <DocsInviteUser v-if="shareMode === 'user'" />
+        <DocsInviteUser v-if="shareMode === 'universal'" />
+        <DocsInviteUser v-if="shareMode === 'user'" select-user />
       </div>
     </div>
   </Modal>

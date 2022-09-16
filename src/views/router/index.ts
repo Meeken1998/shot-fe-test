@@ -15,6 +15,7 @@ import Home from '../Dashboard/index.vue'
 import ProfilePage from '@/views/components/dashboard/Setting/ProfilePage.vue'
 import DocsViewer from '@/views/components/viewer/DocsViewer.vue'
 import { getUserResources } from '@/apis/user'
+import ShareRedirector from '@/views/components/dashboard/Share/ShareRedirector.vue'
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -88,6 +89,14 @@ const router = createRouter({
         title: '加入团队',
       },
     },
+    {
+      name: 'share',
+      path: '/share/:shareLink',
+      component: ShareRedirector,
+      meta: {
+        title: '跳转中...',
+      },
+    },
   ],
 })
 
@@ -114,7 +123,7 @@ router.beforeEach((to, _, next) => {
           setTitle(to.meta.title as string)
         }
         // 获取当前用户在当前团队下的资源权限
-        getUserResources().then(res => {
+        getUserResources()?.then(res => {
           userResources.value = res
           next()
         })

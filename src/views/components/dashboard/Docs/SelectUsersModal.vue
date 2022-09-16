@@ -38,7 +38,7 @@
   </Modal>
 </template>
 <script lang="ts" setup>
-import { ref, defineProps } from 'vue'
+import { ref, defineProps, PropType, watch } from 'vue'
 import { SearchOutlined } from '@ant-design/icons-vue'
 import { searchUsers } from '@/apis/user'
 import { User } from 'authing-js-sdk'
@@ -52,7 +52,7 @@ const selectedUserIds = ref<string[]>([])
 
 const { user } = storeToRefs(useDashboardStore())
 
-defineProps({
+const props = defineProps({
   visible: {
     type: Boolean,
     required: true
@@ -61,6 +61,10 @@ defineProps({
     type: String,
     required: false,
     default: '邀请成员'
+  },
+  initSelectedUserIds: {
+    type: Array as PropType<Array<string>>,
+    required: false,
   }
 })
 
@@ -68,6 +72,12 @@ const emit = defineEmits<{
   (event: 'close'): void
   (event: 'ok', userIds: string[]): void
 }>()
+
+watch(() => props.initSelectedUserIds, ids => {
+  if (ids) {
+    selectedUserIds.value = ids
+  }
+})
 
 async function handleSearchUsers() {
   const users = await searchUsers(searchValue.value)

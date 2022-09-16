@@ -26,10 +26,11 @@ export interface ShareLink {
   updatedTimestamp: number
 }
 
-export function createDocsShareLink(docsId: string, resourceActions: string[], name?: string, autoplay?: boolean) {
+export function createDocsShareLink(docsId: string, resourceActions: string[], name?: string, autoplay?: boolean, targetUserIds?: string[]) {
   const payload: Record<string, any> = {
     resourceActions,
     name,
+    targetUserIds,
   }
   if (typeof autoplay !== 'undefined') {
     payload.configs = {
@@ -45,4 +46,12 @@ export function getDocsShareLinks(docsId: string) {
 
 export function updateDocsShareLink(linkId: string, data: Partial<ShareLink>) {
   return post<ShareLink>(`/api/share/${linkId}/update`, data)
+}
+
+export function deleteDocsShareLink(linkId: string) {
+  return post<boolean>(`/api/share/${linkId}/delete`)
+}
+
+export function getShareLink(linkId: string) {
+  return get<ShareLink>(`/api/share/${linkId}`)
 }
