@@ -42,3 +42,7 @@ export function createDocsShareLink(docsId: string, resourceActions: string[], n
 export function getDocsShareLinks(docsId: string) {
   return get<ShareLink[]>(`/api/share/docs/${docsId}`)
 }
+
+export function updateDocsShareLink(linkId: string, data: Partial<ShareLink>) {
+  return post<ShareLink>(`/api/share/${linkId}/update`, data)
+}

@@ -51,6 +51,9 @@ const emit = defineEmits<{
 
 .menu-box {
   flex: 1;
+  height: 100%;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .ant-modal-body {

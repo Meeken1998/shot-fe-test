@@ -34,18 +34,38 @@
     </div>
 
     <div v-if="!isCreateMode" class="links">
-      <div class="link" v-for="item in links" :key="item._id">
+      <div class="link" v-for="(item, index) in links" :key="item._id">
         <div class="info-bar">
           <div class="flex-row" style="gap: 8px;">
-            <Switch v-model:checked="item.enabled" style="transform: scale(0.8);"></Switch>
+            <Switch v-model:checked="item.enabled" style="transform: scale(0.8);margin-left: -4px;"
+              @change="() => handleChangeLinkEnable(item, index)"></Switch>
             <div class="title">{{ item.name }}</div>
-            <div class="flex-row" style="gap: 4px">
+            <div class="flex-row" style="gap: 1px">
               <div v-for="tag in getTags(item)" :key="tag" class="tag">{{ tag }}</div>
             </div>
           </div>
+
+          <div class="metrics-bar">
+            <Tooltip title="数据统计">
+              <div class="flex-row icon-btn" style="gap: 4px;">
+                <PieChartFilled />
+                <div>0</div>
+              </div>
+            </Tooltip>
+
+            <Tooltip title="设置">
+              <SettingOutlined class="icon-btn"></SettingOutlined>
+            </Tooltip>
+          </div>
         </div>
 
-        <Input :value="`https://aside.fun/s/${item._id}`" />
+        <Input :value="`https://aside.fun/s/${item._id}`">
+        <template #suffix>
+          <Tooltip title="复制链接">
+            <CopyOutlined class="icon-btn" @click="handleCopyLink(item._id)"></CopyOutlined>
+          </Tooltip>
+        </template>
+        </Input>
       </div>
     </div>
 
@@ -57,10 +77,12 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import SelectUsersModal from './SelectUsersModal.vue'
-import { PlusOutlined } from '@ant-design/icons-vue'
-import { createDocsShareLink, getDocsShareLinks, ShareLink } from '@/apis/shareLink'
+import { PlusOutlined, PieChartFilled, CopyOutlined, SettingOutlined } from '@ant-design/icons-vue'
+import { createDocsShareLink, getDocsShareLinks, ShareLink, updateDocsShareLink } from '@/apis/shareLink'
 import { useDocsStore } from '@/store/docs'
 import { message } from 'ant-design-vue'
+import { copyText } from '@/utils/clipboard'
+
 
 const docsStore = useDocsStore()
 
@@ -104,6 +126,18 @@ async function handleCreateShareLink() {
   }
 }
 
+async function handleChangeLinkEnable(item: ShareLink, idx: number) {
+  const res = await updateDocsShareLink(item._id, {
+    enabled: item.enabled
+  })
+  if (res._id) {
+    void message.success(`${item.enabled ? '开启' : '关闭'}成功`)
+    const newLinks = links.value.slice()
+    newLinks[idx] = res
+    links.value = newLinks
+  }
+}
+
 function getTags(link: ShareLink) {
   const roleMapper: Record<string, string> = {
     'docs:read': '可阅读',
@@ -117,17 +151,47 @@ function getTags(link: ShareLink) {
   return res
 }
 
+function handleCopyLink(id: string) {
+  copyText(`https://aside.fun/s/${id}`)
+  void message.success('复制成功')
+}
+
 onMounted(() => {
   void getData()
 })
 
 </script>
 <style lang="scss" scoped>
+.icon-btn {
+  cursor: pointer;
+  color: $grayColor;
+
+  &:hover {
+    color: $themeColor;
+  }
+}
+
+.metrics-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+
+  .icon {
+    color: $themeColor;
+  }
+}
+
 .links {
   padding: 24px 0;
   padding-right: 12px;
 
   .link {
+    &:not(:first-child) {
+      margin-top: 32px;
+    }
+
     .info-bar {
       display: flex;
       flex-direction: row;
@@ -137,7 +201,7 @@ onMounted(() => {
 
       .title {
         font-weight: bold;
-        font-size: 15px;
+        font-size: 14px;
       }
 
       .tag {
@@ -149,8 +213,8 @@ onMounted(() => {
         justify-content: center;
         align-items: center;
         padding: 0 8px;
-        border-radius: 12px;
-        transform: scale(0.9);
+        border-radius: 6px;
+        transform: scale(0.84);
         user-select: none;
       }
     }
@@ -158,6 +222,8 @@ onMounted(() => {
 }
 
 .invite-user {
+  max-width: 510px;
+
   .form {
     width: 400px;
     padding: 24px 0;

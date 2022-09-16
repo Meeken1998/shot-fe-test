@@ -18,7 +18,6 @@ export interface Docs {
   url: string // for pdf
 }
 
-
 export enum DocsConvertProcessStatus {
   PENDING = 0,
   CONVERTING = 1,
