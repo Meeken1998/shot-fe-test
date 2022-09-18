@@ -131,7 +131,7 @@ function logout() {
 }
 
 .logo-bar {
-  width: calc(184px + 16px);
+  width: calc(224px);
   font-size: 18px;
   font-weight: bolder;
   display: flex;

@@ -162,11 +162,12 @@ onMounted(() => {
 .sidebar {
   background-color: $maskColor;
   width: 240px;
-  height: calc(100vh - 92px - 1px);
+  height: calc(100vh - 72px - 1px);
   padding: 16px;
   padding-top: 24px;
   padding-bottom: 0;
-  overflow-y: auto;
+  margin-right: 24px;
+  overflow-y: scroll;
 
   .fake-data {
     display: flex;
