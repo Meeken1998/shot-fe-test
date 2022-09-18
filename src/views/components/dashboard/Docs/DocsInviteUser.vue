@@ -8,15 +8,15 @@
     </Button>
 
 
-    <div v-if="!loaded" style="margin-top: 12px;">
-        <Skeleton width="70%" height="20px"></Skeleton>
-        <div style="margin-top: 12px">
-          <Skeleton width="40%" height="16px"></Skeleton>
-        </div>
-        <div style="margin-top: 4px">
-          <Skeleton width="40%" height="16px"></Skeleton>
-        </div>
+    <div v-if="!loaded && !isEditMode" style="margin-top: 24px;">
+      <Skeleton width="70%" height="20px"></Skeleton>
+      <div style="margin-top: 12px">
+        <Skeleton width="40%" height="16px"></Skeleton>
       </div>
+      <div style="margin-top: 4px">
+        <Skeleton width="40%" height="16px"></Skeleton>
+      </div>
+    </div>
 
     <div v-if="isEditMode" class="create">
       <div class="flex-row" style="gap: 12px">
@@ -35,7 +35,8 @@
         </div>
         <div class="item">
           <div class="title">地址</div>
-          <Input disabled class="input" addon-before="https://aside.fun/share/" style="flex: 1;" :value="currentLink?._id || ''" placeholder="自动分配" />
+          <Input disabled class="input" addon-before="https://aside.fun/share/" style="flex: 1;"
+            :value="currentLink?._id || ''" placeholder="自动分配" />
         </div>
         <div v-if="props.selectUser" class="item">
           <div class="title">邀请用户</div>
@@ -45,7 +46,7 @@
           </a>
         </div>
         <div class="item">
-          <div class="title">授予权限</div>
+          <div class="title">授予权限</div> 
           <CheckboxGroup :options="roleActions" v-model:value="selectedRoleActions"></CheckboxGroup>
         </div>
         <div class="item">
@@ -58,12 +59,12 @@
       </div>
     </div>
 
-    <div v-if="!isEditMode" class="links">
+    <div v-if="!isEditMode && loaded" class="links">
       <Empty v-if="loaded && !links.length" style="margin-top: 48px;"></Empty>
       <div class="link" v-for="(item, index) in links" :key="item._id">
         <div class="info-bar">
           <div class="flex-row" style="gap: 8px;">
-            <Switch v-model:checked="item.enabled" style="transform: scale(0.8);margin-left: -4px;"
+            <Switch v-model:checked="item.enabled" style="transform: scale(0.8) translateX(-4px);"
               @change="() => handleChangeLinkEnable(item, index)"></Switch>
             <div class="title">{{ item.name }}</div>
             <div class="flex-row" style="gap: 1px">
@@ -85,7 +86,7 @@
           </div>
         </div>
 
-        <Input :value="`https://aside.fun/share/${item._id}`">
+        <Input class="link-text" :value="`https://aside.fun/share/${item._id}`">
         <template #suffix>
           <Tooltip title="复制链接">
             <CopyOutlined class="icon-btn" @click="handleCopyLink(item._id)"></CopyOutlined>
@@ -251,7 +252,15 @@ onMounted(() => {
 })
 
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+.link-text {
+  margin-left: 2px;
+
+  input {
+    color: #888 !important;
+  }
+}
+
 .icon-btn {
   cursor: pointer;
   color: $grayColor;

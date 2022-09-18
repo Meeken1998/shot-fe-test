@@ -7,13 +7,17 @@
     </div>
     <div class="right-side">
       <div v-if="props.showMenu" class="headerbar-menu-container">
-        <a :class="getHeaderBarMenuItemClass(item.key)" v-for="item in headerBarMenuItems" :key="item.key"
-          @click="handleSwitchHeaderBarItem(item.key)">
-          <span class="icon">
-            <component v-if="item.icon" :is="item.icon" />
-          </span>
-          <span>{{ isLargeScreen ? item.name : item.shortened }}</span>
-        </a>
+        <div v-for="item in headerBarMenuItems" :key="item.key">
+          <DivWithResources :resource-name="item?.resourceOptions?.resourceName || ''"
+            :actions="item?.resourceOptions?.actions || []" :enabled-style="{ marginRight: '24px' }">
+            <a :class="getHeaderBarMenuItemClass(item.key)" @click="handleSwitchHeaderBarItem(item.key)">
+              <span class="icon">
+                <component v-if="item.icon" :is="item.icon" />
+              </span>
+              <span>{{ isLargeScreen ? item.name : item.shortened }}</span>
+            </a>
+          </DivWithResources>
+        </div>
       </div>
       <div v-else class="headerbar-menu-container">
         <slot></slot>
@@ -52,10 +56,11 @@
 import { useDashboardStore, useScreenStore } from '@/store'
 import { sdk } from '@/utils/authing'
 import { storeToRefs } from 'pinia'
-import { ref, defineProps, onMounted, computed } from 'vue'
+import { ref, defineProps, computed } from 'vue'
 import { SearchOutlined } from '@ant-design/icons-vue'
 import router from '@/views/router'
 import { useRoute } from 'vue-router'
+import DivWithResources from '../role/DivWithResources.vue'
 const route = useRoute()
 
 const searchVal = ref('')
@@ -98,7 +103,7 @@ function logout() {
 }
 
 </script>
-<style lang="scss" scope>
+<style lang="scss">
 .header-bar {
   width: 100%;
   padding: 8px 24px;
@@ -143,7 +148,6 @@ function logout() {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 24px;
   flex: 1;
   cursor: pointer;
   user-select: none;

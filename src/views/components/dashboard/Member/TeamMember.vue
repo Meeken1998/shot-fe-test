@@ -1,8 +1,10 @@
 <template>
   <div class="team-member-page">
     <TeamInfo @info="handleGetTeamInfo">
-      <Button class="primary-btn" @click="manageiIviteLinkModalVisible = true">邀请链接管理</Button>
-      <Button class="primary-btn" type="primary" @click="inviteModalVisible = true">邀请成员</Button>
+      <DivWithResources resource-name="team" :actions="['team:add_member']">
+        <Button class="primary-btn" @click="manageiIviteLinkModalVisible = true">邀请链接管理</Button>
+        <Button class="primary-btn" type="primary" @click="inviteModalVisible = true">邀请成员</Button>
+      </DivWithResources>
     </TeamInfo>
     <div v-if="!loading" class="team-member">
       <div class="user" v-for="(item) in memberList" :key="item.id">
@@ -34,7 +36,8 @@
     <InviteModal :visible="inviteModalVisible" @close="inviteModalVisible = false" :team-id="teamInfo?.id!"
       :team-name="teamInfo?.name!" />
 
-    <ManageInviteLinkModal :visible="manageiIviteLinkModalVisible" @close="manageiIviteLinkModalVisible = false" :team-id="teamInfo?.id!" />
+    <ManageInviteLinkModal :visible="manageiIviteLinkModalVisible" @close="manageiIviteLinkModalVisible = false"
+      :team-id="teamInfo?.id!" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -47,6 +50,7 @@ import TeamInfo from '../Team/TeamInfo.vue'
 import InviteModal from '../Team/InviteModal.vue'
 import { useRoute } from 'vue-router'
 import ManageInviteLinkModal from '../Team/ManageInviteLinkModal.vue'
+import DivWithResources from '../../role/DivWithResources.vue'
 
 const route = useRoute()
 const inviteModalVisible = ref(false)

@@ -15,6 +15,7 @@ import { defineProps, computed, onMounted, ref, watch, onUnmounted } from 'vue'
 import { copyText } from '@/utils/clipboard'
 import { message } from 'ant-design-vue'
 import { KEYS } from '@/configs/hotkey'
+import { useRoute } from 'vue-router'
 
 const docsStore = useDocsStore()
 const { pdfController } = storeToRefs(docsStore)
@@ -33,6 +34,7 @@ const loaded = ref(false)
 const iframeUrl = computed(() => `${iframeOrigin}/pdf-viewer/viewer.html?file=${props.url}${location.hash || ''}`)
 const iframe = ref<HTMLIFrameElement>()
 const progressPercent = ref(0)
+const route = useRoute()
 
 function registerHotKey(e: KeyboardEvent) {
   const key = e.key.toUpperCase()
@@ -50,6 +52,16 @@ function handleLoaded() {
   docsStore.updatePdfController({
     loaded: true
   })
+  // TODO: use a better method
+  setTimeout(() => checkAutoplay(), 2000)
+}
+
+function checkAutoplay() {
+  if (route?.query?.autoplay) {
+    docsStore.emitEvent({
+      type: 'screening'
+    })
+  }
 }
 
 function handleUiChanged() {

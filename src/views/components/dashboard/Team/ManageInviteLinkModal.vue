@@ -186,7 +186,7 @@ const emit = defineEmits<{
 async function getData() {
   loaded.value = false
   const res = await getTeamInvites(props.teamId)
-  const acceptIds = res.map(r => r.acceptedUserIds || []).flat()
+  const acceptIds = res?.map(r => r.acceptedUserIds || [])?.flat()
   acceptedUserIds.value = acceptIds
   invites.value = res
   loaded.value = true

@@ -17,12 +17,17 @@ async function getData() {
   const link = await getShareLink(linkId)
   const docsId = link.typeId
   const docs = await getDocs(docsId)
+  let path = ''
   if (docs.type === 'pdf') {
-    router.replace(`/viewer/${docsId}`)
+    path = `/viewer/${docsId}`
   }
   if (docs.type === 'ppt') {
-    router.replace(`/editor/${docsId}`)
+    path = `/editor/${docsId}`
   }
+  if (link.configs?.autoplay) {
+    path += '?autoplay=1'
+  }
+  router.replace(path)
 }
 
 onMounted(() => {

@@ -10,12 +10,17 @@ import {
   TagsFilled,
 } from '@ant-design/icons-vue'
 import { Team } from '@/apis/team'
+import { AtLeastOneArray } from '@/apis/shareLink'
 
 export type HeaderBarMenuItem = {
   name: string
   key: string
   icon?: Component
   shortened: string
+  resourceOptions?: {
+    resourceName: string
+    actions: AtLeastOneArray<string>
+  }
 }
 
 export type MenuItem = {
@@ -58,6 +63,10 @@ const headerBarMenuItems: HeaderBarMenuItem[] = [
     shortened: '成员',
     key: 'member',
     icon: ContactsFilled,
+    resourceOptions: {
+      resourceName: 'team',
+      actions: ['team:member_list']
+    }
   },
   {
     name: '用户管理',
