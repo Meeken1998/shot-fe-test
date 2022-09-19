@@ -174,7 +174,6 @@ watch(() => pdfController.value?.eventBus, (ev) => {
 
 onMounted(() => {
   document.addEventListener('keydown', registerHotKey)
-  console.log(docsStore.shareLink, 'link~')
   window.addEventListener('message', e => {
     if (e.origin === iframeOrigin) {
       const { data, type } = e.data
