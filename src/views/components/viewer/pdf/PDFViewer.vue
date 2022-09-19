@@ -16,6 +16,8 @@ import { copyText } from '@/utils/clipboard'
 import { message } from 'ant-design-vue'
 import { KEYS } from '@/configs/hotkey'
 import { useRoute } from 'vue-router'
+import { reportDocsViewEvent, DocsUserViewEvent } from '@/apis/docs'
+import { debounce } from 'lodash'
 
 const docsStore = useDocsStore()
 const { pdfController } = storeToRefs(docsStore)
@@ -69,7 +71,23 @@ function handleUiChanged() {
   getSearchBarStatus()
   getSidebarStatus()
   getScrollMode()
+  getCurrentSlideIndex()
 }
+
+const reportDocsEvent = debounce(async (event: DocsUserViewEvent) => {
+  await reportDocsViewEvent(docsStore.docs!._id, docsStore.currentSlideIndex, event)
+})
+
+function getCurrentSlideIndex() {
+  const index = (iframe.value?.contentWindow as any).$pdfview.page as number
+  // 埋点
+  if (docsStore.currentSlideIndex !== index) {
+    const isFirstOpened = docsStore.currentSlideIndex === 0
+    docsStore.setCurrentSlideIndex(index)
+    void reportDocsEvent(isFirstOpened ? DocsUserViewEvent.OPEN : DocsUserViewEvent.SWITCH_SLIDE)
+  }
+}
+
 
 function getSearchBarStatus() {
   const opened = !!(iframe.value?.contentWindow as any).$pdfview.findBar.opened
@@ -156,6 +174,7 @@ watch(() => pdfController.value?.eventBus, (ev) => {
 
 onMounted(() => {
   document.addEventListener('keydown', registerHotKey)
+  console.log(docsStore.shareLink, 'link~')
   window.addEventListener('message', e => {
     if (e.origin === iframeOrigin) {
       const { data, type } = e.data
@@ -173,6 +192,9 @@ onMounted(() => {
       }
     }
   })
+
+  window.addEventListener('blur', () => void reportDocsEvent(DocsUserViewEvent.BLUR))
+  window.addEventListener('focus', () => void reportDocsEvent(DocsUserViewEvent.FOCUS))
 })
 
 onUnmounted(() => {

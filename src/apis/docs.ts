@@ -26,6 +26,14 @@ export enum DocsConvertProcessStatus {
   FAIL = 4,
 }
 
+export enum DocsUserViewEvent {
+  OPEN = 1,
+  SWITCH_SLIDE = 2,
+  BLUR = 3,
+  FOCUS = 4,
+  CLOSE = 5,
+}
+
 export interface DocsConvertProcess {
   _id: string
   docsId: string
@@ -44,7 +52,7 @@ export function createDocs(teamId: string, name: string, type: DocsType) {
 export function updateDocs(docsId: string, previewImageUrl: string, type: DocsType, data: string) {
   const payload: Record<string, string | undefined> = {
     previewImageUrl,
-    json: ''
+    json: '',
   }
   if (type === 'ppt') {
     payload.json = data
@@ -75,4 +83,11 @@ export function updateDocsMeta(docsId: string, name: string) {
 
 export function getDocsConvertProgress(docsId: string) {
   return get<DocsConvertProcess>(`/api/docs/${docsId}/progress`)
+}
+
+export function reportDocsViewEvent(docsId: string, currentSlideIndex: number, event: DocsUserViewEvent) {
+  return post(`/api/docs/${docsId}/view`, {
+    currentSlideIndex,
+    event,
+  })
 }

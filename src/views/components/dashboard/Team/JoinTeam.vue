@@ -58,6 +58,12 @@ async function getData() {
       message.destroy()
       redirect2Team(teamId)
     }
+    if (res.code === 403) {
+      localStorage.setItem('inviteId', inviteId)
+      router.push({
+        name: 'login',
+      })
+    }
   }
 }
 

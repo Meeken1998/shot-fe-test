@@ -1,4 +1,5 @@
 import { Docs } from '@/apis/docs'
+import { ShareLink } from '@/apis/shareLink'
 import { Team } from '@/apis/team'
 import { defineStore } from 'pinia'
 
@@ -19,7 +20,9 @@ interface PDFController {
 interface DocsStoreState {
   docs: Docs | null
   team: Team | null
+  shareLink: ShareLink | null
   pdfController: Partial<PDFController> | null
+  currentSlideIndex: number
 }
 
 export const useDocsStore = defineStore('docs', {
@@ -27,11 +30,13 @@ export const useDocsStore = defineStore('docs', {
     return {
       docs: null,
       team: null,
+      shareLink: null,
       pdfController: {
         loaded: false,
         scaleModeList: ['auto', 'page-actual', 'page-fit', 'page-width'],
         sidebarOpened: true
       },
+      currentSlideIndex: 0,
     }
   },
 
@@ -59,5 +64,13 @@ export const useDocsStore = defineStore('docs', {
         },
       })
     },
+
+    setCurrentSlideIndex(val: number) {
+      this.currentSlideIndex = val
+    },
+
+    setShareLink(val: ShareLink) {
+      this.shareLink = val
+    }
   },
 })

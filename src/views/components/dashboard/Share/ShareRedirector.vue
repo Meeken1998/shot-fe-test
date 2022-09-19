@@ -8,6 +8,8 @@ import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getShareLink } from '@/apis/shareLink'
 import { getDocs } from '@/apis/docs'
+import { useDocsStore } from '@/store'
+const docsStore = useDocsStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -15,6 +17,7 @@ const linkId = route.params.shareLink as string
 
 async function getData() {
   const link = await getShareLink(linkId)
+  docsStore.setShareLink(link)
   const docsId = link.typeId
   const docs = await getDocs(docsId)
   let path = ''
