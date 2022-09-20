@@ -1,11 +1,12 @@
 <template>
-  <div  class="page">
+  <div class="page">
     <EditorHeaderV2 />
     <PDFViewer v-if="docs" :url="docs?.url"></PDFViewer>
   </div>
 </template>
 <script lang="ts" setup>
 import { getDocs } from '@/apis/docs'
+import { getShareLink, ShareLink } from '@/apis/shareLink'
 import EditorHeaderV2 from '@/views/Editor/EditorHeader/EditorHeaderV2.vue'
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -20,9 +21,15 @@ const { docs } = storeToRefs(docsStore)
 
 const route = useRoute()
 const docsId = route.params.docsId as string
+const shareLinkId = route.params.shareLink as string
 
 async function getData() {
-  const docs = await getDocs(docsId)
+  let link: ShareLink | undefined = undefined
+  if (shareLinkId) {
+    link = await getShareLink(shareLinkId)
+    docsStore.setShareLink(link)
+  }
+  const docs = await getDocs(link?.typeId || docsId)
   docsStore.setDocs(docs)
   const team = await getTeamDetail(docs.teamId)
   docsStore.team = team

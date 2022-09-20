@@ -23,6 +23,7 @@ interface DocsStoreState {
   shareLink: ShareLink | null
   pdfController: Partial<PDFController> | null
   currentSlideIndex: number
+  totalSlides: number
 }
 
 export const useDocsStore = defineStore('docs', {
@@ -37,6 +38,7 @@ export const useDocsStore = defineStore('docs', {
         sidebarOpened: true
       },
       currentSlideIndex: 0,
+      totalSlides: 0,
     }
   },
 
@@ -67,6 +69,10 @@ export const useDocsStore = defineStore('docs', {
 
     setCurrentSlideIndex(val: number) {
       this.currentSlideIndex = val
+    },
+
+    setTotalSlide(val: number) {
+      this.totalSlides = val
     },
 
     setShareLink(val: ShareLink) {

@@ -92,7 +92,7 @@ const router = createRouter({
     {
       name: 'share',
       path: '/share/:shareLink',
-      component: ShareRedirector,
+      component: DocsViewer,
       meta: {
         title: '跳转中...',
       },

@@ -1,8 +1,44 @@
-/**
- * http://caibaojian.com/timestamp.html
- * @param timestamp 
- * @returns 
- */
+function d(t: number) {
+  return ` ${parseInt(t.toString()).toString()} `
+}
+
+export function getDateDiffV2(diffValue: number) {
+  if (diffValue < 0) {
+    return ''
+  }
+  const minute = 1000 * 60
+  const hour = minute * 60
+  const day = hour * 24
+  const month = day * 30
+  const monthC = diffValue / month
+  const weekC = diffValue / (7 * day)
+  const dayC = diffValue / day
+  const hourC = diffValue / hour
+  const minC = diffValue / minute
+
+  let result = ''
+
+  if (monthC >= 1) {
+    result = '' + d(monthC) + 'mon'
+  }
+  else if (weekC >= 1) {
+    result = '' + d(weekC) + 'week'
+  }
+  else if (dayC >= 1) {
+    result = '' + d(dayC) + 'day'
+  }
+  else if (hourC >= 1) {
+    result = '' + d(hourC) + 'h'
+  }
+  else if (minC >= 1) {
+    result = '' + d(minC) + 'm'
+  }
+  else {
+    result = d(minC * 60) + 's'
+  }
+  return result.trim()
+}
+
 export function getDateDiff(timestamp: number) {
   const minute = 1000 * 60
   const hour = minute * 60
@@ -18,10 +54,6 @@ export function getDateDiff(timestamp: number) {
   const hourC = diffValue / hour
   const minC = diffValue / minute
   let result = ''
-
-  function d(t: number) {
-    return ` ${parseInt(t.toString()).toString()} `
-  }
 
   if (monthC >= 1) {
     result = '' + d(monthC) + '月前'
@@ -46,4 +78,8 @@ export function getDateDiff(timestamp: number) {
     result = result.replace('前', '后')
   }
   return result
+}
+
+export function msToSecond(ms: number) {
+  return Math.ceil(ms / 1000)
 }

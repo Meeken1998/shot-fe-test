@@ -16,8 +16,8 @@ import { copyText } from '@/utils/clipboard'
 import { message } from 'ant-design-vue'
 import { KEYS } from '@/configs/hotkey'
 import { useRoute } from 'vue-router'
-import { reportDocsViewEvent, DocsUserViewEvent } from '@/apis/docs'
-import { debounce } from 'lodash'
+import { reportDocsViewEvent, DocsUserViewEvent, DocsViewEventPayload } from '@/apis/docs'
+import { throttle } from 'lodash'
 
 const docsStore = useDocsStore()
 const { pdfController } = storeToRefs(docsStore)
@@ -74,12 +74,37 @@ function handleUiChanged() {
   getCurrentSlideIndex()
 }
 
-const reportDocsEvent = debounce(async (event: DocsUserViewEvent) => {
-  await reportDocsViewEvent(docsStore.docs!._id, docsStore.currentSlideIndex, event)
-})
+const reportDocsEvent = throttle(async (event: DocsUserViewEvent) => {
+  const opt: DocsViewEventPayload = {
+    docsId: docsStore.docs!._id,
+    currentSlideIndex: docsStore.currentSlideIndex,
+    totalSlides: docsStore.totalSlides,
+    shareLinkId: docsStore.shareLink?._id,
+    event,
+    timestamp: Date.now()
+  }
+  if (event === DocsUserViewEvent.BLUR) {
+    localStorage.setItem('pdf-blur', JSON.stringify(opt))
+    return
+  }
+
+  if (localStorage.getItem('pdf-blur')) {
+    try {
+      const _opt = JSON.parse(localStorage.getItem('pdf-blur')!)
+      await reportDocsViewEvent(_opt)
+    }
+    finally {
+      localStorage.removeItem('pdf-blur')
+    }
+  }
+
+  await reportDocsViewEvent(opt)
+}, 300)
 
 function getCurrentSlideIndex() {
   const index = (iframe.value?.contentWindow as any).$pdfview.page as number
+  const totalSlides = (iframe.value?.contentWindow as any).$pdfview.pagesCount as number
+  docsStore.totalSlides = totalSlides
   // 埋点
   if (docsStore.currentSlideIndex !== index) {
     const isFirstOpened = docsStore.currentSlideIndex === 0
@@ -87,7 +112,6 @@ function getCurrentSlideIndex() {
     void reportDocsEvent(isFirstOpened ? DocsUserViewEvent.OPEN : DocsUserViewEvent.SWITCH_SLIDE)
   }
 }
-
 
 function getSearchBarStatus() {
   const opened = !!(iframe.value?.contentWindow as any).$pdfview.findBar.opened
@@ -192,8 +216,11 @@ onMounted(() => {
     }
   })
 
-  window.addEventListener('blur', () => void reportDocsEvent(DocsUserViewEvent.BLUR))
+  window.addEventListener('blur', () => {
+    void reportDocsEvent(DocsUserViewEvent.BLUR)
+  })
   window.addEventListener('focus', () => void reportDocsEvent(DocsUserViewEvent.FOCUS))
+  window.addEventListener('close', () => void reportDocsEvent(DocsUserViewEvent.CLOSE))
 })
 
 onUnmounted(() => {

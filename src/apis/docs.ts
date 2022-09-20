@@ -1,4 +1,5 @@
 import useRequest from '@/hooks/useRequest'
+import { User } from 'authing-js-sdk'
 
 const { post, get } = useRequest()
 
@@ -45,6 +46,24 @@ export interface DocsConvertProcess {
   updatedTimestamp: number
 }
 
+export type DocsViewEventPayload = {
+  docsId: string
+  currentSlideIndex: number
+  totalSlides: number
+  event: DocsUserViewEvent
+  shareLinkId?: string
+  timestamp?: number
+}
+
+export type DocsAnalysisInfo = {
+  userId: string;
+  visitStartTimestamp: number;
+  visits: { [slideIndex: number]: number };
+  readPercent: number;
+  userInfo: Partial<User>;
+  keepMs: number;
+};
+
 export function createDocs(teamId: string, name: string, type: DocsType) {
   return post<Docs>('/api/docs', { teamId, type, name })
 }
@@ -85,9 +104,10 @@ export function getDocsConvertProgress(docsId: string) {
   return get<DocsConvertProcess>(`/api/docs/${docsId}/progress`)
 }
 
-export function reportDocsViewEvent(docsId: string, currentSlideIndex: number, event: DocsUserViewEvent) {
-  return post(`/api/docs/${docsId}/view`, {
-    currentSlideIndex,
-    event,
-  })
+export function reportDocsViewEvent(opt: DocsViewEventPayload) {
+  return post(`/api/docs/${opt.docsId}/view`, opt)
+}
+
+export function getDocsUserAnalysis(docsId: string) {
+  return get<DocsAnalysisInfo[]>(`/api/docs/${docsId}/analysis/users`)
 }
