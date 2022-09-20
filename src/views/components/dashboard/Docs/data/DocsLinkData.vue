@@ -85,12 +85,15 @@ function handleSwitchChartVisible(key: string) {
 }
 
 async function getData() {
-  const res = await getDocsUserAnalysis(docsStore.docs!._id)
+  const docsId = docsStore.docs?._id
+  if (!docsId) return
+  const res = await getDocsUserAnalysis(docsId)
   data.value = res
 }
 
 onMounted(() => {
   renderChart()
+  void getData()
 })
 
 watch(() => docsStore.docs, val => {
