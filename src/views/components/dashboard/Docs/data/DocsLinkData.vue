@@ -1,5 +1,14 @@
 <template>
-  <div class="docs-link-data-container">
+  <div v-if="!loaded">
+    <Skeleton width="70%" height="20px"></Skeleton>
+    <div style="margin-top: 12px">
+      <Skeleton width="40%" height="16px"></Skeleton>
+    </div>
+    <div style="margin-top: 4px">
+      <Skeleton width="40%" height="16px"></Skeleton>
+    </div>
+  </div>
+  <div v-else class="docs-link-data-container">
     <div :class="{
       item: true,
       ['item_' + item.visitStartTimestamp]: true
@@ -31,6 +40,8 @@
       <div v-if="activeKeys.includes('item_' + item.visitStartTimestamp)" class="chat-container"></div>
     </div>
   </div>
+  <Empty v-if="loaded && !data.length" style="margin-top: 160px"></Empty>
+
 </template>
 <script lang="ts" setup>
 import Chartist from 'chartist'
@@ -44,6 +55,7 @@ import { getDateDiff, msToSecond, getDateDiffV2 } from '@/utils/time'
 const data = ref<DocsAnalysisInfo[]>([])
 const activeKeys = ref<string[]>([])
 const docsStore = useDocsStore()
+const loaded = ref(false)
 
 function renderChart() {
   const activeKeysSet = new Set(activeKeys.value)
@@ -85,10 +97,12 @@ function handleSwitchChartVisible(key: string) {
 }
 
 async function getData() {
+  loaded.value = false
   const docsId = docsStore.docs?._id
   if (!docsId) return
   const res = await getDocsUserAnalysis(docsId)
   data.value = res
+  loaded.value = true
 }
 
 onMounted(() => {
