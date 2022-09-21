@@ -78,7 +78,7 @@ const reportDocsEvent = throttle(async (event: DocsUserViewEvent) => {
   const opt: DocsViewEventPayload = {
     docsId: docsStore.docs!._id,
     currentSlideIndex: docsStore.currentSlideIndex,
-    totalSlides: docsStore.totalSlides,
+    totalSlides: docsStore?.totalSlides,
     shareLinkId: docsStore.shareLink?._id,
     event,
     timestamp: Date.now()
@@ -103,7 +103,7 @@ const reportDocsEvent = throttle(async (event: DocsUserViewEvent) => {
 
 function getCurrentSlideIndex() {
   const index = (iframe.value?.contentWindow as any).$pdfview.page as number
-  const totalSlides = (iframe.value?.contentWindow as any).$pdfview.pagesCount as number
+  const totalSlides = (iframe.value?.contentWindow as any)?.$pdfview?.pagesCount as number
   docsStore.totalSlides = totalSlides
   // 埋点
   if (docsStore.currentSlideIndex !== index) {
