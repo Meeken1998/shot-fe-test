@@ -9,11 +9,8 @@
     </div>
   </div>
   <div v-else class="docs-link-data-container">
-    <div :class="{
-      item: true,
-      ['item_' + item.visitStartTimestamp]: true
-    }" v-for="item in data" :key="item.visitStartTimestamp">
-      <div class="info" @click="handleSwitchChartVisible('item_' + item.visitStartTimestamp)">
+    <div class="item" v-for="item in data" :key="item.visitStartTimestamp" :data-id="item._id">
+      <div class="info" @click="handleSwitchChartVisible(item._id)">
         <div class="flex-row" style="gap: 12px">
           <Avatar :size="32" :src="item.userInfo.photo!"></Avatar>
           <div class="info-bar">
@@ -24,7 +21,7 @@
 
         <div class="flex-row right">
           <Tooltip :title="`停留时长：${msToSecond(item.keepMs)}秒`">
-            <span>{{ msToSecond(item.keepMs) }}秒</span>
+            <span>{{ getTimeGap(item.keepMs) }}</span>
           </Tooltip>
           <Tooltip :title="`完读率：${item.readPercent}%`">
             <Progress :width="24" type="circle" :percent="item.readPercent" :show-info="false" :stroke-width="18"
@@ -32,12 +29,12 @@
           </Tooltip>
           <img src="https://static.aside.fun/upload/down.svg" :class="{
             down: true,
-            rotate: activeKeys.includes('item_' + item.visitStartTimestamp)
+            rotate: activeKeys.includes(item._id)
           }">
         </div>
       </div>
 
-      <div v-if="activeKeys.includes('item_' + item.visitStartTimestamp)" class="chat-container"></div>
+      <div v-if="activeKeys.includes(item._id)" class="chat-container"></div>
     </div>
   </div>
   <Empty v-if="loaded && !data.length" style="margin-top: 160px"></Empty>
@@ -50,7 +47,7 @@ import { nextTick, onMounted, ref, watch } from 'vue'
 import { DocsAnalysisInfo, getDocsUserAnalysis } from '@/apis/docs'
 import { useDocsStore } from '@/store'
 import { getName } from '@/utils/authing'
-import { getDateDiff, msToSecond, getDateDiffV2 } from '@/utils/time'
+import { getDateDiff, msToSecond, getDateDiffV2, getTimeGap } from '@/utils/time'
 
 const data = ref<DocsAnalysisInfo[]>([])
 const activeKeys = ref<string[]>([])
@@ -62,9 +59,9 @@ function renderChart() {
   nextTick(() => {
     data.value.forEach(d => {
       const _d = JSON.parse(JSON.stringify(d))
-      const key = 'item_' + d.visitStartTimestamp
+      const key = d._id.toString()
       if (!activeKeysSet.has(key)) return
-      const node = document.querySelector(`.${key} .chat-container`)
+      const node = document.querySelector(`[data-id="${key}"] .chat-container`)
       new Chartist.Bar(node, {
         labels: Object.keys(_d.visits).map(s => `${s} 页`),
         series: [Object.values(_d.visits).map((v) => msToSecond(v as number))] // 

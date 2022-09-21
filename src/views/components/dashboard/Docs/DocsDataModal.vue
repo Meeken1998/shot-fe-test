@@ -13,14 +13,18 @@
       </div>
 
       <div class="mode-container">
-        <DocsLinkData v-if="mode === 'users'"></DocsLinkData>
+        <DocsUserVisitData v-if="mode === 'users'"></DocsUserVisitData>
+        <DocsLinkVisitData v-if="mode === 'links'"></DocsLinkVisitData>
+        <DocsMetricsBrief v-if="mode === 'brief'"></DocsMetricsBrief>
       </div>
     </div>
   </Modal>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
-import DocsLinkData from './data/DocsLinkData.vue'
+import DocsUserVisitData from './data/DocsUserVisitData.vue'
+import DocsLinkVisitData from './data/DocsLinkVisitData.vue'
+import DocsMetricsBrief from './data/DocsMetricsBrief.vue'
 
 const modeMenu = [{
   name: '访问用户分析',
@@ -30,7 +34,7 @@ const modeMenu = [{
   mode: 'links'
 }, {
   name: '内容分析',
-  mode: 'content'
+  mode: 'brief'
 }]
 
 const mode = ref('users')
@@ -57,6 +61,8 @@ const emit = defineEmits<{
   .mode-container {
     flex: 1;
     // padding-right: 16px;
+    height: 100%;
+    overflow-y: auto;
   }
 }
 </style>

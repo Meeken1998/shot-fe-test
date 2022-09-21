@@ -1,5 +1,6 @@
 import useRequest from '@/hooks/useRequest'
 import { User } from 'authing-js-sdk'
+import { ShareLink } from './shareLink'
 
 const { post, get } = useRequest()
 
@@ -56,13 +57,20 @@ export type DocsViewEventPayload = {
 }
 
 export type DocsAnalysisInfo = {
-  userId: string;
-  visitStartTimestamp: number;
-  visits: { [slideIndex: number]: number };
-  readPercent: number;
-  userInfo: Partial<User>;
-  keepMs: number;
-};
+  _id: string
+  userId: string
+  visitStartTimestamp: number
+  visits: { [slideIndex: number]: number }
+  readPercent: number
+  userInfo: Partial<User>
+  keepMs: number
+}
+
+export type DocsLinkAnalysisInfo = {
+  shareLinkId: string
+  shareLinkInfo: Partial<ShareLink>
+  visitors: DocsAnalysisInfo[]
+}
 
 export function createDocs(teamId: string, name: string, type: DocsType) {
   return post<Docs>('/api/docs', { teamId, type, name })
@@ -110,4 +118,15 @@ export function reportDocsViewEvent(opt: DocsViewEventPayload) {
 
 export function getDocsUserAnalysis(docsId: string) {
   return get<DocsAnalysisInfo[]>(`/api/docs/${docsId}/analysis/users`)
+}
+
+export function getDocsLinkAnalysis(docsId: string) {
+  return get<DocsLinkAnalysisInfo[]>(`/api/docs/${docsId}/analysis/links`)
+}
+
+export function getDocsAnalysisBrief(docsId: string) {
+  return get<{
+    pagePercentMetrics: Record<number, number>
+    pageReadingMsMetrics: Record<number, number>
+  }>(`/api/docs/${docsId}/analysis/brief`)
 }

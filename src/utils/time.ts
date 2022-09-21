@@ -83,3 +83,25 @@ export function getDateDiff(timestamp: number) {
 export function msToSecond(ms: number) {
   return Math.ceil(ms / 1000)
 }
+
+export function getTimeGap(ms: number) {
+  let _ms = ms
+  const second = 1000
+  const minute = second * 60
+  const hour = minute * 60
+
+  let [s, m, h] = [0, 0, 0]
+  if (_ms < second) {
+    return '00:00:01'
+  }
+  if (_ms >= hour) {
+    h = Math.floor(_ms / hour)
+    _ms = _ms % hour
+  }
+  if (_ms >= minute) {
+    m = Math.floor(_ms / minute)
+    _ms = _ms % minute
+  }
+  s = Math.floor(_ms / second)
+  return [h, m, s].map(v => v < 10 ? `0${v}` : v.toString()).join(':')
+}
