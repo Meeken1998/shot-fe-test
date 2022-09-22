@@ -3,10 +3,26 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="renderer" content="webkit">
+    <meta name="renderer" content="webkit" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <link rel="icon" href="https://static.aside.fun/upload/favicon.png">
+    <link rel="icon" href="https://static.aside.fun/upload/favicon.png" />
     <title>纷镜</title>
+
+    <script type="text/javascript">
+      function loadScript(url, apikey) {
+        var script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.src = url
+        script.setAttribute('uploadmethod', 'grpc')
+        script.setAttribute('batchmax', '20')
+        script.setAttribute('sendovertime', '20000')
+        script.setAttribute('storesize', '100')
+        script.setAttribute('id', 'eaRecordScript')
+        script.setAttribute('projectKey', apikey)
+        document.head.appendChild(script)
+      }
+      loadScript('https://edge.userview.net/uv/1.1.6/record.js', '4bac9ab56f3548779dae743d0e6c0e5d')
+    </script>
 
     <style>
       .first-screen-loading {
@@ -25,14 +41,14 @@
       .first-screen-loading-spinner {
         width: 36px;
         height: 36px;
-        border: 3px solid #469D8F;
+        border: 3px solid #469d8f;
         border-top-color: transparent;
         border-radius: 50%;
-        animation: spinner .8s linear infinite;
+        animation: spinner 0.8s linear infinite;
       }
       .first-screen-loading-text {
         margin-top: 20px;
-        color: #469D8F;
+        color: #469d8f;
       }
       @keyframes spinner {
         0% {
@@ -46,7 +62,10 @@
   </head>
   <body>
     <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong
+        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please
+        enable it to continue.</strong
+      >
     </noscript>
     <div id="app">
       <div class="first-screen-loading">
@@ -54,8 +73,8 @@
       </div>
     </div>
 
-    <script >
-      document.oncontextmenu = e => e.preventDefault()
+    <script>
+      document.oncontextmenu = (e) => e.preventDefault()
     </script>
   </body>
 </html>
