@@ -24,6 +24,60 @@
       loadScript('https://edge.userview.net/uv/1.1.6/record.js', '4bac9ab56f3548779dae743d0e6c0e5d')
     </script>
 
+    <script type="text/javascript">
+      !(function () {
+        var n,
+          e = 'undefined' == typeof window ? {} : window,
+          t = e.ahamoment
+        if (!t) {
+          t = e.ahamoment = { _stubbed: !0 }
+          var o = (e.AHAMOMENTSTUB_QUEUE = e.AHAMOMENTSTUB_QUEUE || []),
+            a = function (n) {
+              t[n] = function () {
+                var e = Array.prototype.slice.call(arguments)
+                i(), o.push([n, null, e])
+              }
+            },
+            r = !1,
+            i = function () {
+              if (!r) {
+                r = !0
+                var n = document.createElement('script')
+                ;(n.async = !0),
+                  (n.src = 'https://r1.againapp.com/ahamoment/latest/ahamoment.min.js'),
+                  (n.onerror = function () {
+                    ;(r = !1), console.error('Could not load Ahamoment.js')
+                  }),
+                  document.head.appendChild(n)
+              }
+            }
+          a('init'),
+            a('createOneStep'),
+            a('updateOneStepOptions'),
+            (t[(n = 'identify')] = function () {
+              var e,
+                t = Array.prototype.slice.call(arguments)
+              i()
+              var a = new Promise(function (n, t) {
+                e = { resolve: n, reject: t }
+              })
+              return o.push([n, e, t]), a
+            }),
+            (function (n, e) {
+              t[n] = function () {
+                return e
+              }
+            })('isIdentified', !1)
+        }
+      })()
+      //需要替换环境ENV_ID及用户USER_ID(用户身份唯一标识)
+      ahamoment.init('631ae3cb26333232c4c1ff26', {
+        userInfo: {
+          id: '631ae31126333232c4c1fed8',
+        },
+      })
+    </script>
+
     <style>
       .first-screen-loading {
         width: 200px;
