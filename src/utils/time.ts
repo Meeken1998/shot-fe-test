@@ -81,7 +81,7 @@ export function getDateDiff(timestamp: number) {
 }
 
 export function msToSecond(ms: number) {
-  return Math.ceil(ms / 1000)
+  return Math.floor(ms / 1000)
 }
 
 export function getTimeGap(ms: number) {
