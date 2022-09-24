@@ -257,7 +257,17 @@ export const useSlidesStore = defineStore('slides', {
       setTimeout(() => this._sync(docsId, slides), 1000)
     },
 
-    _sync: throttle(async (docsId: string, slides: Slide[]) => {
+    _sync: throttle((docsId: string, slides: Slide[]) => {
+      worker.postMessage({
+        type: 'sync',
+        json: JSON.stringify(slides),
+        docsId,
+        token: localStorage.getItem('token'),
+        isDev: process.env.NODE_ENV === 'development',
+      })
+    }, 3000),
+
+    async syncPreviewImage(docsId: string) {
       const dom = document.querySelector('.thumbnail-item .thumbnail-slide') as HTMLElement
       const jpg = dom ? await toPng(dom, {
         quality: 0.75,
@@ -271,13 +281,12 @@ export const useSlidesStore = defineStore('slides', {
       }) : ''
       worker.postMessage({
         type: 'sync',
-        json: JSON.stringify(slides),
         docsId,
-        jpg,
         token: localStorage.getItem('token'),
+        jpg,
         isDev: process.env.NODE_ENV === 'development',
       })
-    }, 3000),
+    },
 
     _snapshoot() {
       const dom = document.querySelector('.thumbnail-item .thumbnail') as HTMLElement

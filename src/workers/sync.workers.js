@@ -5,12 +5,18 @@ const defaultJpg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAACmCAYAAA
 self.addEventListener('message', async (e) => {
   const { json, docsId, jpg, type, token, isDev } = e.data
   const { post } = request.default(token, isDev)
+  const data = {
+    type: 'ppt',
+    json,
+  }
+  if (jpg) {
+    data.previewImageUrl = jpg
+  }
+  if (json) {
+    data.json = json
+  }
   if (type === 'sync') {
-    const { json: newSlidesJson } = await post(`/api/docs/${docsId}/update`, {
-      type: 'ppt',
-      json,
-      previewImageUrl: jpg || defaultJpg,
-    })
+    const { json: newSlidesJson } = await post(`/api/docs/${docsId}/update`, data)
     self.postMessage({
       type: 'resp',
       json: newSlidesJson

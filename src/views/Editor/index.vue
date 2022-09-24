@@ -61,6 +61,13 @@ async function handleGetData(docsId: string) {
   const team = await getTeamDetail(docs.teamId)
   docsStore.setTeam(team)
   setTitle(`${docs.name} - ${team.name}`)
+  handleSyncPreviewImage()
+}
+
+function handleSyncPreviewImage() {
+  nextTick(() => {
+    void slidesStore.syncPreviewImage(docsId.value)
+  })
 }
 
 onMounted(() => {

@@ -25,7 +25,7 @@ export function getDateDiffV2(diffValue: number) {
     result = '' + d(weekC) + 'week'
   }
   else if (dayC >= 1) {
-    result = '' + d(dayC) + 'day'
+    result = '' + d(dayC) + 'd'
   }
   else if (hourC >= 1) {
     result = '' + d(hourC) + 'h'
