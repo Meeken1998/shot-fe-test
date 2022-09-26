@@ -78,7 +78,7 @@ function handleDeteteDocs(docs: Docs) {
     centered: true,
     okText: '确认删除',
     cancelText: '取消',
-    content: `确定要删除文档「${docs.name}」吗，该操作不可恢复？`,
+    content: `确定要删除文档「${docs.name}」吗，本操作不可恢复。`,
     onOk: async () => {
       const res = await deleteDocs(docsId)
       if (res) {
