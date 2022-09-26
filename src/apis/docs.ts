@@ -130,3 +130,7 @@ export function getDocsAnalysisBrief(docsId: string) {
     pageReadingMsMetrics: Record<number, number>
   }>(`/api/docs/${docsId}/analysis/brief`)
 }
+
+export function deleteDocs(docsId: string) {
+  return post<boolean>(`/api/docs/${docsId}/delete`)
+}

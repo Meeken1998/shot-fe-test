@@ -1,7 +1,7 @@
 <template>
   <div class="project-wrapper">
     <div v-for="item in (props.items || [])" :key="item._id">
-      <Project :item="item" :team="props.team" />
+      <Project :item="item" :team="props.team" @delete="emit('delete')" />
     </div>
   </div>
 </template>
@@ -10,6 +10,10 @@ import { Docs } from '@/apis/docs'
 import { Team } from '@/apis/team'
 import { defineProps, PropType } from 'vue'
 import Project from './Project.vue'
+
+const emit = defineEmits<{
+  (event: 'delete'): void
+}>()
 
 const props = defineProps({
   items: {

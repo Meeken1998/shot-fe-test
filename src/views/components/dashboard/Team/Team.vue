@@ -41,7 +41,7 @@
       </div>
       <div class="docs-container">
         <Empty v-if="!docs?.length" :style="{ marginTop: '200px' }" />
-        <ProjectWrapper :items="docs || []" :team="teamInfo" />
+        <ProjectWrapper :items="docs || []" :team="teamInfo" @delete="getData()" />
       </div>
 
     </div>
