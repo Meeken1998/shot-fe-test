@@ -15,7 +15,6 @@ import Home from '../Dashboard/index.vue'
 import ProfilePage from '@/views/components/dashboard/Setting/ProfilePage.vue'
 import DocsViewer from '@/views/components/viewer/DocsViewer.vue'
 import { getUserResources } from '@/apis/user'
-import ShareRedirector from '@/views/components/dashboard/Share/ShareRedirector.vue'
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

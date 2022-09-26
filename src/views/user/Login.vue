@@ -53,19 +53,24 @@ onMounted(() => {
 })
 
 async function checkLoginState() {
-  if (!sdk.isRedirectCallback()) {
-    void getLoginState()
-    return
+  try {
+    if (!sdk.isRedirectCallback()) {
+      void getLoginState()
+      return
+    }
+    const callback = await sdk.handleRedirectCallback()
+    loginState.value = callback
+    let token = ''
+    if (callback?.idToken) {
+      token = callback.idToken
+      localStorage.setItem('token', token)
+    }
+    await saveUserInfo2store()
+    redirect()
   }
-  const callback = await sdk.handleRedirectCallback()
-  loginState.value = callback
-  let token = ''
-  if (callback?.idToken) {
-    token = callback.idToken
-    localStorage.setItem('token', token)
+  catch (err) {
+    login()
   }
-  await saveUserInfo2store()
-  redirect()
 }
 
 async function saveUserInfo2store() {
