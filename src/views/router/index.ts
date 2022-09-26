@@ -99,7 +99,7 @@ const router = createRouter({
   ],
 })
 
-const NEEDNOT_AUTH_ROUTE_NAMES: string[] = ['login', 'join-team']
+const NEEDNOT_AUTH_ROUTE_NAMES: string[] = ['login', 'join-team', 'share']
 
 router.beforeEach((to, _, next) => {
   const { user, userResources } = storeToRefs(useDashboardStore())

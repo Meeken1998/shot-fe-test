@@ -15,6 +15,7 @@ import { storeToRefs } from 'pinia'
 import { getTeamDetail } from '@/apis/team'
 import PDFViewer from './pdf/PDFViewer.vue'
 import { setTitle } from '@/utils/title'
+import router from '@/views/router'
 
 const docsStore = useDocsStore()
 const { docs } = storeToRefs(docsStore)
@@ -27,6 +28,11 @@ async function getData() {
   let link: ShareLink | undefined = undefined
   if (shareLinkId) {
     link = await getShareLink(shareLinkId)
+    if (!link?._id) {
+      localStorage.setItem('shareLinkId', shareLinkId)
+      router.replace({ name: 'login' })
+      return
+    }
     docsStore.setShareLink(link)
   }
   const docs = await getDocs(link?.typeId || docsId)

@@ -26,6 +26,14 @@ function redirect() {
     })
     return
   }
+  const shareLinkId = localStorage.getItem('shareLinkId')
+  if (shareLinkId) {
+    localStorage.removeItem('shareLinkId')
+    router.push({
+      path: `/share/${shareLinkId}`
+    })
+    return
+  }
   router.push({
     name: 'home'
   })
