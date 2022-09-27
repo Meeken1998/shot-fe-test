@@ -14,6 +14,8 @@
     @cancel="closeExportDialog()">
     <ExportDialog />
   </Modal>
+
+  <MobileVisitTips />
 </template>
 
 <script lang="ts" setup>
@@ -25,25 +27,22 @@ import usePasteEvent from '@/hooks/usePasteEvent'
 
 import EditorHeader from './EditorHeader/EditorHeaderV2.vue'
 import Canvas from './Canvas/index.vue'
-// import CanvasTool from './CanvasTool/index.vue'
 import Thumbnails from './Thumbnails/index.vue'
 import Toolbar from './Toolbar/index.vue'
-import Remark from './Remark/index.vue'
 import ExportDialog from './ExportDialog/index.vue'
 import { useRoute } from 'vue-router'
 import { getDocs } from '@/apis/docs'
 import { getTeamDetail } from '@/apis/team'
 import { setTitle } from '@/utils/title'
 import { DEFAULT_SLIDES } from '@/types/slides'
-import { isPC } from '@/utils/common'
-
-const _isPC = isPC()
+import MobileVisitTips from '../components/widget/MobileVisitTips.vue'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
 const docsStore = useDocsStore()
 const { dialogForExport, handleElementId } = storeToRefs(mainStore)
 const { docsId } = storeToRefs(slidesStore)
+
 
 const loaded = ref(false)
 const route = useRoute()

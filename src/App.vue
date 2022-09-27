@@ -1,7 +1,9 @@
 <template>
-  <ConfigProvider :autoInsertSpaceInButton="false">
-    <router-view></router-view>
-  </ConfigProvider>
+  <SkeletonTheme color="#eef5ee" highlight="#f7fcf7" :duration="2">
+    <ConfigProvider :autoInsertSpaceInButton="false">
+      <router-view></router-view>
+    </ConfigProvider>
+  </SkeletonTheme>
 </template>
 
 <script lang="ts" setup>

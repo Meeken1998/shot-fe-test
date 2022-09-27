@@ -1,5 +1,6 @@
 <template>
   <div class="page">
+    <MobileVisitTips />
     <EditorHeaderV2 />
     <PDFViewer v-if="docs" :url="docs?.url"></PDFViewer>
   </div>
@@ -16,6 +17,7 @@ import { getTeamDetail } from '@/apis/team'
 import PDFViewer from './pdf/PDFViewer.vue'
 import { setTitle } from '@/utils/title'
 import router from '@/views/router'
+import MobileVisitTips from '../widget/MobileVisitTips.vue'
 
 const docsStore = useDocsStore()
 const { docs } = storeToRefs(docsStore)

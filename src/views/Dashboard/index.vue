@@ -1,18 +1,18 @@
 <template>
-  <SkeletonTheme color="#eef5ee" highlight="#f7fcf7" :duration="2">
-    <DashboardHeaderBar />
-    <div class="dashboard">
-      <Sidebar />
-      <div class="right-side">
-        <router-view></router-view>
-      </div>
+  <DashboardHeaderBar />
+  <MobileVisitTips />
+  <div class="dashboard">
+    <Sidebar />
+    <div class="right-side">
+      <router-view></router-view>
     </div>
-  </SkeletonTheme>
+  </div>
 </template>
 <script lang="ts" setup>
 import Sidebar from '@/views/components/dashboard/Sidebar/index.vue'
 import DashboardHeaderBar from '../components/dashboard/DashboardHeaderBar.vue'
 import { onBeforeMount } from 'vue'
+import MobileVisitTips from '../components/widget/MobileVisitTips.vue'
 
 onBeforeMount(() => {
   if (window.history.state?.token) {
