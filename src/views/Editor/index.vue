@@ -4,10 +4,7 @@
     <div class="layout-content">
       <Thumbnails class="layout-content-left" />
       <div class="layout-content-center">
-        <!-- <CanvasTool class="center-top" /> -->
         <Canvas class="center-body" :style="{ height: `100%` }" />
-        <!-- :style="{ height: `calc(100% - ${remarkHeight + 40}px)` }" -->
-        <!-- <Remark class="center-bottom" v-model:height="remarkHeight" :style="{ height: `${remarkHeight}px` }" /> -->
       </div>
       <Toolbar class="layout-content-right" />
     </div>
@@ -38,6 +35,9 @@ import { getDocs } from '@/apis/docs'
 import { getTeamDetail } from '@/apis/team'
 import { setTitle } from '@/utils/title'
 import { DEFAULT_SLIDES } from '@/types/slides'
+import { isPC } from '@/utils/common'
+
+const _isPC = isPC()
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()

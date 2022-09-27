@@ -19,6 +19,7 @@ onBeforeMount(() => {
     localStorage.setItem('token', window.history.state.token)
   }
 })
+
 </script>
 <style lang="scss" scoped>
 .dashboard {

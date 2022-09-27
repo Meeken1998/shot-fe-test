@@ -16,6 +16,6 @@ export function searchUsers(keyword: string) {
 }
 
 export function getUserResources() {
-  if (!localStorage.getItem('team')) return
+  if (!localStorage.getItem('team')) return Promise.resolve({})
   return get<Record<string, string[]>>(`/api/users/resources`)
 }

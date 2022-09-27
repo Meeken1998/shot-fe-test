@@ -1,7 +1,6 @@
 <template>
   <Screen v-if="screening" />
-  <Editor v-else-if="_isPC" />
-  <Mobile v-else />
+  <Editor v-else />
 </template>
 
 <script lang="ts" setup>
@@ -9,13 +8,9 @@ import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useScreenStore, useMainStore, useSnapshotStore } from '@/store'
 import { LOCALSTORAGE_KEY_DISCARDED_DB } from '@/configs/storage'
-import { isPC } from '@/utils/common'
 
 import Editor from '@/views/Editor/index.vue'
 import Screen from '@/views/Screen/index.vue'
-import Mobile from '@/views/Mobile/index.vue'
-
-const _isPC = isPC()
 
 const mainStore = useMainStore()
 const snapshotStore = useSnapshotStore()
