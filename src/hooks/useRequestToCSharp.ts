@@ -1,5 +1,5 @@
 import { message } from 'ant-design-vue'
-import { Axios, Method } from 'axios'
+import { Method, Axios } from 'axios'
 
 export interface SuccessResponse<T> {
   code?: 200
@@ -7,23 +7,18 @@ export interface SuccessResponse<T> {
   data: T
 }
 
-type RequestFn = <T = any>(url: string, data?: any, headers?: Record<string, string>, returnOrigin?: boolean) => Promise<T>
+type RequestFn = <T = any>(
+  url: string,
+  data?: any,
+  headers?: Record<string, string>,
+  returnOrigin?: boolean
+) => Promise<T>
 
 export default () => {
-  const axios = new Axios()
-  if (process.env.NODE_ENV !== 'development') {
-    axios.defaults.baseURL = 'http://ppt-loader.aside.fun'
-  }
-  axios.interceptors.response.use((res) => {
-    if (res?.data?.code) {
-      if (res.data.code !== 200) {
-        message.warning(res?.data?.message || '网络错误')
-        return res.data || null
-      }
-      return res?.data
-    }
-    return res
+  const axios = new Axios({
+    baseURL: process.env.NODE_ENV !== 'development' ? 'http://ppt-loader.aside.fun' : '',
   })
+
   async function request<T>(method: Method, url: string, data: any, headers?: Record<string, string>): Promise<T> {
     const clientHeaders: Record<string, string> = {}
     const token = localStorage.getItem('token')
@@ -35,7 +30,7 @@ export default () => {
     if (process.env.NODE_ENV !== 'development') {
       url = url.replace('/csharp/', '/api/')
     }
-  
+
     const res = await axios.request({
       method,
       url,
@@ -45,15 +40,24 @@ export default () => {
         ...headers,
       },
     })
-    return res as unknown as T
+    res.data = JSON.parse(res.data)
+    if (res?.data?.code) {
+      if (res.data.code !== 200) {
+        message.warning(res?.data?.message || '网络错误')
+        return res.data || null
+      }
+      return res?.data
+    }
+    message.warning(res?.data?.message || '网络错误')
+    return null as unknown as T
   }
 
   const post: RequestFn = async (url, data, headers, returnOrigin) => {
-    const res = await request('POST', url, data, headers) as any
+    const res = (await request('POST', url, data, headers)) as any
     return returnOrigin ? res : res?.data
   }
   const get: RequestFn = async (url, data, headers, returnOrigin) => {
-    const res = await request('GET', url, data, headers) as any
+    const res = (await request('GET', url, data, headers)) as any
     return returnOrigin ? res : res?.data
   }
 
