@@ -16,7 +16,7 @@ type RequestFn = <T = any>(
 
 export default () => {
   const axios = new Axios({
-    baseURL: process.env.NODE_ENV !== 'development' ? 'http://ppt-loader.aside.fun' : '',
+    baseURL: process.env.NODE_ENV !== 'development' ? 'https://ppt-loader.aside.fun' : '',
   })
 
   async function request<T>(method: Method, url: string, data: any, headers?: Record<string, string>): Promise<T> {

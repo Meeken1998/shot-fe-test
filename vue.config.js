@@ -11,7 +11,7 @@ module.exports = {
         changeOrigin: true,
       },
       '/csharp/': {
-        target: 'http://ppt-loader.aside.fun',
+        target: 'https://ppt-loader.aside.fun',
         changeOrigin: true,
         pathRewrite: {
           '^/csharp': '/api'

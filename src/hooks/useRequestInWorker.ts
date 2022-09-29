@@ -12,16 +12,7 @@ export default (token: string, isDev: boolean) => {
   if (!isDev) {
     axios.defaults.baseURL = 'https://storyboard-api.aside.fun'
   }
-  // axios.interceptors.response.use((res) => {
-  //   if (res?.data?.code) {
-  //     if (res.data.code !== 200) {
-  //       console.error(res?.data?.message || '网络错误')
-  //       return null
-  //     }
-  //     return res?.data?.data
-  //   }
-  //   return res
-  // })
+
   async function request<T>(method: Method, url: string, data: any): Promise<T> {
     const res = await axios({
       method,
