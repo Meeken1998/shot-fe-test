@@ -30,10 +30,6 @@ export default () => {
 
     const teamId = localStorage.getItem('team')
     if (teamId) clientHeaders['team'] = teamId
-
-    if (process.env.NODE_ENV !== 'development') {
-      url = url.replace('/csharp/', '/api/')
-    }
   
     const res = await axios({
       method,

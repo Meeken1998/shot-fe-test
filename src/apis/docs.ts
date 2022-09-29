@@ -97,12 +97,12 @@ export function getDocs(docsId: string) {
 }
 
 export async function uploadPptDocs(teamId: string, file: File) {
-  const uploadToken = await post<string>('/api/docs/upload/token')
+  const uploadToken = await post<any>('/api/docs/upload/token')
   const formdata = new FormData()
   formdata.append('files', file)
   return cSharpServicePost<string>(`/csharp/upload`, formdata, {
     'Content-Type': 'multipart/form-data',
-    'token': uploadToken
+    'token': uploadToken._id
   })
 }
 
