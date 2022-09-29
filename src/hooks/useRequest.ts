@@ -1,5 +1,5 @@
 import { message } from 'ant-design-vue'
-import axios, { Method } from 'axios'
+import { Axios, Method } from 'axios'
 
 export interface SuccessResponse<T> {
   code?: 200
@@ -15,6 +15,7 @@ export const WS_SERVICE_ENDPOINT =
   process.env.NODE_ENV !== 'development' ? 'wss://storyboard-api.aside.fun' : 'ws://localhost:3000'
 
 export default () => {
+  const axios = new Axios()
   if (process.env.NODE_ENV !== 'development') {
     axios.defaults.baseURL = 'https://storyboard-api.aside.fun'
   }
@@ -36,7 +37,7 @@ export default () => {
     const teamId = localStorage.getItem('team')
     if (teamId) clientHeaders['team'] = teamId
   
-    const res = await axios({
+    const res = await axios.request({
       method,
       url,
       data,

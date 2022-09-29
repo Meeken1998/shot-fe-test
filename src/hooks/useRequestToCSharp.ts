@@ -1,5 +1,5 @@
 import { message } from 'ant-design-vue'
-import axios, { Method } from 'axios'
+import { Axios, Method } from 'axios'
 
 export interface SuccessResponse<T> {
   code?: 200
@@ -10,6 +10,7 @@ export interface SuccessResponse<T> {
 type RequestFn = <T = any>(url: string, data?: any, headers?: Record<string, string>, returnOrigin?: boolean) => Promise<T>
 
 export default () => {
+  const axios = new Axios()
   if (process.env.NODE_ENV !== 'development') {
     axios.defaults.baseURL = 'http://ppt-loader.aside.fun'
   }
@@ -30,8 +31,12 @@ export default () => {
 
     const teamId = localStorage.getItem('team')
     if (teamId) clientHeaders['team'] = teamId
+
+    if (process.env.NODE_ENV !== 'development') {
+      url = url.replace('/csharp/', '/api/')
+    }
   
-    const res = await axios({
+    const res = await axios.request({
       method,
       url,
       data,
