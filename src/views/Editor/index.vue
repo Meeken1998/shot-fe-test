@@ -101,7 +101,7 @@ watch(() => handleElementId.value, (val, last) => {
 
 .layout-content-left {
   width: 240px;
-  height: 100%;
+  height: calc(100vh - 45px);
   flex-shrink: 0;
 }
 
