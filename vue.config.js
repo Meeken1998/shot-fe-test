@@ -10,6 +10,13 @@ module.exports = {
         target: 'http://localhost:3000',
         changeOrigin: true,
       },
+      '/csharp/': {
+        target: 'http://ppt-loader.aside.fun',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/csharp': '/api'
+        }
+      },
     },
   },
   publicPath: '/',

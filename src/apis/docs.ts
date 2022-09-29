@@ -1,8 +1,10 @@
 import useRequest from '@/hooks/useRequest'
+import useRequestToCSharp from '@/hooks/useRequestToCSharp'
 import { User } from 'authing-js-sdk'
 import { ShareLink } from './shareLink'
 
 const { post, get } = useRequest()
+const { post: cSharpServicePost } = useRequestToCSharp()
 
 export type DocsType = 'pdf' | 'ppt'
 
@@ -94,11 +96,13 @@ export function getDocs(docsId: string) {
   return get<Docs>(`/api/docs/${docsId}`, {})
 }
 
-export function uploadPptDocs(teamId: string, file: File) {
+export async function uploadPptDocs(teamId: string, file: File) {
+  const uploadToken = await post<string>('/api/docs/upload/token')
   const formdata = new FormData()
-  formdata.append('file', file)
-  return post<string>(`/api/docs/upload/${teamId}/ppt`, formdata, {
+  formdata.append('files', file)
+  return cSharpServicePost<string>(`/csharp/upload`, formdata, {
     'Content-Type': 'multipart/form-data',
+    'token': uploadToken
   })
 }
 
