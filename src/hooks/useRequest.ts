@@ -23,7 +23,7 @@ export default () => {
     baseURL: process.env.NODE_ENV !== 'development' ? 'https://storyboard-api.aside.fun' : '',
   })
 
-  async function request<T>(method: Method, url: string, data: any, headers?: Record<string, string>): Promise<T> {
+  async function request<T>(method: Method, url: string, data = {}, headers?: Record<string, string>): Promise<T> {
     const clientHeaders: Record<string, string> = {
       'Content-Type': 'application/json'
     }
