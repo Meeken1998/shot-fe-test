@@ -80,7 +80,6 @@ watch(() => props.initSelectedUserIds, ids => {
 })
 
 async function handleSearchUsers() {
-  console.log(searchValue.value)
   const users = await searchUsers(searchValue.value)
   searchedUsersList.value = users
 }
