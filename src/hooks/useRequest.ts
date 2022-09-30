@@ -33,15 +33,20 @@ export default () => {
     const teamId = localStorage.getItem('team')
     if (teamId) clientHeaders['team'] = teamId
 
-    const res = await axios.request({
+    const payload: Record<string, any> = {
       method,
       url,
-      data: JSON.stringify(data || '{}'),
       headers: {
         ...clientHeaders,
         ...headers,
       },
-    })
+    }
+
+    if (data) {
+      payload.data = JSON.stringify(data)
+    }
+
+    const res = await axios.request(data)
     res.data = JSON.parse(res.data)
     if (res?.data?.code) {
       if (res.data.code !== 200) {
