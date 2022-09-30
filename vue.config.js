@@ -67,7 +67,7 @@ module.exports = {
   },
   parallel: false,
   pwa: {
-    name: 'PPTist',
+    name: 'Shot',
     themeColor: '#469D8F',
     iconPaths: {
       faviconSVG: null,
@@ -78,8 +78,8 @@ module.exports = {
       msTileImage: null
     },
     manifestOptions: {
-      name: 'PPTist',
-      short_name: 'PPTist',
+      name: 'Shot',
+      short_name: 'Shot',
       theme_color: '#469D8F',
       icons: [
         {
@@ -98,7 +98,7 @@ module.exports = {
           urlPattern: /.*/,
           handler: 'networkFirst',
           options: {
-            cacheName: 'PPTist',
+            cacheName: 'Shot',
             expiration: {
               maxAgeSeconds: 60 * 60 * 10,
             },
