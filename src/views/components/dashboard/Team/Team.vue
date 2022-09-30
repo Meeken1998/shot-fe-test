@@ -97,8 +97,8 @@ async function getData() {
 }
 
 async function handleGetPptFile(file: File) {
-  const docsId = await uploadPptDocs(teamInfo.value!.id, file)
-  await checkDocsConvertProgress(docsId)
+  const progress = await uploadPptDocs(file)
+  await checkDocsConvertProgress(progress.docsId)
 }
 
 async function handleGetPdfFile(file: File) {

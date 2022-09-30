@@ -96,14 +96,15 @@ export function getDocs(docsId: string) {
   return get<Docs>(`/api/docs/${docsId}`, {})
 }
 
-export async function uploadPptDocs(teamId: string, file: File) {
-  const uploadToken = await post<any>('/api/docs/upload/token')
+export async function uploadPptDocs(file: File) {
+  const uploadTokenRes = await post<DocsConvertProcess>('/api/docs/upload/token')
   const formdata = new FormData()
   formdata.append('files', file)
-  return cSharpServicePost<string>(`/csharp/upload`, formdata, {
+  await cSharpServicePost<string>(`/csharp/upload`, formdata, {
     'Content-Type': 'multipart/form-data',
-    'token': uploadToken._id
+    'token': uploadTokenRes._id
   })
+  return uploadTokenRes
 }
 
 export function updateDocsMeta(docsId: string, name: string) {
