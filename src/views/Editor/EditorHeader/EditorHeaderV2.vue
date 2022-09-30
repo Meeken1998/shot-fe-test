@@ -34,6 +34,9 @@
           @click="mode = SlidesDisplayMode.PPT">幻灯片模式</span>
         <Switch :checked="mode === SlidesDisplayMode.STORYBOARD" @change="(e) => {
           mode = e ? SlidesDisplayMode.STORYBOARD : SlidesDisplayMode.PPT
+          if (e) {
+            mainStore.setActiveElementIdList([])
+          }
         }" />
         <span class="switch-link" :data-active="mode === SlidesDisplayMode.STORYBOARD"
           @click="mode = SlidesDisplayMode.STORYBOARD">纷镜模式</span>
@@ -67,7 +70,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, nextTick, ref } from 'vue'
-import { useDocsStore, useScreenStore, useSlidesStore } from '@/store'
+import { useDocsStore, useMainStore, useScreenStore, useSlidesStore } from '@/store'
 import { LeftOutlined } from '@ant-design/icons-vue'
 import { storeToRefs } from 'pinia'
 import { SlidesDisplayMode } from '@/types/slides'
@@ -85,6 +88,7 @@ import PDFToolBar from '@/views/components/viewer/pdf/PDFToolBar.vue'
 import DocsShareModal from '@/views/components/dashboard/Docs/DocsShareModal.vue'
 import DocsDataModal from '@/views/components/dashboard/Docs/DocsDataModal.vue'
 const { enterScreening } = useScreening()
+const mainStore = useMainStore()
 
 const slidesStore = useSlidesStore()
 const docsStore = useDocsStore()

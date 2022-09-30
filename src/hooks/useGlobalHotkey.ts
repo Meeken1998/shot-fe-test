@@ -277,14 +277,18 @@ export default () => {
     if (spaceKeyState.value) keyboardStore.setSpaceKeyState(false)
   }
 
+  function unregisterHotKeys() {
+    document.removeEventListener('keydown', keydownListener)
+    document.removeEventListener('keyup', keyupListener)
+    window.removeEventListener('blur', keyupListener)
+  }
+
   onMounted(() => {
     document.addEventListener('keydown', keydownListener)
     document.addEventListener('keyup', keyupListener)
     window.addEventListener('blur', keyupListener)
   })
-  onUnmounted(() => {
-    document.removeEventListener('keydown', keydownListener)
-    document.removeEventListener('keyup', keyupListener)
-    window.removeEventListener('blur', keyupListener)
-  })
+  onUnmounted(() => unregisterHotKeys())
+
+  return { unregisterHotKeys }
 }

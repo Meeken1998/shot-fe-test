@@ -3,15 +3,23 @@
     <EditorHeader class="layout-header" />
     <div class="layout-content">
       <Thumbnails class="layout-content-left" />
-      <div class="layout-content-center">
+      <div v-if="mode === SlidesDisplayMode.PPT" class="layout-content-center">
         <Canvas class="center-body" :style="{ height: `100%` }" />
       </div>
-      <Toolbar class="layout-content-right" />
+      <Toolbar v-if="mode === SlidesDisplayMode.PPT" class="layout-content-right"></Toolbar>
+      <ShotEditor v-if="mode === SlidesDisplayMode.STORYBOARD" />
     </div>
   </div>
 
-  <Modal :visible="!!dialogForExport" :footer="null" centered :closable="false" :width="680" destroyOnClose
-    @cancel="closeExportDialog()">
+  <Modal
+    :visible="!!dialogForExport"
+    :footer="null"
+    centered
+    :closable="false"
+    :width="680"
+    destroyOnClose
+    @cancel="closeExportDialog()"
+  >
     <ExportDialog />
   </Modal>
 
@@ -34,15 +42,15 @@ import { useRoute } from 'vue-router'
 import { getDocs } from '@/apis/docs'
 import { getTeamDetail } from '@/apis/team'
 import { setTitle } from '@/utils/title'
-import { DEFAULT_SLIDES } from '@/types/slides'
+import { DEFAULT_SLIDES, SlidesDisplayMode } from '@/types/slides'
 import MobileVisitTips from '../components/widget/MobileVisitTips.vue'
+import ShotEditor from '../../views/components/shot/ShotEditor.vue'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
 const docsStore = useDocsStore()
 const { dialogForExport, handleElementId } = storeToRefs(mainStore)
-const { docsId } = storeToRefs(slidesStore)
-
+const { docsId, mode } = storeToRefs(slidesStore)
 
 const loaded = ref(false)
 const route = useRoute()
@@ -80,13 +88,16 @@ onUnmounted(() => {
   slidesStore.closeWebsocket()
 })
 
-watch(() => handleElementId.value, (val, last) => {
-  if (last && !val) {
-    nextTick(() => {
-      slidesStore._sync(docsId.value, slidesStore.slides.slice())
-    })
+watch(
+  () => handleElementId.value,
+  (val, last) => {
+    if (last && !val) {
+      nextTick(() => {
+        slidesStore._sync(docsId.value, slidesStore.slides.slice())
+      })
+    }
   }
-})
+)
 </script>
 
 <style lang="scss" scoped>
