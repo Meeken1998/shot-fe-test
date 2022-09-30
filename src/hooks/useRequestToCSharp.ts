@@ -20,7 +20,9 @@ export default () => {
   })
 
   async function request<T>(method: Method, url: string, data: any, headers?: Record<string, string>): Promise<T> {
-    const clientHeaders: Record<string, string> = {}
+    const clientHeaders: Record<string, string> = {
+      'Content-Type': 'application/json'
+    }
     const token = localStorage.getItem('token')
     if (token) clientHeaders['authentication'] = `Bearer ${token}`
 
