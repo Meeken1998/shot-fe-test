@@ -36,7 +36,7 @@ export default () => {
     const res = await axios.request({
       method,
       url,
-      data: JSON.stringify(data || '{}'),
+      data,
       headers: {
         ...clientHeaders,
         ...headers,
