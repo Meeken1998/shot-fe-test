@@ -25,9 +25,8 @@ export interface Docs {
 export enum DocsConvertProcessStatus {
   PENDING = 0,
   CONVERTING = 1,
-  STORAGING = 2,
-  FINISHED = 3,
-  FAIL = 4,
+  FINISHED = 2,
+  FAIL = 3,
 }
 
 export enum DocsUserViewEvent {

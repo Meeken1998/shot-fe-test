@@ -42,16 +42,7 @@ export default () => {
         ...headers,
       },
     })
-    res.data = JSON.parse(res.data)
-    if (res?.data?.code) {
-      if (res.data.code !== 200) {
-        message.warning(res?.data?.message || '网络错误')
-        return res.data || null
-      }
-      return res?.data
-    }
-    message.warning(res?.data?.message || '网络错误')
-    return null as unknown as T
+    return res.data as T
   }
 
   const post: RequestFn = async (url, data, headers, returnOrigin) => {
