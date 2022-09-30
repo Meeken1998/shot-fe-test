@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!_isPC" class="mobile-tips">
+  <div v-if="showTips" class="mobile-tips">
     <svg t="1664257011339" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
       p-id="8261" width="120" height="120" data-spm-anchor-id="a313x.7781069.0.i4">
       <path
@@ -12,17 +12,32 @@
       <div>请使用 PC 端访问本页面</div>
     </div>
     <Button class="primary-btn" style="margin-top: 12px;" @click="handleCopyLink()">复制本页链接</Button>
+    <div class="primary-btn" style="margin-top: 24px;text-align: center;" @click="handleVisit()">仍要访问，不再提示</div>
   </div>
 </template>
 <script lang="ts" setup>
 import { copyText } from '@/utils/clipboard'
 import { isPC } from '@/utils/common'
 import { message } from 'ant-design-vue'
+import { computed, onMounted, ref } from 'vue'
 const _isPC = isPC()
+const skipTips = ref(false)
+
+onMounted(() => {
+  const skip = !!localStorage.getItem('skipMobileTips')
+  skipTips.value = skip
+})
+
+const showTips = computed(() => !_isPC && !skipTips.value)
 
 function handleCopyLink() {
   copyText(location.href)
   void message.success('复制成功')
+}
+
+function handleVisit() {
+  localStorage.setItem('skipMobileTips', '1')
+  skipTips.value = true
 }
 
 </script>
