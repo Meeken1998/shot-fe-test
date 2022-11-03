@@ -1,4 +1,3 @@
-import { message } from 'ant-design-vue'
 import { Method, Axios } from 'axios'
 
 export interface SuccessResponse<T> {
@@ -16,7 +15,7 @@ type RequestFn = <T = any>(
 
 export default () => {
   const axios = new Axios({
-    baseURL: process.env.NODE_ENV !== 'development' ? 'https://ppt-loader.aside.fun' : '',
+    baseURL: process.env.NODE_ENV !== 'development' ? 'https://ppt-loader-test.aside.fun' : '',
   })
 
   async function request<T>(method: Method, url: string, data: any, headers?: Record<string, string>): Promise<T> {
